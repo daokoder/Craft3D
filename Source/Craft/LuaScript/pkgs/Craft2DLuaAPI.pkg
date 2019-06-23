@@ -1,0 +1,43 @@
+$pfile "Craft2D/Sprite2D.pkg"
+$pfile "Craft2D/SpriteSheet2D.pkg"
+$pfile "Craft2D/Drawable2D.pkg"
+$pfile "Craft2D/StaticSprite2D.pkg"
+
+$pfile "Craft2D/StretchableSprite2D.pkg"
+
+$pfile "Craft2D/AnimationSet2D.pkg"
+$pfile "Craft2D/AnimatedSprite2D.pkg"
+
+$pfile "Craft2D/ParticleEffect2D.pkg"
+$pfile "Craft2D/ParticleEmitter2D.pkg"
+
+$pfile "Craft2D/TileMapDefs2D.pkg"
+$pfile "Craft2D/TmxFile2D.pkg"
+$pfile "Craft2D/TileMap2D.pkg"
+$pfile "Craft2D/TileMapLayer2D.pkg"
+
+$pfile "Craft2D/RigidBody2D.pkg"
+$pfile "Craft2D/PhysicsWorld2D.pkg"
+
+$pfile "Craft2D/CollisionShape2D.pkg"
+$pfile "Craft2D/CollisionBox2D.pkg"
+$pfile "Craft2D/CollisionChain2D.pkg"
+$pfile "Craft2D/CollisionCircle2D.pkg"
+$pfile "Craft2D/CollisionEdge2D.pkg"
+$pfile "Craft2D/CollisionPolygon2D.pkg"
+
+$pfile "Craft2D/Constraint2D.pkg"
+$pfile "Craft2D/ConstraintDistance2D.pkg"
+$pfile "Craft2D/ConstraintFriction2D.pkg"
+$pfile "Craft2D/ConstraintGear2D.pkg"
+$pfile "Craft2D/ConstraintMotor2D.pkg"
+$pfile "Craft2D/ConstraintMouse2D.pkg"
+$pfile "Craft2D/ConstraintPrismatic2D.pkg"
+$pfile "Craft2D/ConstraintPulley2D.pkg"
+$pfile "Craft2D/ConstraintRevolute2D.pkg"
+$pfile "Craft2D/ConstraintRope2D.pkg"
+$pfile "Craft2D/ConstraintWeld2D.pkg"
+$pfile "Craft2D/ConstraintWheel2D.pkg"
+
+$using namespace Craft;
+$#pragma warning(disable:4800)

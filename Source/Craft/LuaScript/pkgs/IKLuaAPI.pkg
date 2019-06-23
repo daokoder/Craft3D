@@ -1,0 +1,6 @@
+$pfile "IK/IKSolver.pkg"
+$pfile "IK/IKConstraint.pkg"
+$pfile "IK/IKEffector.pkg"
+
+$using namespace Craft3D;
+$#pragma warning(disable:4800)
