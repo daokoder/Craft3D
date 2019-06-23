@@ -107,6 +107,23 @@ public:
     /// Return whether the file originates from a package.
     bool IsPackaged() const { return offset_ != 0; }
 
+    // ATOMIC BEGIN
+
+    /// Reads a text file, ensuring data from file is 0 terminated
+    virtual void ReadText(String& text);
+
+    /// Reads a text file, ensuring data from file is 0 terminated
+    virtual String ReadText() { String retValue; ReadText(retValue); return retValue; }
+
+    /// Return the fullpath to the file
+    const String& GetFullPath() const { return fullPath_; }
+
+    /// Copy a file from a source file, must be opened and FILE_WRITE
+    /// Unlike FileSystem.Copy this copy works when the source file is in a package file
+    bool Copy(File* srcFile);
+
+    // ATOMIC END
+
 private:
     /// Open file internally using either C standard IO functions or SDL RWops for Android asset files. Return true if successful.
     bool OpenInternal(const String& fileName, FileMode mode, bool fromPackage = false);
@@ -143,6 +160,14 @@ private:
     bool readSyncNeeded_;
     /// Synchronization needed before write -flag.
     bool writeSyncNeeded_;
+
+    // ATOMIC BEGIN
+
+    /// Full path to file
+    String fullPath_;
+
+    // ATOMIC END
+
 };
 
 }

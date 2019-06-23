@@ -21,13 +21,13 @@
 #
 
 # Set project name
-project (Urho3D-Extras)
+project (Craft-Extras)
 
 setup_lint ()
 
-# Find Urho3D library
-find_package (Urho3D REQUIRED)
-include_directories (${URHO3D_INCLUDE_DIRS})
+# Find Craft library
+find_package (Craft REQUIRED)
+include_directories (${CRAFT_INCLUDE_DIRS})
 
-# Urho3D extras
+# Craft extras
 add_subdirectory (OgreBatchConverter)

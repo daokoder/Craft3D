@@ -28,8 +28,23 @@
 #include <Craft/Craft.h>
 #endif
 
+#include "../Container/Str.h"
+
 namespace Craft
 {
+
+class RefCounted;
+
+typedef const void* ClassID;
+
+/// Macro to be included in RefCounted derived classes for efficient RTTI
+#define CRAFT_REFCOUNTED(typeName) \
+    public: \
+        virtual Craft::ClassID GetClassID() const { return GetClassIDStatic(); } \
+        static Craft::ClassID GetClassIDStatic() { static const int typeID = 0; return (Craft::ClassID) &typeID; } \
+        virtual const String& GetTypeName() const { return GetTypeNameStatic(); } \
+        static const String& GetTypeNameStatic() { static const String _typeName(#typeName); return _typeName; }
+
 
 /// Reference count structure.
 struct RefCount

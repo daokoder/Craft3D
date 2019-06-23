@@ -95,7 +95,10 @@ File::File(Context* context, const String& fileName, FileMode mode) :
     checksum_(0),
     compressed_(false),
     readSyncNeeded_(false),
-    writeSyncNeeded_(false)
+    writeSyncNeeded_(false),
+	// ATOMIC BEGIN
+	fullPath_(fileName)
+	// ATOMIC END
 {
     Open(fileName, mode);
 }
@@ -549,5 +552,38 @@ void File::SeekInternal(unsigned newPosition)
 #endif
         fseek((FILE*)handle_, newPosition, SEEK_SET);
 }
+
+// ATOMIC BEGIN
+
+void File::ReadText(String& text)
+{
+    text.Clear();
+
+    if (!size_)
+        return;
+
+    text.Resize(size_);
+
+    Read((void*)text.CString(), size_);
+}
+
+bool File::Copy(File* srcFile)
+{
+    if (!srcFile || !srcFile->IsOpen() || srcFile->GetMode() != FILE_READ)
+        return false;
+
+    if (!IsOpen() || GetMode() != FILE_WRITE)
+        return false;
+
+    unsigned fileSize = srcFile->GetSize();
+    SharedArrayPtr<unsigned char> buffer(new unsigned char[fileSize]);
+
+    unsigned bytesRead = srcFile->Read(buffer.Get(), fileSize);
+    unsigned bytesWritten = Write(buffer.Get(), fileSize);
+    return bytesRead == fileSize && bytesWritten == fileSize;
+
+}
+
+// ATOMIC END
 
 }

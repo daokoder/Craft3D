@@ -69,7 +69,7 @@ if (CRAFT_LIB_TYPE STREQUAL SHARED AND NOT WIN32 AND NOT ANDROID AND NOT IOS AND
 endif ()
 
 # Add targets
-foreach (TARGET FreeType LZ4 PugiXml rapidjson SDL StanHull STB)
+foreach (TARGET FreeType LZ4 PugiXml rapidjson SDL StanHull STB TurboBadger)
     add_subdirectory (ThirdParty/${TARGET})
 endforeach ()
 
