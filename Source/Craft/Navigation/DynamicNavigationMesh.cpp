@@ -114,6 +114,10 @@ struct MeshProcess : public dtTileCacheMeshProcess
         BoundingBox bounds;
         rcVcopy(&bounds.min_.x_, params->bmin);
         rcVcopy(&bounds.max_.x_, params->bmin);
+		bounds.min_.y_ = params->bmin[2];  // Craft;
+		bounds.min_.z_ = params->bmin[1];
+		bounds.max_.y_ = params->bmax[2];
+		bounds.max_.z_ = params->bmax[1];
 
         // collect off-mesh connections
         PODVector<OffMeshConnection*> offMeshConnections = owner_->CollectOffMeshConnections(bounds);
@@ -129,9 +133,11 @@ struct MeshProcess : public dtTileCacheMeshProcess
                     OffMeshConnection* connection = offMeshConnections[i];
                     Vector3 start = inverse * connection->GetNode()->GetWorldPosition();
                     Vector3 end = inverse * connection->GetEndPoint()->GetWorldPosition();
+					Vector3 start2(start.x_, start.z_, start.y_); // Craft;
+					Vector3 end2(end.x_, end.z_, end.y_);
 
-                    offMeshVertices_.Push(start);
-                    offMeshVertices_.Push(end);
+                    offMeshVertices_.Push(start2); // Craft;
+                    offMeshVertices_.Push(end2);
                     offMeshRadii_.Push(connection->GetRadius());
                     offMeshFlags_.Push((unsigned short)connection->GetMask());
                     offMeshAreas_.Push((unsigned char)connection->GetAreaID());
@@ -252,9 +258,11 @@ bool DynamicNavigationMesh::Allocate(const BoundingBox& boundingBox, unsigned ma
     // Calculate number of tiles
     int gridW = 0, gridH = 0;
     float tileEdgeLength = (float)tileSize_ * cellSize_;
-    rcCalcGridSize(&boundingBox_.min_.x_, &boundingBox_.max_.x_, cellSize_, &gridW, &gridH);
+	Vector3 min(boundingBox_.min_.x_, boundingBox_.min_.z_, boundingBox_.min_.y_); // Craft;
+	Vector3 max(boundingBox_.max_.x_, boundingBox_.max_.z_, boundingBox_.max_.y_);
+	rcCalcGridSize(&min.x_, &max.x_, cellSize_, &gridW, &gridH); // Craft;
     numTilesX_ = (gridW + tileSize_ - 1) / tileSize_;
-    numTilesZ_ = (gridH + tileSize_ - 1) / tileSize_;
+    numTilesY_ = (gridH + tileSize_ - 1) / tileSize_; // Craft;
 
     // Calculate max number of polygons, 22 bits available to identify both tile & polygon within tile
     unsigned tileBits = LogBaseTwo(maxTiles);
@@ -366,17 +374,19 @@ bool DynamicNavigationMesh::Build()
         // Calculate number of tiles
         int gridW = 0, gridH = 0;
         float tileEdgeLength = (float)tileSize_ * cellSize_;
-        rcCalcGridSize(&boundingBox_.min_.x_, &boundingBox_.max_.x_, cellSize_, &gridW, &gridH);
+		Vector3 min(boundingBox_.min_.x_, boundingBox_.min_.z_, boundingBox_.min_.y_);//Craft;
+		Vector3 max(boundingBox_.max_.x_, boundingBox_.max_.z_, boundingBox_.max_.y_);
+		rcCalcGridSize(&min.x_, &max.x_, cellSize_, &gridW, &gridH); // Craft;
         numTilesX_ = (gridW + tileSize_ - 1) / tileSize_;
-        numTilesZ_ = (gridH + tileSize_ - 1) / tileSize_;
+        numTilesY_ = (gridH + tileSize_ - 1) / tileSize_; // Craft;
 
         // Calculate max. number of tiles and polygons, 22 bits available to identify both tile & polygon within tile
-        unsigned maxTiles = NextPowerOfTwo((unsigned)(numTilesX_ * numTilesZ_)) * maxLayers_;
+        unsigned maxTiles = NextPowerOfTwo((unsigned)(numTilesX_ * numTilesY_)) * maxLayers_;
         unsigned tileBits = LogBaseTwo(maxTiles);
         unsigned maxPolys = 1u << (22 - tileBits);
 
         dtNavMeshParams params;     // NOLINT(hicpp-member-init)
-        rcVcopy(params.orig, &boundingBox_.min_.x_);
+        rcVcopy(params.orig, &min.x_); // Craft;
         params.tileWidth = tileEdgeLength;
         params.tileHeight = tileEdgeLength;
         params.maxTiles = maxTiles;
@@ -398,13 +408,13 @@ bool DynamicNavigationMesh::Build()
 
         dtTileCacheParams tileCacheParams;      // NOLINT(hicpp-member-init)
         memset(&tileCacheParams, 0, sizeof(tileCacheParams));
-        rcVcopy(tileCacheParams.orig, &boundingBox_.min_.x_);
+        rcVcopy(tileCacheParams.orig, &min.x_); // Craft;
         tileCacheParams.ch = cellHeight_;
         tileCacheParams.cs = cellSize_;
         tileCacheParams.width = tileSize_;
         tileCacheParams.height = tileSize_;
         tileCacheParams.maxSimplificationError = edgeMaxError_;
-        tileCacheParams.maxTiles = numTilesX_ * numTilesZ_ * maxLayers_;
+        tileCacheParams.maxTiles = numTilesX_ * numTilesY_ * maxLayers_;
         tileCacheParams.maxObstacles = maxObstacles_;
         // Settings from NavigationMesh
         tileCacheParams.walkableClimb = agentMaxClimb_;
@@ -429,12 +439,12 @@ bool DynamicNavigationMesh::Build()
         // Build each tile
         unsigned numTiles = 0;
 
-        for (int z = 0; z < numTilesZ_; ++z)
+        for (int y = 0; y < numTilesY_; ++y) // Craft;
         {
             for (int x = 0; x < numTilesX_; ++x)
             {
                 TileCacheData tiles[TILECACHE_MAXLAYERS];
-                int layerCt = BuildTile(geometryList, x, z, tiles);
+                int layerCt = BuildTile(geometryList, x, y, tiles); // Craft;
                 for (int i = 0; i < layerCt; ++i)
                 {
                     dtCompressedTileRef tileRef;
@@ -445,7 +455,7 @@ bool DynamicNavigationMesh::Build()
                         tiles[i].data = nullptr;
                     }
                 }
-                tileCache_->buildNavMeshTilesAt(x, z, navMesh_);
+                tileCache_->buildNavMeshTilesAt(x, y, navMesh_); // Craft;
                 ++numTiles;
             }
         }
@@ -503,11 +513,11 @@ bool DynamicNavigationMesh::Build(const BoundingBox& boundingBox)
     CollectGeometries(geometryList);
 
     int sx = Clamp((int)((localSpaceBox.min_.x_ - boundingBox_.min_.x_) / tileEdgeLength), 0, numTilesX_ - 1);
-    int sz = Clamp((int)((localSpaceBox.min_.z_ - boundingBox_.min_.z_) / tileEdgeLength), 0, numTilesZ_ - 1);
+    int sy = Clamp((int)((localSpaceBox.min_.y_ - boundingBox_.min_.y_) / tileEdgeLength), 0, numTilesY_ - 1);
     int ex = Clamp((int)((localSpaceBox.max_.x_ - boundingBox_.min_.x_) / tileEdgeLength), 0, numTilesX_ - 1);
-    int ez = Clamp((int)((localSpaceBox.max_.z_ - boundingBox_.min_.z_) / tileEdgeLength), 0, numTilesZ_ - 1);
+    int ey = Clamp((int)((localSpaceBox.max_.y_ - boundingBox_.min_.y_) / tileEdgeLength), 0, numTilesY_ - 1);
 
-    unsigned numTiles = BuildTiles(geometryList, IntVector2(sx, sz), IntVector2(ex, ez));
+    unsigned numTiles = BuildTiles(geometryList, IntVector2(sx, sy), IntVector2(ex, ey)); //Crat;
 
     CRAFT_LOGDEBUG("Rebuilt " + String(numTiles) + " tiles of the navigation mesh");
     return true;
@@ -608,11 +618,19 @@ void DynamicNavigationMesh::DrawDebugGeometry(DebugRenderer* debug, bool depthTe
         for (int i = 0; i < tile->header->polyCount; ++i)
         {
             dtPoly* poly = tile->polys + i;
+			 Vector3 O(&tile->verts[poly->verts[0] * 3]);
+			 O = worldTransform * Vector3( O.x_, O.z_, O.y_ );
             for (unsigned j = 0; j < poly->vertCount; ++j)
             {
-                debug->AddLine(worldTransform * *reinterpret_cast<const Vector3*>(&tile->verts[poly->verts[j] * 3]),
-                    worldTransform * *reinterpret_cast<const Vector3*>(&tile->verts[poly->verts[(j + 1) % poly->vertCount] * 3]),
-                    Color::YELLOW, depthTest);
+				Vector3 A(&tile->verts[poly->verts[j] * 3]);
+				Vector3 B(&tile->verts[poly->verts[(j + 1) % poly->vertCount] * 3]);
+				A = worldTransform * Vector3(A.x_, A.z_, A.y_);
+				B = worldTransform * Vector3(B.x_, B.z_, B.y_);
+				debug->AddLine( A, B, Color::YELLOW, depthTest ); // Craft;
+
+				if( j ){ // Craft;
+					debug->AddTriangle( O, A, B, Color(Color::YELLOW, 0.3), depthTest);
+				}
             }
         }
     }
@@ -682,7 +700,7 @@ void DynamicNavigationMesh::SetNavigationDataAttr(const PODVector<unsigned char>
     MemoryBuffer buffer(value);
     boundingBox_ = buffer.ReadBoundingBox();
     numTilesX_ = buffer.ReadInt();
-    numTilesZ_ = buffer.ReadInt();
+    numTilesY_ = buffer.ReadInt(); // Craft;
 
     dtNavMeshParams params;     // NOLINT(hicpp-member-init)
     buffer.Read(&params, sizeof(dtNavMeshParams));
@@ -729,7 +747,7 @@ PODVector<unsigned char> DynamicNavigationMesh::GetNavigationDataAttr() const
     {
         ret.WriteBoundingBox(boundingBox_);
         ret.WriteInt(numTilesX_);
-        ret.WriteInt(numTilesZ_);
+        ret.WriteInt(numTilesY_); // Craft;
 
         const dtNavMeshParams* params = navMesh_->getParams();
         ret.Write(params, sizeof(dtNavMeshParams));
@@ -737,9 +755,9 @@ PODVector<unsigned char> DynamicNavigationMesh::GetNavigationDataAttr() const
         const dtTileCacheParams* tcParams = tileCache_->getParams();
         ret.Write(tcParams, sizeof(dtTileCacheParams));
 
-        for (int z = 0; z < numTilesZ_; ++z)
+        for (int y = 0; y < numTilesY_; ++y)
             for (int x = 0; x < numTilesX_; ++x)
-                WriteTiles(ret, x, z);
+                WriteTiles(ret, x, y); // Craft;
     }
     return ret.GetBuffer();
 }
@@ -751,10 +769,10 @@ void DynamicNavigationMesh::SetMaxLayers(unsigned maxLayers)
     maxLayers_ = Max(3U, Min(maxLayers, TILECACHE_MAXLAYERS));
 }
 
-void DynamicNavigationMesh::WriteTiles(Serializer& dest, int x, int z) const
+void DynamicNavigationMesh::WriteTiles(Serializer& dest, int x, int y) const
 {
     dtCompressedTileRef tiles[TILECACHE_MAXLAYERS];
-    const int ct = tileCache_->getTilesAt(x, z, tiles, maxLayers_);
+    const int ct = tileCache_->getTilesAt(x, y, tiles, maxLayers_);
     for (int i = 0; i < ct; ++i)
     {
         const dtCompressedTile* tile = tileCache_->getTileByRef(tiles[i]);
@@ -817,13 +835,13 @@ bool DynamicNavigationMesh::ReadTiles(Deserializer& source, bool silent)
     return true;
 }
 
-int DynamicNavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryList, int x, int z, TileCacheData* tiles)
+int DynamicNavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryList, int x, int y, TileCacheData* tiles)
 {
     CRAFT_PROFILE(BuildNavigationMeshTile);
 
-    tileCache_->removeTile(navMesh_->getTileRefAt(x, z, 0), nullptr, nullptr);
+    tileCache_->removeTile(navMesh_->getTileRefAt(x, y, 0), nullptr, nullptr); // Craft;
 
-    const BoundingBox tileBoundingBox = GetTileBoundingBox(IntVector2(x, z));
+    const BoundingBox tileBoundingBox = GetTileBoundingBox(IntVector2(x, y));
 
     DynamicNavBuildData build(allocator_.Get());
 
@@ -847,14 +865,20 @@ int DynamicNavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryLis
     cfg.detailSampleDist = detailSampleDistance_ < 0.9f ? 0.0f : cellSize_ * detailSampleDistance_;
     cfg.detailSampleMaxError = cellHeight_ * detailSampleMaxError_;
 
-    rcVcopy(cfg.bmin, &tileBoundingBox.min_.x_);
-    rcVcopy(cfg.bmax, &tileBoundingBox.max_.x_);
+	Vector3 min(tileBoundingBox.min_.x_, tileBoundingBox.min_.z_, tileBoundingBox.min_.y_);
+	Vector3 max(tileBoundingBox.max_.x_, tileBoundingBox.max_.z_, tileBoundingBox.max_.y_);
+    rcVcopy(cfg.bmin, &min.x_);  // Craft;
+    rcVcopy(cfg.bmax, &max.x_);  // Craft;
     cfg.bmin[0] -= cfg.borderSize * cfg.cs;
     cfg.bmin[2] -= cfg.borderSize * cfg.cs;
     cfg.bmax[0] += cfg.borderSize * cfg.cs;
     cfg.bmax[2] += cfg.borderSize * cfg.cs;
 
     BoundingBox expandedBox(*reinterpret_cast<Vector3*>(cfg.bmin), *reinterpret_cast<Vector3*>(cfg.bmax));
+	expandedBox.min_.y_ = cfg.bmin[2]; // Craft;
+	expandedBox.min_.z_ = cfg.bmin[1];
+	expandedBox.max_.y_ = cfg.bmax[2];
+	expandedBox.max_.z_ = cfg.bmax[1];
     GetTileGeometry(&build, geometryList, expandedBox);
 
     if (build.vertices_.Empty() || build.indices_.Empty())
@@ -954,7 +978,7 @@ int DynamicNavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryLis
         header.magic = DT_TILECACHE_MAGIC;
         header.version = DT_TILECACHE_VERSION;
         header.tx = x;
-        header.ty = z;
+        header.ty = y; // Craft;
         header.tlayer = i;
 
         rcHeightfieldLayer* layer = &build.heightFieldLayers_->layers[i];
@@ -1000,12 +1024,12 @@ unsigned DynamicNavigationMesh::BuildTiles(Vector<NavigationGeometryInfo>& geome
 {
     unsigned numTiles = 0;
 
-    for (int z = from.y_; z <= to.y_; ++z)
+    for (int y = from.y_; y <= to.y_; ++y) // Craft;
     {
         for (int x = from.x_; x <= to.x_; ++x)
         {
             dtCompressedTileRef existing[TILECACHE_MAXLAYERS];
-            const int existingCt = tileCache_->getTilesAt(x, z, existing, maxLayers_);
+            const int existingCt = tileCache_->getTilesAt(x, y, existing, maxLayers_);
             for (int i = 0; i < existingCt; ++i)
             {
                 unsigned char* data = nullptr;
@@ -1014,7 +1038,7 @@ unsigned DynamicNavigationMesh::BuildTiles(Vector<NavigationGeometryInfo>& geome
             }
 
             TileCacheData tiles[TILECACHE_MAXLAYERS];
-            int layerCt = BuildTile(geometryList, x, z, tiles);
+            int layerCt = BuildTile(geometryList, x, y, tiles);
             for (int i = 0; i < layerCt; ++i)
             {
                 dtCompressedTileRef tileRef;
@@ -1079,6 +1103,7 @@ void DynamicNavigationMesh::AddObstacle(Obstacle* obstacle, bool silent)
 {
     if (tileCache_)
     {
+		// Craft TODO: rectangle obstacle;
         float pos[3];
         Vector3 obsPos = obstacle->GetNode()->GetWorldPosition();
         rcVcopy(pos, &obsPos.x_);

@@ -122,7 +122,7 @@ protected:
     /// Release the navigation mesh, query, and tile cache.
     void ReleaseNavigationMesh() override;
 
-private:
+protected:
     /// Write tiles data.
     void WriteTiles(Serializer& dest, int x, int z) const;
     /// Read tiles data to the navigation mesh.

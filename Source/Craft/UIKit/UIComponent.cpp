@@ -426,13 +426,14 @@ void UIComponent::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
         return;
     }
 
-    int delta = eventData[P_WHEEL].GetInt();
+    int dx = eventData[P_WHEEL_DX].GetInt(); // Craft;
+    int dy = eventData[P_WHEEL_DY].GetInt();
 
     Input* input = GetSubsystem<Input>();
 
     tb::TBWidget *widget = uiView_->GetInternalWidget();
 
-    widget->InvokeWheel(input->GetMousePosition().x_, input->GetMousePosition().y_, 0, -delta, tb::TB_MODIFIER_NONE);
+    widget->InvokeWheel(input->GetMousePosition().x_, input->GetMousePosition().y_, dx, -dy, tb::TB_MODIFIER_NONE); // Craft;
 }
 
 

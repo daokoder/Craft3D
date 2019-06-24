@@ -59,6 +59,7 @@ struct Batch
         isBase_(false),
         geometry_(rhs.geometry_),
         material_(rhs.material_),
+		overlay_(rhs.overlay_), // Craft;
         worldTransform_(rhs.worldTransform_),
         numWorldTransforms_(rhs.numWorldTransforms_),
         instancingData_(rhs.instancingData_),
@@ -88,6 +89,8 @@ struct Batch
     Geometry* geometry_{};
     /// Material.
     Material* material_{};
+	/// Overlay texture.
+	Texture2D* overlay_{}; // Craft;
     /// World transform(s). For a skinned model, these are the bone transforms.
     const Matrix3x4* worldTransform_{};
     /// Number of world transforms.

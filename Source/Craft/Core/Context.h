@@ -203,13 +203,17 @@ public:
         return i != eventReceivers_.End() ? i->second_ : nullptr;
     }
 
+    /// Remove an event sender from all receivers. Called on its destruction.
+    void RemoveEventSender(Object* sender);
+
+	void SetEventEnabled( bool enabled ) { eventEnabled = enabled; } // Craft;
+	bool GetEventEnabled() const { return eventEnabled; }
+
 private:
     /// Add event receiver.
     void AddEventReceiver(Object* receiver, StringHash eventType);
     /// Add event receiver for specific event.
     void AddEventReceiver(Object* receiver, Object* sender, StringHash eventType);
-    /// Remove an event sender from all receivers. Called on its destruction.
-    void RemoveEventSender(Object* sender);
     /// Remove event receiver from specific events.
     void RemoveEventReceiver(Object* receiver, Object* sender, StringHash eventType);
     /// Remove event receiver from non-specific events.
@@ -244,6 +248,9 @@ private:
     HashMap<String, Vector<StringHash> > objectCategories_;
     /// Variant map for global variables that can persist throughout application execution.
     VariantMap globalVars_;
+
+	// Craft:
+	bool eventEnabled;
 };
 
 template <class T> void Context::RegisterFactory() { RegisterFactory(new ObjectFactoryImpl<T>(this)); }

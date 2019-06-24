@@ -33,7 +33,8 @@ namespace Craft
 /// Supported constraint types.
 enum ConstraintType
 {
-    CONSTRAINT_POINT = 0,
+	CONSTRAINT_FIXED = 0, // Craft;
+    CONSTRAINT_POINT ,
     CONSTRAINT_HINGE,
     CONSTRAINT_SLIDER,
     CONSTRAINT_CONETWIST
@@ -153,7 +154,7 @@ protected:
     /// Handle node transform being dirtied.
     void OnMarkedDirty(Node* node) override;
 
-private:
+protected: // Craft;
     /// Create the constraint.
     void CreateConstraint();
     /// Apply high and low constraint limits.

@@ -105,6 +105,8 @@ public:
     /// Return whether the engine has been created in headless mode.
     bool IsHeadless() const { return headless_; }
 
+	void SetHeadless( bool value ) { headless_ = value; } // Craft;
+
     /// Send frame update events.
     void Update();
     /// Render after frame update.

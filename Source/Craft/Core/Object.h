@@ -172,9 +172,12 @@ public:
     /// Return sending and receiving events blocking status.
     bool GetBlockEvents() const { return blockEvents_; }
 
+	void SetEnabled( bool enabled ) { this->enabled = enabled; }  // Craft;
+
 protected:
     /// Execution context.
     Context* context_;
+	bool enabled;
 
 private:
     /// Find the first event handler with no specific sender.

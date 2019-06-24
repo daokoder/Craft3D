@@ -36,8 +36,8 @@ include_directories (${CRAFT_INCLUDE_DIRS})
 # In a production environment, however, the request parameters parsing has to be done by the application itself one way or another
 if (CRAFT_ANGELSCRIPT OR CRAFT_LUA)
     # Add CraftPlayer as target only when one of the supported scripting subsystems is enabled
-    add_subdirectory (CraftPlayer)
 endif ()
+add_subdirectory (CraftPlayer) # Craft;
 
 # Build PackageTool using host compiler toolchain
 if (CMAKE_CROSSCOMPILING AND CRAFT_PACKAGING)

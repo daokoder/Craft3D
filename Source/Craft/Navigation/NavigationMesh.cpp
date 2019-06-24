@@ -118,7 +118,7 @@ NavigationMesh::NavigationMesh(Context* context) :
     detailSampleMaxError_(DEFAULT_DETAIL_SAMPLE_MAX_ERROR),
     padding_(Vector3::ONE),
     numTilesX_(0),
-    numTilesZ_(0),
+    numTilesY_(0), // Craft;
     partitionType_(NAVMESH_PARTITION_WATERSHED),
     keepInterResults_(false),
     drawOffMeshConnections_(false),
@@ -178,14 +178,18 @@ void NavigationMesh::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
         for (int i = 0; i < tile->header->polyCount; ++i)
         {
             dtPoly* poly = tile->polys + i;
+			Vector3 O(&tile->verts[poly->verts[0] * 3]);
+			O = worldTransform * Vector3( O.x_, O.z_, O.y_ ); // Craft;
             for (unsigned j = 0; j < poly->vertCount; ++j)
             {
-                debug->AddLine(
-                    worldTransform * *reinterpret_cast<const Vector3*>(&tile->verts[poly->verts[j] * 3]),
-                    worldTransform * *reinterpret_cast<const Vector3*>(&tile->verts[poly->verts[(j + 1) % poly->vertCount] * 3]),
-                    Color::YELLOW,
-                    depthTest
-                );
+				Vector3 A(&tile->verts[poly->verts[j] * 3]);
+				Vector3 B(&tile->verts[poly->verts[(j + 1) % poly->vertCount] * 3]);
+				A = worldTransform * Vector3(A.x_, A.z_, A.y_);
+				B = worldTransform * Vector3(B.x_, B.z_, B.y_);
+				debug->AddLine( A, B, Color::YELLOW, depthTest );
+				if( j ){ // Craft;
+					debug->AddTriangle( O, A, B, Color(Color::YELLOW, 0.3), depthTest);
+				}
             }
         }
     }
@@ -339,16 +343,18 @@ bool NavigationMesh::Allocate(const BoundingBox& boundingBox, unsigned maxTiles)
     // Calculate number of tiles
     int gridW = 0, gridH = 0;
     float tileEdgeLength = (float)tileSize_ * cellSize_;
-    rcCalcGridSize(&boundingBox_.min_.x_, &boundingBox_.max_.x_, cellSize_, &gridW, &gridH);
+	Vector3 min( boundingBox_.min_.x_, boundingBox_.min_.z_, boundingBox_.min_.y_ );
+	Vector3 max( boundingBox_.max_.x_, boundingBox_.max_.z_, boundingBox_.max_.y_ );
+	rcCalcGridSize(&min.x_, &max.x_, cellSize_, &gridW, &gridH); // Craft;
     numTilesX_ = (gridW + tileSize_ - 1) / tileSize_;
-    numTilesZ_ = (gridH + tileSize_ - 1) / tileSize_;
+    numTilesY_ = (gridH + tileSize_ - 1) / tileSize_; // Craft;
 
     // Calculate max number of polygons, 22 bits available to identify both tile & polygon within tile
     unsigned tileBits = LogBaseTwo(maxTiles);
     unsigned maxPolys = 1u << (22 - tileBits);
 
     dtNavMeshParams params;     // NOLINT(hicpp-member-init)
-    rcVcopy(params.orig, &boundingBox_.min_.x_);
+    rcVcopy(params.orig, &min.x_); // Craft;
     params.tileWidth = tileEdgeLength;
     params.tileHeight = tileEdgeLength;
     params.maxTiles = maxTiles;
@@ -414,12 +420,14 @@ bool NavigationMesh::Build()
         // Calculate number of tiles
         int gridW = 0, gridH = 0;
         float tileEdgeLength = (float)tileSize_ * cellSize_;
-        rcCalcGridSize(&boundingBox_.min_.x_, &boundingBox_.max_.x_, cellSize_, &gridW, &gridH);
+		Vector3 min( boundingBox_.min_.x_, boundingBox_.min_.z_, boundingBox_.min_.y_ );
+		Vector3 max( boundingBox_.max_.x_, boundingBox_.max_.z_, boundingBox_.max_.y_ );
+		rcCalcGridSize(&min.x_, &max.x_, cellSize_, &gridW, &gridH); // Craft;
         numTilesX_ = (gridW + tileSize_ - 1) / tileSize_;
-        numTilesZ_ = (gridH + tileSize_ - 1) / tileSize_;
+        numTilesY_ = (gridH + tileSize_ - 1) / tileSize_; // Craft;
 
         // Calculate max. number of tiles and polygons, 22 bits available to identify both tile & polygon within tile
-        unsigned maxTiles = NextPowerOfTwo((unsigned)(numTilesX_ * numTilesZ_));
+        unsigned maxTiles = NextPowerOfTwo((unsigned)(numTilesX_ * numTilesY_)); // Craft;
         unsigned tileBits = LogBaseTwo(maxTiles);
         unsigned maxPolys = 1u << (22 - tileBits);
 
@@ -486,11 +494,11 @@ bool NavigationMesh::Build(const BoundingBox& boundingBox)
     CollectGeometries(geometryList);
 
     int sx = Clamp((int)((localSpaceBox.min_.x_ - boundingBox_.min_.x_) / tileEdgeLength), 0, numTilesX_ - 1);
-    int sz = Clamp((int)((localSpaceBox.min_.z_ - boundingBox_.min_.z_) / tileEdgeLength), 0, numTilesZ_ - 1);
+    int sy = Clamp((int)((localSpaceBox.min_.y_ - boundingBox_.min_.y_) / tileEdgeLength), 0, numTilesY_ - 1);
     int ex = Clamp((int)((localSpaceBox.max_.x_ - boundingBox_.min_.x_) / tileEdgeLength), 0, numTilesX_ - 1);
-    int ez = Clamp((int)((localSpaceBox.max_.z_ - boundingBox_.min_.z_) / tileEdgeLength), 0, numTilesZ_ - 1);
+    int ey = Clamp((int)((localSpaceBox.max_.y_ - boundingBox_.min_.y_) / tileEdgeLength), 0, numTilesY_ - 1);
 
-    unsigned numTiles = BuildTiles(geometryList, IntVector2(sx, sz), IntVector2(ex, ez));
+    unsigned numTiles = BuildTiles(geometryList, IntVector2(sx, sy), IntVector2(ex, ey));//Craft;
 
     CRAFT_LOGDEBUG("Rebuilt " + String(numTiles) + " tiles of the navigation mesh");
     return true;
@@ -547,13 +555,13 @@ BoundingBox NavigationMesh::GetTileBoundingBox(const IntVector2& tile) const
     return BoundingBox(
         Vector3(
             boundingBox_.min_.x_ + tileEdgeLength * (float)tile.x_,
-            boundingBox_.min_.y_,
-            boundingBox_.min_.z_ + tileEdgeLength * (float)tile.y_
+            boundingBox_.min_.y_ + tileEdgeLength * (float)tile.y_, // Craft;
+            boundingBox_.min_.z_
         ),
         Vector3(
             boundingBox_.min_.x_ + tileEdgeLength * (float)(tile.x_ + 1),
-            boundingBox_.max_.y_,
-            boundingBox_.min_.z_ + tileEdgeLength * (float)(tile.y_ + 1)
+            boundingBox_.min_.y_ + tileEdgeLength * (float)(tile.y_ + 1), // Craft;
+            boundingBox_.max_.z_
         ));
 }
 
@@ -561,7 +569,7 @@ IntVector2 NavigationMesh::GetTileIndex(const Vector3& position) const
 {
     const float tileEdgeLength = (float)tileSize_ * cellSize_;
     const Vector3 localPosition = node_->GetWorldTransform().Inverse() * position - boundingBox_.min_;
-    const Vector2 localPosition2D(localPosition.x_, localPosition.z_);
+    const Vector2 localPosition2D(localPosition.x_, localPosition.y_); // Craft;
     return VectorMin(VectorMax(IntVector2::ZERO, VectorFloorToInt(localPosition2D / tileEdgeLength)), GetNumTiles() - IntVector2::ONE);
 }
 
@@ -619,8 +627,13 @@ Vector3 NavigationMesh::FindNearestPoint(const Vector3& point, const Vector3& ex
     dtPolyRef pointRef;
     if (!nearestRef)
         nearestRef = &pointRef;
-    navMeshQuery_->findNearestPoly(&localPoint.x_, &extents.x_, filter ? filter : queryFilter_.Get(), nearestRef, &nearestPoint.x_);
-    return *nearestRef ? transform * nearestPoint : point;
+
+	Vector3 localPoint2( localPoint.x_, localPoint.z_, localPoint.y_ );
+	Vector3 extents2( extents.x_, extents.z_, extents.y_ );
+    dtStatus status = navMeshQuery_->findNearestPoly(&localPoint2.x_, &extents2.x_, filter ? filter : filter, nearestRef, &nearestPoint.x_);
+	Vector3 nearestPoint2( nearestPoint.x_, nearestPoint.z_, nearestPoint.y_ );
+	if( status & DT_FAILURE ) *nearestRef = 0;
+    return *nearestRef ? transform * nearestPoint2 : point;
 }
 
 Vector3 NavigationMesh::MoveAlongSurface(const Vector3& start, const Vector3& end, const Vector3& extents, int maxVisited,
@@ -637,7 +650,10 @@ Vector3 NavigationMesh::MoveAlongSurface(const Vector3& start, const Vector3& en
 
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.Get();
     dtPolyRef startRef;
-    navMeshQuery_->findNearestPoly(&localStart.x_, &extents.x_, queryFilter, &startRef, nullptr);
+	Vector3 localStart2( localStart.x_, localStart.z_, localStart.y_ );
+	Vector3 extents2( extents.x_, extents.z_, extents.y_ ); // Craft;
+
+    navMeshQuery_->findNearestPoly(&localStart2.x_, &extents2.x_, queryFilter, &startRef, nullptr);
     if (!startRef)
         return end;
 
@@ -645,9 +661,13 @@ Vector3 NavigationMesh::MoveAlongSurface(const Vector3& start, const Vector3& en
     int visitedCount = 0;
     maxVisited = Max(maxVisited, 0);
     PODVector<dtPolyRef> visited((unsigned)maxVisited);
-    navMeshQuery_->moveAlongSurface(startRef, &localStart.x_, &localEnd.x_, queryFilter, &resultPos.x_, maxVisited ?
-        &visited[0] : nullptr, &visitedCount, maxVisited);
-    return transform * resultPos;
+	Vector3 localEnd2( localEnd.x_, localEnd.z_, localEnd.y_ ); // Craft;
+
+    navMeshQuery_->moveAlongSurface(startRef, &localStart2.x_, &localEnd2.x_, queryFilter, &resultPos.x_, maxVisited ?
+        &visited[0] : (dtPolyRef*)0, &visitedCount, maxVisited);
+
+	Vector3 resultPos2( resultPos.x_, resultPos.z_, resultPos.y_ );
+    return transform * resultPos2;
 }
 
 void NavigationMesh::FindPath(PODVector<Vector3>& dest, const Vector3& start, const Vector3& end, const Vector3& extents,
@@ -680,8 +700,12 @@ void NavigationMesh::FindPath(PODVector<NavigationPathPoint>& dest, const Vector
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.Get();
     dtPolyRef startRef;
     dtPolyRef endRef;
-    navMeshQuery_->findNearestPoly(&localStart.x_, &extents.x_, queryFilter, &startRef, nullptr);
-    navMeshQuery_->findNearestPoly(&localEnd.x_, &extents.x_, queryFilter, &endRef, nullptr);
+	Vector3 localStart2( localStart.x_, localStart.z_, localStart.y_ );
+	Vector3 localEnd2( localEnd.x_, localEnd.z_, localEnd.y_ ); // Craft;
+	Vector3 extents2( extents.x_, extents.z_, extents.y_ );
+
+    navMeshQuery_->findNearestPoly(&localStart2.x_, &extents2.x_, queryFilter, &startRef, nullptr);
+    navMeshQuery_->findNearestPoly(&localEnd2.x_, &extents2.x_, queryFilter, &endRef, nullptr);
 
     if (!startRef || !endRef)
         return;
@@ -689,25 +713,28 @@ void NavigationMesh::FindPath(PODVector<NavigationPathPoint>& dest, const Vector
     int numPolys = 0;
     int numPathPoints = 0;
 
-    navMeshQuery_->findPath(startRef, endRef, &localStart.x_, &localEnd.x_, queryFilter, pathData_->polys_, &numPolys,
+	// Craft:
+    navMeshQuery_->findPath(startRef, endRef, &localStart2.x_, &localEnd2.x_, queryFilter, pathData_->polys_, &numPolys,
         MAX_POLYS);
     if (!numPolys)
         return;
 
     Vector3 actualLocalEnd = localEnd;
+	Vector3 actualLocalEnd2( actualLocalEnd.x_, actualLocalEnd.z_, actualLocalEnd.y_ );
 
     // If full path was not found, clamp end point to the end polygon
     if (pathData_->polys_[numPolys - 1] != endRef)
-        navMeshQuery_->closestPointOnPoly(pathData_->polys_[numPolys - 1], &localEnd.x_, &actualLocalEnd.x_, nullptr);
+        navMeshQuery_->closestPointOnPoly(pathData_->polys_[numPolys - 1], &localEnd2.x_, &actualLocalEnd2.x_, nullptr);
 
-    navMeshQuery_->findStraightPath(&localStart.x_, &actualLocalEnd.x_, pathData_->polys_, numPolys,
+    navMeshQuery_->findStraightPath(&localStart2.x_, &actualLocalEnd2.x_, pathData_->polys_, numPolys,
         &pathData_->pathPoints_[0].x_, pathData_->pathFlags_, pathData_->pathPolys_, &numPathPoints, MAX_POLYS);
 
     // Transform path result back to world space
     for (int i = 0; i < numPathPoints; ++i)
     {
         NavigationPathPoint pt;
-        pt.position_ = transform * pathData_->pathPoints_[i];
+		Vector3 pathPoint = pathData_->pathPoints_[i];
+        pt.position_ = transform * Vector3( pathPoint.x_, pathPoint.z_, pathPoint.y_ );
         pt.flag_ = (NavigationPathPointFlag)pathData_->pathFlags_[i];
 
         // Walk through all NavAreas and find nearest
@@ -747,7 +774,8 @@ Vector3 NavigationMesh::GetRandomPoint(const dtQueryFilter* filter, dtPolyRef* r
 
     navMeshQuery_->findRandomPoint(filter ? filter : queryFilter_.Get(), Random, randomRef ? randomRef : &polyRef, &point.x_);
 
-    return node_->GetWorldTransform() * point;
+    Vector3 point2( point.x_, point.z_, point.y_ );
+    return node_->GetWorldTransform() * point2;
 }
 
 Vector3 NavigationMesh::GetRandomPointInCircle(const Vector3& center, float radius, const Vector3& extents,
@@ -762,21 +790,24 @@ Vector3 NavigationMesh::GetRandomPointInCircle(const Vector3& center, float radi
     const Matrix3x4& transform = node_->GetWorldTransform();
     Matrix3x4 inverse = transform.Inverse();
     Vector3 localCenter = inverse * center;
+	Vector3 localCenter2( localCenter.x_, localCenter.z_, localCenter.y_ );
+	Vector3 extents2( extents.x_, extents.z_, extents.y_ );
 
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.Get();
     dtPolyRef startRef;
-    navMeshQuery_->findNearestPoly(&localCenter.x_, &extents.x_, queryFilter, &startRef, nullptr);
+	navMeshQuery_->findNearestPoly(&localCenter2.x_, &extents2.x_, queryFilter, &startRef, nullptr);
     if (!startRef)
         return center;
 
     dtPolyRef polyRef;
     if (!randomRef)
         randomRef = &polyRef;
-    Vector3 point(localCenter);
+    Vector3 point(localCenter2);
 
-    navMeshQuery_->findRandomPointAroundCircle(startRef, &localCenter.x_, radius, queryFilter, Random, randomRef, &point.x_);
+    navMeshQuery_->findRandomPointAroundCircle(startRef, &localCenter2.x_, radius, queryFilter, Random, randomRef, &point.x_);
 
-    return transform * point;
+	Vector3 point2( point.x_, point.z_, point.y_ );
+    return transform * point2;
 }
 
 float NavigationMesh::GetDistanceToWall(const Vector3& point, float radius, const Vector3& extents, const dtQueryFilter* filter,
@@ -793,10 +824,12 @@ float NavigationMesh::GetDistanceToWall(const Vector3& point, float radius, cons
     const Matrix3x4& transform = node_->GetWorldTransform();
     Matrix3x4 inverse = transform.Inverse();
     Vector3 localPoint = inverse * point;
+	Vector3 localPoint2( localPoint.x_, localPoint.z_, localPoint.y_ );
+	Vector3 extents2( extents.x_, extents.z_, extents.y_ );
 
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.Get();
     dtPolyRef startRef;
-    navMeshQuery_->findNearestPoly(&localPoint.x_, &extents.x_, queryFilter, &startRef, nullptr);
+    navMeshQuery_->findNearestPoly(&localPoint2.x_, &extents2.x_, queryFilter, &startRef, nullptr);
     if (!startRef)
         return radius;
 
@@ -808,7 +841,14 @@ float NavigationMesh::GetDistanceToWall(const Vector3& point, float radius, cons
     if (!hitNormal)
         hitNormal = &normal;
 
-    navMeshQuery_->findDistanceToWall(startRef, &localPoint.x_, radius, queryFilter, &hitDist, &hitPos->x_, &hitNormal->x_);
+	Vector3 hitPos2( hitPos->x_, hitPos->z_, hitPos->y_ );
+	Vector3 hitNormal2( hitNormal->x_, hitNormal->z_, hitNormal->y_ );
+    navMeshQuery_->findDistanceToWall(startRef, &localPoint2.x_, radius, queryFilter, &hitDist, &hitPos2.x_, &hitNormal2.x_);
+
+	hitPos->y_ = hitPos2.z_;
+	hitPos->z_ = hitPos2.y_;
+	hitNormal->y_ = hitNormal2.z_;
+	hitNormal->z_ = hitNormal2.y_;
     return hitDist;
 }
 
@@ -826,10 +866,13 @@ Vector3 NavigationMesh::Raycast(const Vector3& start, const Vector3& end, const 
 
     Vector3 localStart = inverse * start;
     Vector3 localEnd = inverse * end;
+	Vector3 localStart2( localStart.x_, localStart.z_, localStart.y_ );
+	Vector3 localEnd2( localEnd.x_, localEnd.z_, localEnd.y_ );
+	Vector3 extents2( extents.x_, extents.z_, extents.y_ );
 
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.Get();
     dtPolyRef startRef;
-    navMeshQuery_->findNearestPoly(&localStart.x_, &extents.x_, queryFilter, &startRef, nullptr);
+    navMeshQuery_->findNearestPoly(&localStart2.x_, &extents2.x_, queryFilter, &startRef, nullptr);
     if (!startRef)
         return end;
 
@@ -838,12 +881,15 @@ Vector3 NavigationMesh::Raycast(const Vector3& start, const Vector3& end, const 
         hitNormal = &normal;
     float t;
     int numPolys;
+	Vector3 hitNormal2( hitNormal->x_, hitNormal->z_, hitNormal->y_ );
 
-    navMeshQuery_->raycast(startRef, &localStart.x_, &localEnd.x_, queryFilter, &t, &hitNormal->x_, pathData_->polys_, &numPolys,
+    navMeshQuery_->raycast(startRef, &localStart2.x_, &localEnd2.x_, queryFilter, &t, &hitNormal2.x_, pathData_->polys_, &numPolys,
         MAX_POLYS);
     if (t == FLT_MAX)
         t = 1.0f;
 
+	hitNormal->y_ = hitNormal2.z_;
+	hitNormal->z_ = hitNormal2.y_;
     return start.Lerp(end, t);
 }
 
@@ -887,10 +933,11 @@ void NavigationMesh::SetNavigationDataAttr(const PODVector<unsigned char>& value
 
     boundingBox_ = buffer.ReadBoundingBox();
     numTilesX_ = buffer.ReadInt();
-    numTilesZ_ = buffer.ReadInt();
+    numTilesY_ = buffer.ReadInt(); // Craft;
 
     dtNavMeshParams params;     // NOLINT(hicpp-member-init)
-    rcVcopy(params.orig, &boundingBox_.min_.x_);
+	Vector3 min( boundingBox_.min_.x_, boundingBox_.min_.z_, boundingBox_.min_.y_ );
+    rcVcopy(params.orig, &min.x_); // Craft;
     params.tileWidth = buffer.ReadFloat();
     params.tileHeight = buffer.ReadFloat();
     params.maxTiles = buffer.ReadInt();
@@ -932,7 +979,7 @@ PODVector<unsigned char> NavigationMesh::GetNavigationDataAttr() const
     {
         ret.WriteBoundingBox(boundingBox_);
         ret.WriteInt(numTilesX_);
-        ret.WriteInt(numTilesZ_);
+        ret.WriteInt(numTilesY_);
 
         const dtNavMeshParams* params = navMesh_->getParams();
         ret.WriteFloat(params->tileWidth);
@@ -942,9 +989,9 @@ PODVector<unsigned char> NavigationMesh::GetNavigationDataAttr() const
 
         const dtNavMesh* navMesh = navMesh_;
 
-        for (int z = 0; z < numTilesZ_; ++z)
+        for (int y = 0; y < numTilesY_; ++y)
             for (int x = 0; x < numTilesX_; ++x)
-                WriteTile(ret, x, z);
+                WriteTile(ret, x, y);
     }
 
     return ret.GetBuffer();
@@ -1097,9 +1144,11 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
                 auto* connection = static_cast<OffMeshConnection*>(geometryList[i].component_);
                 Vector3 start = inverse * connection->GetNode()->GetWorldPosition();
                 Vector3 end = inverse * connection->GetEndPoint()->GetWorldPosition();
+				Vector3 start2( start.x_, start.z_, start.y_ ); // Craft;
+				Vector3 end2( end.x_, end.z_, end.y_ );
 
-                build->offMeshVertices_.Push(start);
-                build->offMeshVertices_.Push(end);
+                build->offMeshVertices_.Push(start2);
+                build->offMeshVertices_.Push(end2);
                 build->offMeshRadii_.Push(connection->GetRadius());
                 build->offMeshFlags_.Push((unsigned short)connection->GetMask());
                 build->offMeshAreas_.Push((unsigned char)connection->GetAreaID());
@@ -1109,9 +1158,14 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
             else if (geometryList[i].component_->GetType() == NavArea::GetTypeStatic())
             {
                 auto* area = static_cast<NavArea*>(geometryList[i].component_);
+				BoundingBox bounds = area->GetWorldBoundingBox(); // Craft;
                 NavAreaStub stub;
                 stub.areaID_ = (unsigned char)area->GetAreaID();
-                stub.bounds_ = area->GetWorldBoundingBox();
+				stub.bounds_ = bounds; // Craft;
+                stub.bounds_.min_.y_ = bounds.min_.z_; // Craft;
+                stub.bounds_.min_.z_ = bounds.min_.y_;
+                stub.bounds_.max_.y_ = bounds.max_.z_;
+                stub.bounds_.max_.z_ = bounds.max_.y_;
                 build->navAreas_.Push(stub);
                 continue;
             }
@@ -1144,11 +1198,16 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
                         unsigned numIndices = data->indexCount_;
                         unsigned destVertexStart = build->vertices_.Size();
 
-                        for (unsigned j = 0; j < numVertices; ++j)
-                            build->vertices_.Push(transform * data->vertexData_[j]);
+                        for (unsigned j = 0; j < numVertices; ++j){
+							Vector3 vertex = transform * data->vertexData_[j];
+                            build->vertices_.Push(Vector3(vertex.x_,vertex.z_,vertex.y_));
+						}
 
-                        for (unsigned j = 0; j < numIndices; ++j)
-                            build->indices_.Push(data->indexData_[j] + destVertexStart);
+                        for (unsigned j = 0; j < numIndices; ++j){
+                            build->indices_.Push(data->indexData_[3*j] + destVertexStart);
+                            build->indices_.Push(data->indexData_[3*j+2] + destVertexStart);
+                            build->indices_.Push(data->indexData_[3*j+1] + destVertexStart);
+						}
                     }
                     break;
 
@@ -1156,18 +1215,28 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
                     {
                         unsigned destVertexStart = build->vertices_.Size();
 
-                        build->vertices_.Push(transform * Vector3(-0.5f, 0.5f, -0.5f));
-                        build->vertices_.Push(transform * Vector3(0.5f, 0.5f, -0.5f));
+                        build->vertices_.Push(transform * Vector3(-0.5f, -0.5f, 0.5f));
+                        build->vertices_.Push(transform * Vector3(0.5f, -0.5f, 0.5f));
                         build->vertices_.Push(transform * Vector3(0.5f, -0.5f, -0.5f));
                         build->vertices_.Push(transform * Vector3(-0.5f, -0.5f, -0.5f));
                         build->vertices_.Push(transform * Vector3(-0.5f, 0.5f, 0.5f));
                         build->vertices_.Push(transform * Vector3(0.5f, 0.5f, 0.5f));
-                        build->vertices_.Push(transform * Vector3(0.5f, -0.5f, 0.5f));
-                        build->vertices_.Push(transform * Vector3(-0.5f, -0.5f, 0.5f));
+                        build->vertices_.Push(transform * Vector3(0.5f, 0.5f, -0.5f));
+                        build->vertices_.Push(transform * Vector3(-0.5f, 0.5f, -0.5f));
 
                         const unsigned indices[] = {
-                            0, 1, 2, 0, 2, 3, 1, 5, 6, 1, 6, 2, 4, 5, 1, 4, 1, 0, 5, 4, 7, 5, 7, 6,
-                            4, 0, 3, 4, 3, 7, 1, 0, 4, 1, 4, 5
+                            0, 2, 1,
+							0, 3, 2,
+							1, 6, 5,
+							1, 2, 6,
+							4, 1, 5,
+							4, 0, 1,
+							5, 7, 4,
+							5, 6, 7,
+                            4, 3, 0,
+							4, 7, 3,
+							1, 4, 0,
+							1, 5, 4
                         };
 
                         for (unsigned index : indices)
@@ -1222,7 +1291,7 @@ void NavigationMesh::AddTriMeshGeometry(NavBuildData* build, Geometry* geometry,
     for (unsigned k = srcVertexStart; k < srcVertexStart + srcVertexCount; ++k)
     {
         Vector3 vertex = transform * *((const Vector3*)(&vertexData[k * vertexSize]));
-        build->vertices_.Push(vertex);
+		build->vertices_.Push(Vector3(vertex.x_,vertex.z_,vertex.y_));
     }
 
     // Copy remapped indices
@@ -1233,8 +1302,10 @@ void NavigationMesh::AddTriMeshGeometry(NavBuildData* build, Geometry* geometry,
 
         while (indices < indicesEnd)
         {
-            build->indices_.Push(*indices - srcVertexStart + destVertexStart);
-            ++indices;
+            build->indices_.Push(indices[0] - srcVertexStart + destVertexStart);
+            build->indices_.Push(indices[2] - srcVertexStart + destVertexStart);
+            build->indices_.Push(indices[1] - srcVertexStart + destVertexStart);
+            indices += 3;
         }
     }
     else
@@ -1244,21 +1315,23 @@ void NavigationMesh::AddTriMeshGeometry(NavBuildData* build, Geometry* geometry,
 
         while (indices < indicesEnd)
         {
-            build->indices_.Push(*indices - srcVertexStart + destVertexStart);
-            ++indices;
+            build->indices_.Push(indices[0] - srcVertexStart + destVertexStart);
+            build->indices_.Push(indices[2] - srcVertexStart + destVertexStart);
+            build->indices_.Push(indices[1] - srcVertexStart + destVertexStart);
+            indices += 3;
         }
     }
 }
 
-void NavigationMesh::WriteTile(Serializer& dest, int x, int z) const
+void NavigationMesh::WriteTile(Serializer& dest, int x, int y) const
 {
     const dtNavMesh* navMesh = navMesh_;
-    const dtMeshTile* tile = navMesh->getTileAt(x, z, 0);
+    const dtMeshTile* tile = navMesh->getTileAt(x, y, 0);
     if (!tile)
         return;
 
     dest.WriteInt(x);
-    dest.WriteInt(z);
+    dest.WriteInt(y);
     dest.WriteUInt(navMesh->getTileRef(tile));
     dest.WriteUInt((unsigned)tile->dataSize);
     dest.Write(tile->data, (unsigned)tile->dataSize);
@@ -1267,7 +1340,7 @@ void NavigationMesh::WriteTile(Serializer& dest, int x, int z) const
 bool NavigationMesh::ReadTile(Deserializer& source, bool silent)
 {
     const int x = source.ReadInt();
-    const int z = source.ReadInt();
+    const int y = source.ReadInt();
     /*dtTileRef tileRef =*/ source.ReadUInt();
     unsigned navDataSize = source.ReadUInt();
 
@@ -1293,21 +1366,23 @@ bool NavigationMesh::ReadTile(Deserializer& source, bool silent)
         VariantMap& eventData = GetContext()->GetEventDataMap();
         eventData[P_NODE] = GetNode();
         eventData[P_MESH] = this;
-        eventData[P_TILE] = IntVector2(x, z);
+        eventData[P_TILE] = IntVector2(x, y);
         SendEvent(E_NAVIGATION_TILE_ADDED, eventData);
     }
     return true;
 }
 
-bool NavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryList, int x, int z)
+bool NavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryList, int x, int y)
 {
     CRAFT_PROFILE(BuildNavigationMeshTile);
 
     // Remove previous tile (if any)
-    navMesh_->removeTile(navMesh_->getTileRefAt(x, z, 0), nullptr, nullptr);
+    navMesh_->removeTile(navMesh_->getTileRefAt(x, y, 0), nullptr, nullptr);
 
-    const BoundingBox tileBoundingBox = GetTileBoundingBox(IntVector2(x, z));
+    const BoundingBox tileBoundingBox = GetTileBoundingBox(IntVector2(x, y));
 
+    Vector3 min(tileBoundingBox.min_.x_, tileBoundingBox.min_.z_, tileBoundingBox.min_.y_);
+	Vector3 max(tileBoundingBox.max_.x_, tileBoundingBox.max_.z_, tileBoundingBox.max_.y_);
     SimpleNavBuildData build;
 
     rcConfig cfg;       // NOLINT(hicpp-member-init)
@@ -1330,14 +1405,18 @@ bool NavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryList, int
     cfg.detailSampleDist = detailSampleDistance_ < 0.9f ? 0.0f : cellSize_ * detailSampleDistance_;
     cfg.detailSampleMaxError = cellHeight_ * detailSampleMaxError_;
 
-    rcVcopy(cfg.bmin, &tileBoundingBox.min_.x_);
-    rcVcopy(cfg.bmax, &tileBoundingBox.max_.x_);
+    rcVcopy(cfg.bmin, &min.x_); // Craft;
+    rcVcopy(cfg.bmax, &max.x_);
     cfg.bmin[0] -= cfg.borderSize * cfg.cs;
     cfg.bmin[2] -= cfg.borderSize * cfg.cs;
     cfg.bmax[0] += cfg.borderSize * cfg.cs;
     cfg.bmax[2] += cfg.borderSize * cfg.cs;
 
     BoundingBox expandedBox(*reinterpret_cast<Vector3*>(cfg.bmin), *reinterpret_cast<Vector3*>(cfg.bmax));
+	expandedBox.min_.y_ = cfg.bmin[2]; // Craft;
+	expandedBox.min_.z_ = cfg.bmin[1];
+	expandedBox.max_.y_ = cfg.bmax[2];
+	expandedBox.max_.z_ = cfg.bmax[1];
     GetTileGeometry(&build, geometryList, expandedBox);
 
     if (build.vertices_.Empty() || build.indices_.Empty())
@@ -1483,7 +1562,7 @@ bool NavigationMesh::BuildTile(Vector<NavigationGeometryInfo>& geometryList, int
     params.walkableRadius = agentRadius_;
     params.walkableClimb = agentMaxClimb_;
     params.tileX = x;
-    params.tileY = z;
+    params.tileY = y; // Craft;
     rcVcopy(params.bmin, build.polyMesh_->bmin);
     rcVcopy(params.bmax, build.polyMesh_->bmax);
     params.cs = cfg.cs;
@@ -1531,11 +1610,11 @@ unsigned NavigationMesh::BuildTiles(Vector<NavigationGeometryInfo>& geometryList
 {
     unsigned numTiles = 0;
 
-    for (int z = from.y_; z <= to.y_; ++z)
+    for (int y = from.y_; y <= to.y_; ++y) // Craft;
     {
         for (int x = from.x_; x <= to.x_; ++x)
         {
-            if (BuildTile(geometryList, x, z))
+            if (BuildTile(geometryList, x, y))
                 ++numTiles;
         }
     }
@@ -1575,7 +1654,7 @@ void NavigationMesh::ReleaseNavigationMesh()
     navMeshQuery_ = nullptr;
 
     numTilesX_ = 0;
-    numTilesZ_ = 0;
+    numTilesY_ = 0; // Craft;
     boundingBox_.Clear();
 }
 

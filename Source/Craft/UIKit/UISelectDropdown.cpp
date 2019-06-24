@@ -60,6 +60,22 @@ void UISelectDropdown::SetSource(UISelectItemSource* source)
 
 }
 
+void UISelectDropdown::SetCurrentIndex( int index ) // Craft;
+{
+    if (!widget_)
+        return;
+
+    ((TBSelectDropdown*)widget_)->SetValue( index );
+}
+
+int UISelectDropdown::GetCurrentIndex() // Craft;
+{
+    if (!widget_)
+        return 0;
+
+    return ((TBSelectDropdown*)widget_)->GetValue();
+}
+
 bool UISelectDropdown::OnEvent(const tb::TBWidgetEvent &ev)
 {
     return UIButton::OnEvent(ev);

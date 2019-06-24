@@ -438,7 +438,7 @@ void RigidBody2D::ApplyWorldTransform()
     Vector3 newWorldPosition = node_->GetWorldPosition();
     newWorldPosition.x_ = transform.p.x;
     newWorldPosition.y_ = transform.p.y;
-    Quaternion newWorldRotation(transform.q.GetAngle() * M_RADTODEG, Vector3::FORWARD);
+    Quaternion newWorldRotation(transform.q.GetAngle() * M_RADTODEG, Vector3::UNIT_Z); // Craft;
 
     if (parentRigidBody)
     {

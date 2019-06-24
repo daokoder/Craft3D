@@ -55,6 +55,9 @@ public:
     virtual ~UI();
 
     tb::TBWidget* GetRootWidget() { return rootWidget_; }
+	tb::TBWidget* GetRootView() { return rootView_; } // Craft;
+	void SetRootView( tb::TBWidget *view ); // Craft;
+
     bool LoadResourceFile(tb::TBWidget* widget, const String& filename);
 
     void SetKeyboardDisabled(bool disabled) {keyboardDisabled_ = disabled; }
@@ -162,6 +165,7 @@ private:
     void RemoveUIView(UIView* uiView);
 
     tb::TBWidget* rootWidget_;
+	tb::TBWidget* rootView_; // Craft;
     UIRenderer* renderer_;
 
     WeakPtr<Graphics> graphics_;

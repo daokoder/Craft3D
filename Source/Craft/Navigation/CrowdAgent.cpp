@@ -337,7 +337,8 @@ void CrowdAgent::SetTargetPosition(const Vector3& position)
         {
             dtPolyRef nearestRef;
             Vector3 nearestPos = crowdManager_->FindNearestPoint(position, queryFilterType_, &nearestRef);
-            crowdManager_->GetCrowd()->requestMoveTarget(agentCrowdId_, nearestRef, nearestPos.Data());
+			Vector3 nearestPos2(nearestPos.x_, nearestPos.z_, nearestPos.y_);
+            crowdManager_->GetCrowd()->requestMoveTarget(agentCrowdId_, nearestRef, nearestPos2.Data());
         }
     }
 }
@@ -351,7 +352,10 @@ void CrowdAgent::SetTargetVelocity(const Vector3& velocity)
         MarkNetworkUpdate();
 
         if (IsInCrowd())
-            crowdManager_->GetCrowd()->requestMoveVelocity(agentCrowdId_, velocity.Data());
+		{
+			Vector3 velocity2(velocity.x_, velocity.z_, velocity.y_);
+            crowdManager_->GetCrowd()->requestMoveVelocity(agentCrowdId_, velocity2.Data());
+		}
     }
 }
 
@@ -473,19 +477,25 @@ void CrowdAgent::SetNavigationPushiness(NavigationPushiness val)
 Vector3 CrowdAgent::GetPosition() const
 {
     const dtCrowdAgent* agent = GetDetourCrowdAgent();
-    return agent ? Vector3(agent->npos) : node_->GetWorldPosition();
+	Vector3 npos = node_->GetWorldPosition();
+	if( agent ) npos = Vector3( agent->npos[0], agent->npos[2], agent->npos[1] ); // Craft;
+    return npos;
 }
 
 Vector3 CrowdAgent::GetDesiredVelocity() const
 {
     const dtCrowdAgent* agent = GetDetourCrowdAgent();
-    return agent ? Vector3(agent->dvel) : Vector3::ZERO;
+	Vector3 dvel = Vector3::ZERO;
+	if( agent ) dvel = Vector3( agent->dvel[0], agent->dvel[2], agent->dvel[1] ); // Craft;
+    return dvel;
 }
 
 Vector3 CrowdAgent::GetActualVelocity() const
 {
     const dtCrowdAgent* agent = GetDetourCrowdAgent();
-    return agent ? Vector3(agent->vel) : Vector3::ZERO;
+	Vector3 vel = Vector3::ZERO;
+	if( agent ) vel = Vector3( agent->vel[0], agent->vel[2], agent->vel[1] ); // Craft;
+    return vel;
 }
 
 CrowdAgentState CrowdAgent::GetAgentState() const
@@ -522,8 +532,8 @@ void CrowdAgent::OnCrowdUpdate(dtCrowdAgent* ag, float dt)
         // Use pointer to self to check for destruction after sending events
         WeakPtr<CrowdAgent> self(this);
 
-        Vector3 newPos(ag->npos);
-        Vector3 newVel(ag->vel);
+        Vector3 newPos(ag->npos[0], ag->npos[2], ag->npos[1]); // Craft;
+        Vector3 newVel(ag->vel[0], ag->vel[2], ag->vel[1]); // Craft;
 
         // Notify parent node of the reposition
         if (newPos != previousPosition_)
@@ -627,7 +637,8 @@ void CrowdAgent::OnMarkedDirty(Node* node)
         if (agent)
         {
             auto& agentPos = reinterpret_cast<Vector3&>(agent->npos);
-            Vector3 nodePos = node->GetWorldPosition();
+            Vector3 nodePos2 = node->GetWorldPosition();
+			Vector3 nodePos( nodePos2.x_, nodePos2.z_, nodePos2.y_ ); // Craft;
 
             // Only reset position / state if actually changed
             if (nodePos != agentPos)

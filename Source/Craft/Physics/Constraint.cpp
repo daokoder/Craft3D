@@ -32,6 +32,7 @@
 #include "../Physics/RigidBody.h"
 #include "../Scene/Scene.h"
 
+#include <Bullet/BulletDynamics/ConstraintSolver/btFixedConstraint.h>
 #include <Bullet/BulletDynamics/ConstraintSolver/btConeTwistConstraint.h>
 #include <Bullet/BulletDynamics/ConstraintSolver/btHingeConstraint.h>
 #include <Bullet/BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
@@ -43,6 +44,7 @@ namespace Craft
 
 static const char* typeNames[] =
 {
+    "Fixed",
     "Point",
     "Hinge",
     "Slider",
@@ -200,9 +202,10 @@ void Constraint::SetAxis(const Vector3& axis)
     {
     case CONSTRAINT_POINT:
     case CONSTRAINT_HINGE:
-        rotation_ = Quaternion(Vector3::FORWARD, axis);
+        rotation_ = Quaternion(Vector3::UP, axis); // Craft;
         break;
 
+	case CONSTRAINT_FIXED:
     case CONSTRAINT_SLIDER:
     case CONSTRAINT_CONETWIST:
         rotation_ = Quaternion(Vector3::RIGHT, axis);
@@ -242,9 +245,10 @@ void Constraint::SetOtherAxis(const Vector3& axis)
     {
     case CONSTRAINT_POINT:
     case CONSTRAINT_HINGE:
-        otherRotation_ = Quaternion(Vector3::FORWARD, axis);
+        otherRotation_ = Quaternion(Vector3::UP, axis); // Craft;
         break;
 
+	case CONSTRAINT_FIXED:
     case CONSTRAINT_SLIDER:
     case CONSTRAINT_CONETWIST:
         otherRotation_ = Quaternion(Vector3::RIGHT, axis);
@@ -408,6 +412,15 @@ void Constraint::ApplyFrames()
         }
         break;
 
+	case D6_SPRING_2_CONSTRAINT_TYPE:
+        {
+            btFixedConstraint* fixedConstraint = static_cast<btFixedConstraint*>(constraint_.Get());
+            btTransform ownFrame(ToBtQuaternion(rotation_), ToBtVector3(ownBodyScaledPosition));
+            btTransform otherFrame(ToBtQuaternion(otherRotation_), ToBtVector3(otherBodyScaledPosition));
+            fixedConstraint->setFrames(ownFrame, otherFrame);
+        }
+        break;
+
     default:
         break;
     }
@@ -514,6 +527,14 @@ void Constraint::CreateConstraint()
         }
         break;
 
+	case CONSTRAINT_FIXED:
+        {
+            btTransform ownFrame(ToBtQuaternion(rotation_), ToBtVector3(ownBodyScaledPosition));
+            btTransform otherFrame(ToBtQuaternion(otherRotation_), ToBtVector3(otherBodyScaledPosition));
+            constraint_ = new btFixedConstraint(*ownBody, *otherBody, ownFrame, otherFrame);
+        }
+        break;
+
     default:
         break;
     }
@@ -564,6 +585,13 @@ void Constraint::ApplyLimits()
         {
             auto* coneTwistConstraint = static_cast<btConeTwistConstraint*>(constraint_.Get());
             coneTwistConstraint->setLimit(highLimit_.y_ * M_DEGTORAD, highLimit_.y_ * M_DEGTORAD, highLimit_.x_ * M_DEGTORAD);
+        }
+        break;
+
+    case D6_SPRING_2_CONSTRAINT_TYPE:
+        {
+            btFixedConstraint* fixedConstraint = static_cast<btFixedConstraint*>(constraint_.Get());
+            fixedConstraint->setLimit(highLimit_.y_ * M_DEGTORAD, highLimit_.y_ * M_DEGTORAD, highLimit_.x_ * M_DEGTORAD);
         }
         break;
 

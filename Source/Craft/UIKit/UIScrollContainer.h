@@ -65,6 +65,8 @@ public:
     void SetAdaptContentSize(bool adapt);
     bool GetAdaptContentSize();
 
+	void AddContentWidget( UIWidget *widget ); // Craft;
+
     void ScrollTo(int x, int y);
 
     /// This is overriden to add children to the widget that is being scrolled rather than the container

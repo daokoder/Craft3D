@@ -323,7 +323,7 @@ void Run(const Vector<String>& arguments)
     String rootNodeName;
 
     unsigned flags =
-        aiProcess_ConvertToLeftHanded |
+        //aiProcess_ConvertToLeftHanded |  // Craft;
         aiProcess_JoinIdenticalVertices |
         aiProcess_Triangulate |
         aiProcess_GenSmoothNormals |

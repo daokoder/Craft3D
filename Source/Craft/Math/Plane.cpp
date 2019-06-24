@@ -30,7 +30,7 @@ namespace Craft
 {
 
 // Static initialization order can not be relied on, so do not use Vector3 constants
-const Plane Plane::UP(Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+const Plane Plane::UP(Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 0.0f, 0.0f)); // Craft;
 
 void Plane::Transform(const Matrix3& transform)
 {

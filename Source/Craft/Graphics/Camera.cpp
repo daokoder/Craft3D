@@ -636,7 +636,10 @@ Vector4 Camera::GetClipPlaneAttr() const
 void Camera::OnNodeSet(Node* node)
 {
     if (node)
+	{
+		node->SetOrientation( Quaternion( -90, 0, 0 ) ); // Craft;
         node->AddListener(this);
+	}
 }
 
 void Camera::OnMarkedDirty(Node* node)
@@ -659,7 +662,7 @@ void Camera::UpdateProjection() const
 
         projection_.m00_ = w;
         projection_.m02_ = projectionOffset_.x_ * 2.0f;
-        projection_.m11_ = h;
+        projection_.m11_ = - h; // Craft;
         projection_.m12_ = projectionOffset_.y_ * 2.0f;
         projection_.m22_ = q;
         projection_.m23_ = r;
@@ -676,7 +679,7 @@ void Camera::UpdateProjection() const
 
         projection_.m00_ = w;
         projection_.m03_ = projectionOffset_.x_ * 2.0f;
-        projection_.m11_ = h;
+        projection_.m11_ = - h; // Craft;
         projection_.m13_ = projectionOffset_.y_ * 2.0f;
         projection_.m22_ = q;
         projection_.m23_ = r;

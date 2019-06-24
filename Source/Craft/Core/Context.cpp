@@ -123,6 +123,8 @@ void RemoveNamedAttribute(HashMap<StringHash, Vector<AttributeInfo> >& attribute
 Context::Context() :
     eventHandler_(nullptr)
 {
+	eventEnabled = true;
+
 #ifdef __ANDROID__
     // Always reset the random seed on Android, as the Craft library might not be unloaded between runs
     SetRandomSeed(1);

@@ -563,6 +563,7 @@ dtStatus dtTileCache::update(const float /*dt*/, dtNavMesh* navmesh,
 						ob->pending[ob->npending++] = ob->touched[j];
 					}
 				}
+				if( ob->ntouched == 0 ) m_update[m_nupdate++] = 0; // Craft;
 			}
 			else if (req->action == REQUEST_REMOVE)
 			{
@@ -579,6 +580,7 @@ dtStatus dtTileCache::update(const float /*dt*/, dtNavMesh* navmesh,
 						ob->pending[ob->npending++] = ob->touched[j];
 					}
 				}
+				if( ob->ntouched == 0 ) m_update[m_nupdate++] = 0; // Craft;
 			}
 		}
 		
@@ -591,7 +593,8 @@ dtStatus dtTileCache::update(const float /*dt*/, dtNavMesh* navmesh,
 	{
 		// Build mesh
 		const dtCompressedTileRef ref = m_update[0];
-		status = buildNavMeshTile(ref, navmesh);
+		dtStatus status = DT_SUCCESS; // Craft;
+		if( ref ) status = buildNavMeshTile(ref, navmesh);
 		m_nupdate--;
 		if (m_nupdate > 0)
 			memmove(m_update, m_update+1, m_nupdate*sizeof(dtCompressedTileRef));

@@ -136,11 +136,17 @@ public:
     /// Set position in parent space (for Craft2D).
     void SetPosition2D(float x, float y) { SetPosition(Vector3(x, y, 0.0f)); }
 
+	void SetRotation( const Quaternion& rotation, bool full ); // Craft;
+
     /// Set rotation in parent space.
     void SetRotation(const Quaternion& rotation);
 
     /// Set rotation in parent space (for Craft2D).
     void SetRotation2D(float rotation) { SetRotation(Quaternion(rotation)); }
+
+	void SetPartialRotation( const Quaternion& rotation ); // Craft;
+
+	void SetOrientation(const Quaternion& orientation); // Craft;
 
     /// Set forward direction in parent space. Positive Z axis equals identity rotation.
     void SetDirection(const Vector3& direction);
@@ -375,20 +381,26 @@ public:
     /// Return position in parent space (for Craft2D).
     Vector2 GetPosition2D() const { return Vector2(position_.x_, position_.y_); }
 
+	const Quaternion& GetRotation( bool full ) const { return full ? rotation_ : rotation2_; } // Craft;
+
     /// Return rotation in parent space.
     const Quaternion& GetRotation() const { return rotation_; }
+
+	const Quaternion& GetPartialRotation() const { return GetRotation( false ); } // Craft;
+
+	const Quaternion& GetOrientation() const { return orientation_; } // Craft;
 
     /// Return rotation in parent space (for Craft2D).
     float GetRotation2D() const { return rotation_.RollAngle(); }
 
     /// Return forward direction in parent space. Positive Z axis equals identity rotation.
-    Vector3 GetDirection() const { return rotation_ * Vector3::FORWARD; }
+    Vector3 GetDirection() const { return rotation_ * orientation_.Inverse() * Vector3::FORWARD; } // Craft;
 
     /// Return up direction in parent space. Positive Y axis equals identity rotation.
-    Vector3 GetUp() const { return rotation_ * Vector3::UP; }
+    Vector3 GetUp() const { return rotation_ * orientation_.Inverse() * Vector3::UP; } // Craft;
 
     /// Return right direction in parent space. Positive X axis equals identity rotation.
-    Vector3 GetRight() const { return rotation_ * Vector3::RIGHT; }
+    Vector3 GetRight() const { return rotation_ * orientation_.Inverse() * Vector3::RIGHT; } // Craft;
 
     /// Return scale in parent space.
     const Vector3& GetScale() const { return scale_; }
@@ -436,7 +448,7 @@ public:
         if (dirty_)
             UpdateWorldTransform();
 
-        return worldRotation_ * Vector3::FORWARD;
+        return worldRotation_ * orientation_.Inverse() * Vector3::FORWARD; // Craft;
     }
 
     /// Return node's up vector in world space.
@@ -445,7 +457,7 @@ public:
         if (dirty_)
             UpdateWorldTransform();
 
-        return worldRotation_ * Vector3::UP;
+        return worldRotation_ * orientation_.Inverse() * Vector3::UP; // Craft;
     }
 
     /// Return node's right vector in world space.
@@ -454,7 +466,7 @@ public:
         if (dirty_)
             UpdateWorldTransform();
 
-        return worldRotation_ * Vector3::RIGHT;
+        return worldRotation_ * orientation_.Inverse() * Vector3::RIGHT; // Craft;
     }
 
     /// Return scale in world space.
@@ -582,12 +594,14 @@ public:
     void SetNetPositionAttr(const Vector3& value);
     /// Set network rotation attribute.
     void SetNetRotationAttr(const PODVector<unsigned char>& value);
+	void SetNetOrientationAttr(const PODVector<unsigned char>& value); // Craft;
     /// Set network parent attribute.
     void SetNetParentAttr(const PODVector<unsigned char>& value);
     /// Return network position attribute.
     const Vector3& GetNetPositionAttr() const;
     /// Return network rotation attribute.
     const PODVector<unsigned char>& GetNetRotationAttr() const;
+	const PODVector<unsigned char>& GetNetOrientationAttr() const; // Craft;
     /// Return network parent attribute.
     const PODVector<unsigned char>& GetNetParentAttr() const;
     /// Load components and optionally load child nodes.
@@ -621,7 +635,10 @@ public:
     void SetPositionSilent(const Vector3& position) { position_ = position; }
 
     /// Set position in parent space silently without marking the node & child nodes dirty. Used by animation code.
-    void SetRotationSilent(const Quaternion& rotation) { rotation_ = rotation; }
+    void SetRotationSilent(const Quaternion& rotation) {
+		rotation_ = rotation;
+		rotation2_ = rotation_ * orientation_.Inverse(); // Craft;
+	}
 
     /// Set scale in parent space silently without marking the node & child nodes dirty. Used by animation code.
     void SetScaleSilent(const Vector3& scale) { scale_ = scale; }
@@ -685,6 +702,10 @@ private:
     Vector3 position_;
     /// Rotation.
     Quaternion rotation_;
+	/// Partial rotaion.
+    Quaternion rotation2_; // Craft;
+	/// Orientation.
+    Quaternion orientation_; // Craft;
     /// Scale.
     Vector3 scale_;
     /// World-space rotation.

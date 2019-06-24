@@ -1,4 +1,10 @@
 
+# Define target name
+set (TARGET_NAME TurboBadger)
+
+set (STATIC_LIBRARY_TARGETS ${STATIC_LIBRARY_TARGETS} ${TARGET_NAME} PARENT_SCOPE)
+
+
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}" ../FreeType/include ../SDL/include ../SDL/include/generated)
 
 if(APPLE)
@@ -25,6 +31,7 @@ target_include_directories(TurboBadger SYSTEM BEFORE PUBLIC .)
 if (NOT MSVC)
     target_compile_options(TurboBadger PRIVATE -std=gnu++11)
 endif ()
+
 
 # Install headers for building and using the Craft library (install dependency for InputEvents.h)
 install_header_files (DIRECTORY ./ DESTINATION ${DEST_INCLUDE_DIR}/ThirdParty/TurboBadger FILES_MATCHING PATTERN *.h USE_FILE_SYMLINK)    # Note: the trailing slash is significant

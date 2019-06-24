@@ -133,6 +133,8 @@ public:
     virtual void GetChildTranslation(int &x, int &y) const;
     virtual void ScrollTo(int x, int y);
     virtual TBWidget::ScrollInfo GetScrollInfo();
+
+    int CalculateSpacing(); // Craft;
     
     // ATOMIC BEGIN
     /// A different way of setting up a layout, using a series of characters to program the main 5 layout fields
@@ -171,7 +173,6 @@ protected:
     int GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height) const;
     TBWidget *GetNextNonCollapsedWidget(TBWidget *child) const;
     int GetTrailingSpace(TBWidget *child, int spacing) const;
-    int CalculateSpacing();
     TBWidget *GetFirstInLayoutOrder() const;
     TBWidget *GetNextInLayoutOrder(TBWidget *child) const;
 };

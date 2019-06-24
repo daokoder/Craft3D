@@ -64,6 +64,16 @@ void UIEditField::SetReadOnly(bool readonly)
 
 }
 
+bool UIEditField::GetReadOnly() const
+{
+    if (!widget_)
+        return true;
+
+    TBEditField* w = (TBEditField*) widget_;
+
+    return w->GetReadOnly();
+}
+
 void UIEditField::SetStyling(bool styling)
 {
     if (!widget_)
@@ -129,6 +139,17 @@ void UIEditField::ScrollTo(int x, int y)
 
     w->ScrollTo(x, y);
 
+}
+
+bool UIEditField::SetPlaceholderText(const String& text)
+{
+    if (!widget_)
+        return false;
+
+    // safe cast?
+    TBEditField* w = (TBEditField*) widget_;
+
+    return w->SetPlaceholderText(text.CString());
 }
 
 void UIEditField::AppendText(const String& text)

@@ -100,8 +100,10 @@ public:
 
     /// Return the GL Context.
     const SDL_GLContext& GetGLContext() { return context_; }
+	void SetGLContext( SDL_GLContext ctx ) { context_ = ctx; } // Craft;
 
 private:
+public: // Craft;
     /// SDL OpenGL context.
     SDL_GLContext context_{};
     /// iOS/tvOS system framebuffer handle.

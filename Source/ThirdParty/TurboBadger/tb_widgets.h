@@ -436,6 +436,9 @@ public:
 
     /** Get this widget or any child widget with a matching id, or nullptr if none is found. */
     TBWidget *GetWidgetByID(const TBID &id) { return GetWidgetByIDInternal(id); }
+	TBWidget *GetWidgetByID(const TBID &id, const TBStr & text ) { // Craft;
+		return GetWidgetByIDInternal(id, text);
+	}
 
     /** Get this widget or any child widget with a matching id and type, or nullptr if none is found. */
     template<class T> T *GetWidgetByIDAndType(const TBID &id)
@@ -1140,6 +1143,7 @@ private:
     TBScroller *FindStartedScroller();
     TBScroller *GetReadyScroller(bool scroll_x, bool scroll_y);
     TBWidget *GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id = nullptr);
+	TBWidget *GetWidgetByIDInternal(const TBID &id, const TBStr & text); // Craft;
     void InvokeSkinUpdatesInternal(bool force_update);
     void InvokeProcessInternal();
     static void SetHoveredWidget(TBWidget *widget, bool touch);

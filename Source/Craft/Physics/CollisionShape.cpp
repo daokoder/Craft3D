@@ -552,7 +552,7 @@ void CollisionShape::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
             if (shapeType_ == SHAPE_TERRAIN && geometry_)
             {
                 auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
-                position.y_ += (heightfield->minHeight_ + heightfield->maxHeight_) * 0.5f;
+                position.z_ += (heightfield->minHeight_ + heightfield->maxHeight_) * 0.5f;//Craft;
             }
 
             Vector3 worldPosition(worldTransform * position);
@@ -623,7 +623,7 @@ void CollisionShape::SetCylinder(float diameter, float height, const Vector3& po
         UnsubscribeFromEvent(model_, E_RELOADFINISHED);
 
     shapeType_ = SHAPE_CYLINDER;
-    size_ = Vector3(diameter, height, diameter);
+    size_ = Vector3(diameter, diameter, height); // Craft;
     position_ = position;
     rotation_ = rotation;
     model_.Reset();
@@ -640,7 +640,7 @@ void CollisionShape::SetCapsule(float diameter, float height, const Vector3& pos
         UnsubscribeFromEvent(model_, E_RELOADFINISHED);
 
     shapeType_ = SHAPE_CAPSULE;
-    size_ = Vector3(diameter, height, diameter);
+    size_ = Vector3(diameter, diameter, height); // Craft;
     position_ = position;
     rotation_ = rotation;
     model_.Reset();
@@ -657,7 +657,7 @@ void CollisionShape::SetCone(float diameter, float height, const Vector3& positi
         UnsubscribeFromEvent(model_, E_RELOADFINISHED);
 
     shapeType_ = SHAPE_CONE;
-    size_ = Vector3(diameter, height, diameter);
+    size_ = Vector3(diameter, diameter, height); // Craft;
     position_ = position;
     rotation_ = rotation;
     model_.Reset();
@@ -858,7 +858,7 @@ void CollisionShape::NotifyRigidBody(bool updateMass)
             if (shapeType_ == SHAPE_TERRAIN && geometry_)
             {
                 auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
-                position.y_ += (heightfield->minHeight_ + heightfield->maxHeight_) * 0.5f;
+                position.z_ += (heightfield->minHeight_ + heightfield->maxHeight_) * 0.5f;//Craft;
             }
 
             btTransform offset;
@@ -1028,21 +1028,21 @@ void CollisionShape::UpdateShape()
             break;
 
         case SHAPE_STATICPLANE:
-            shape_ = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), 0.0f);
+            shape_ = new btStaticPlaneShape(btVector3(0.0f, 0.0f, 1.0f), 0.0f); // Craft;
             break;
 
         case SHAPE_CYLINDER:
-            shape_ = new btCylinderShape(btVector3(size_.x_ * 0.5f, size_.y_ * 0.5f, size_.x_ * 0.5f));
+            shape_ = new btCylinderShape(btVector3(size_.x_ * 0.5f, size_.y_ * 0.5f, size_.z_ * 0.5f)); // Craft;
             shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_CAPSULE:
-            shape_ = new btCapsuleShape(size_.x_ * 0.5f, Max(size_.y_ - size_.x_, 0.0f));
+            shape_ = new btCapsuleShape(size_.x_ * 0.5f, Max(size_.z_ - size_.x_, 0.0f));//Craft;
             shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_CONE:
-            shape_ = new btConeShape(size_.x_ * 0.5f, size_.y_);
+            shape_ = new btConeShape(size_.x_ * 0.5f, size_.z_);
             shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
@@ -1069,9 +1069,9 @@ void CollisionShape::UpdateShape()
 
                     shape_ =
                         new btHeightfieldTerrainShape(heightfield->size_.x_, heightfield->size_.y_, heightfield->heightData_.Get(),
-                            1.0f, heightfield->minHeight_, heightfield->maxHeight_, 1, PHY_FLOAT, false);
+                            1.0f, heightfield->minHeight_, heightfield->maxHeight_, 2, PHY_FLOAT, false);
                     shape_->setLocalScaling(
-                        ToBtVector3(Vector3(heightfield->spacing_.x_, 1.0f, heightfield->spacing_.z_) * cachedWorldScale_ * size_));
+                        ToBtVector3(Vector3(heightfield->spacing_.x_, heightfield->spacing_.y_, 1.0) * cachedWorldScale_ * size_));
                 }
             }
             break;

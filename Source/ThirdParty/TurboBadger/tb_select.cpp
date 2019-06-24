@@ -486,6 +486,7 @@ void TBSelectDropdown::OpenWindow()
     if (TBMenuWindow *window = new TBMenuWindow(this, TBIDC("TBSelectDropdown.window")))
     {
         m_window_pointer.Set(window);
+		window->SetFontDescription( GetFontDescription() ); // Craft;
         window->SetSkinBg(TBIDC("TBSelectDropdown.window"));
         window->Show(m_source, TBPopupAlignment(), GetValue());
     }
@@ -536,7 +537,7 @@ bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
             return menu_window->GetList()->InvokeEvent(redirected_ev);
         }
     }
-    return false;
+	return TBWidget::OnEvent( ev ); // Craft;
 }
 
 } // namespace tb

@@ -482,7 +482,15 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     monitor_ = monitor;
     refreshRate_ = refreshRate;
 
+	int widthInPoint = 0; // Craft;
+	int heightInPoint = 0;
+
+	SDL_GetWindowSize( window_, & widthInPoint, & heightInPoint );
+
     SDL_GL_GetDrawableSize(window_, &width_, &height_);
+
+	devicePixelRatio_ = width_ / (float) widthInPoint; // Craft;
+
     if (!fullscreen)
         SDL_GetWindowPosition(window_, &position_.x_, &position_.y_);
 
@@ -1817,7 +1825,7 @@ void Graphics::SetCullMode(CullMode mode)
         {
             // Use Direct3D convention, ie. clockwise vertices define a front face
             glEnable(GL_CULL_FACE);
-            glCullFace(mode == CULL_CCW ? GL_FRONT : GL_BACK);
+            glCullFace(mode == CULL_CW ? GL_FRONT : GL_BACK);  // Craft;
         }
 
         cullMode_ = mode;

@@ -208,7 +208,7 @@ Vector3 Quaternion::EulerAngles() const
 
 float Quaternion::YawAngle() const
 {
-    return EulerAngles().y_;
+    return EulerAngles().z_; // Craft;
 }
 
 float Quaternion::PitchAngle() const
@@ -218,7 +218,7 @@ float Quaternion::PitchAngle() const
 
 float Quaternion::RollAngle() const
 {
-    return EulerAngles().z_;
+    return EulerAngles().y_; // Craft;
 }
 
 Craft::Vector3 Quaternion::Axis() const

@@ -136,9 +136,10 @@ void DebugRenderer::AddNode(Node* node, float scale, bool depthTest)
     Vector3 start = node->GetWorldPosition();
     Quaternion rotation = node->GetWorldRotation();
 
-    AddLine(start, start + rotation * (scale * Vector3::RIGHT), Color::RED.ToUInt(), depthTest);
-    AddLine(start, start + rotation * (scale * Vector3::UP), Color::GREEN.ToUInt(), depthTest);
-    AddLine(start, start + rotation * (scale * Vector3::FORWARD), Color::BLUE.ToUInt(), depthTest);
+	// Craft:
+    AddLine(start, start + rotation * (scale * Vector3::UNIT_X), Color::RED.ToUInt(), depthTest);
+    AddLine(start, start + rotation * (scale * Vector3::UNIT_Y), Color::GREEN.ToUInt(), depthTest);
+    AddLine(start, start + rotation * (scale * Vector3::UNIT_Z), Color::BLUE.ToUInt(), depthTest);
 }
 
 void DebugRenderer::AddBoundingBox(const BoundingBox& box, const Color& color, bool depthTest, bool solid)
@@ -335,20 +336,22 @@ void DebugRenderer::AddSphereSector(const Sphere& sphere, const Quaternion& rota
 void DebugRenderer::AddCylinder(const Vector3& position, float radius, float height, const Color& color, bool depthTest)
 {
     Sphere sphere(position, radius);
-    Vector3 heightVec(0, height, 0);
+    Vector3 heightVec(0, 0, height); // Craft;
     Vector3 offsetXVec(radius, 0, 0);
-    Vector3 offsetZVec(0, 0, radius);
+    Vector3 offsetYVec(0, radius, 0); // Craft;
     for (auto i = 0; i < 360; i += 45)
     {
         Vector3 p1 = sphere.GetPoint(i, 90);
         Vector3 p2 = sphere.GetPoint(i + 45, 90);
         AddLine(p1, p2, color, depthTest);
         AddLine(p1 + heightVec, p2 + heightVec, color, depthTest);
+		AddLine(p1, p1 + heightVec, color, depthTest); // Craft;
     }
-    AddLine(position + offsetXVec, position + heightVec + offsetXVec, color, depthTest);
-    AddLine(position - offsetXVec, position + heightVec - offsetXVec, color, depthTest);
-    AddLine(position + offsetZVec, position + heightVec + offsetZVec, color, depthTest);
-    AddLine(position - offsetZVec, position + heightVec - offsetZVec, color, depthTest);
+	// Craft:
+    //AddLine(position + offsetXVec, position + heightVec + offsetXVec, color, depthTest);
+    //AddLine(position - offsetXVec, position + heightVec - offsetXVec, color, depthTest);
+    //AddLine(position + offsetYVec, position + heightVec + offsetYVec, color, depthTest);
+    //AddLine(position - offsetYVec, position + heightVec - offsetYVec, color, depthTest);
 }
 
 void DebugRenderer::AddSkeleton(const Skeleton& skeleton, const Color& color, bool depthTest)

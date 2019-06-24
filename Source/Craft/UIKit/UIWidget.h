@@ -193,6 +193,8 @@ class CRAFT_API UIWidget : public Object, public tb::TBWidgetDelegate
     UIPreferredSize* GetPreferredSize();
     String GetText();
 
+	virtual void ResetSize() {} // Craft;
+
     void SetRect(IntRect r);
     virtual bool SetSize(int width, int height);
     void SetPosition(int x, int y);
@@ -250,14 +252,18 @@ class CRAFT_API UIWidget : public Object, public tb::TBWidgetDelegate
     UIDragObject* GetDragObject() { return dragObject_; }
 
     virtual UIWidget* GetFirstChild();
+	UIWidget* GetPrev(); // Craft;
     UIWidget* GetNext();
+
+	UIWidget* GetChildFromIndex(int index) const; // Craft;
+	int GetIndexFromChild(UIWidget *child) const; // Craft;
 
     bool IsAncestorOf(UIWidget* widget);
 
     void SetIsFocusable(bool value);
 
     // get this or child widget with id
-    virtual UIWidget* GetWidget(const String& id);
+    virtual UIWidget* GetWidget(const String& id, const String& text = "");
 
     UIView* GetView();
 

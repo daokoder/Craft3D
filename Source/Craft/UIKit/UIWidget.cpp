@@ -90,12 +90,12 @@ UIPreferredSize* UIWidget::GetPreferredSize()
     return preferredSize_;
 }
 
-UIWidget* UIWidget::GetWidget(const String& id)
+UIWidget* UIWidget::GetWidget(const String& id, const String& text) // Craft;
 {
     if (!widget_)
         return 0;
 
-    TBWidget* child = widget_->GetWidgetByID(TBID(id.CString()));
+    TBWidget* child = widget_->GetWidgetByID(TBID(id.CString()), text.CString()); // Craft;
 
     if (!child)
         return 0;
@@ -971,6 +971,15 @@ UIWidget* UIWidget::GetFirstChild()
 
 }
 
+UIWidget* UIWidget::GetPrev() // Craft;
+{
+    if (!widget_)
+        return NULL;
+
+    return GetSubsystem<UI>()->WrapWidget(widget_->GetPrev()); // Craft;
+
+}
+
 UIWidget* UIWidget::GetNext()
 {
     if (!widget_)
@@ -978,6 +987,22 @@ UIWidget* UIWidget::GetNext()
 
     return GetSubsystem<UI>()->WrapWidget(widget_->GetNext());
 
+}
+
+UIWidget* UIWidget::GetChildFromIndex(int index) const // Craft;
+{
+    if (!widget_)
+        return NULL;
+
+    return GetSubsystem<UI>()->WrapWidget(widget_->GetChildFromIndex(index));
+}
+
+int UIWidget::GetIndexFromChild(UIWidget *child) const // Craft;
+{
+    if (!widget_)
+		return -1;
+
+    return widget_->GetIndexFromChild(child->GetInternalWidget());
 }
 
 void UIWidget::SetValue(double value)

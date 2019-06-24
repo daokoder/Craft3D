@@ -297,9 +297,9 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
         Node* zoneNode = zone_->GetNode();
         if (zone_->GetHeightFog() && zoneNode)
         {
-            Vector3 worldFogHeightVec = zoneNode->GetWorldTransform() * Vector3(0.0f, zone_->GetFogHeight(), 0.0f);
-            fogParams.z_ = worldFogHeightVec.y_;
-            fogParams.w_ = zone_->GetFogHeightScale() / Max(zoneNode->GetWorldScale().y_, M_EPSILON);
+            Vector3 worldFogHeightVec = zoneNode->GetWorldTransform() * Vector3(0.0f, 0.0f, zone_->GetFogHeight());
+            fogParams.z_ = worldFogHeightVec.z_;
+            fogParams.w_ = zone_->GetFogHeightScale() / Max(zoneNode->GetWorldScale().z_, M_EPSILON);
         }
 
         graphics->SetShaderParameter(PSP_FOGPARAMS, fogParams);
@@ -312,11 +312,12 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
         {
             Node* lightNode = light->GetNode();
             float atten = 1.0f / Max(light->GetRange(), M_EPSILON);
-            Vector3 lightDir(lightNode->GetWorldRotation() * Vector3::BACK);
+            Vector3 lightDir(lightNode->GetWorldRotation() * Vector3::DOWN);
             Vector4 lightPos(lightNode->GetWorldPosition(), atten);
 
             graphics->SetShaderParameter(VSP_LIGHTDIR, lightDir);
             graphics->SetShaderParameter(VSP_LIGHTPOS, lightPos);
+			graphics->SetShaderParameter(VSP_LIGHTRAD, light->GetRadius());
 
             if (graphics->HasShaderParameter(VSP_LIGHTMATRICES))
             {
@@ -535,6 +536,7 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
                  graphics->NeedParameterUpdate(SP_LIGHT, lightQueue_))
         {
             Vector4 vertexLights[MAX_VERTEX_LIGHTS * 3];
+			float vertexLightRads[MAX_VERTEX_LIGHTS]; // Craft;
             const PODVector<Light*>& lights = lightQueue_->vertexLights_;
 
             for (unsigned i = 0; i < lights.Size(); ++i)
@@ -577,9 +579,11 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
 
                 // Position
                 vertexLights[i * 3 + 2] = Vector4(vertexLightNode->GetWorldPosition(), invCutoff);
+				vertexLightRads[i] = vertexLight->GetRadius();
             }
 
             graphics->SetShaderParameter(VSP_VERTEXLIGHTS, vertexLights[0].Data(), lights.Size() * 3 * 4);
+			graphics->SetShaderParameter(VSP_VERTEXLIGHTRADS, vertexLightRads, lights.Size() );
         }
     }
 
@@ -631,6 +635,14 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
             graphics->SetTexture(TU_LIGHTSHAPE, shapeTexture);
         }
     }
+
+	if (overlay_)  // Craft;
+	{
+		graphics->SetTexture(TU_ENVIRONMENT, overlay_);
+		graphics->SetShaderParameter(PSP_HASOVERLAY, true);
+	}else{
+		graphics->SetShaderParameter(PSP_HASOVERLAY, false);
+	}
 }
 
 void Batch::Draw(View* view, Camera* camera, bool allowDepthWrite) const

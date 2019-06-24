@@ -164,6 +164,15 @@ void Light::RegisterObject(Context* context)
     CRAFT_ATTRIBUTE("Light Mask", int, lightMask_, DEFAULT_LIGHTMASK, AM_DEFAULT);
 }
 
+void Light::OnNodeSet(Node* node) // Craft;
+{
+	Drawable::OnNodeSet( node );
+	if (node)
+	{
+		node->SetOrientation( Quaternion( -90, 0, 0 ) );
+	}
+}
+
 void Light::ProcessRayQuery(const RayOctreeQuery& query, PODVector<RayQueryResult>& results)
 {
     // Do not record a raycast result for a directional light, as it would block all other results

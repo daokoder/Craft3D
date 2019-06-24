@@ -248,6 +248,9 @@ public:
     /// Release the collision shape.
     void ReleaseShape();
 
+	/// For customized shape only;
+	virtual bool IsNavigable() const { return false; } // Craft;
+
 protected:
     /// Handle node being assigned.
     void OnNodeSet(Node* node) override;
@@ -264,11 +267,12 @@ protected:
      */
     virtual btCollisionShape* UpdateDerivedShape(int shapeType, const Vector3& newWorldScale);
 
+	/// Update the collision shape after attribute changes.
+	void UpdateShape(); // Craft;
+
 private:
     /// Find the parent rigid body component and return its compound collision shape.
     btCompoundShape* GetParentCompoundShape();
-    /// Update the collision shape after attribute changes.
-    void UpdateShape();
     /// Update cached geometry collision shape.
     void UpdateCachedGeometryShape(CollisionGeometryDataCache& cache);
     /// Set as specified shape type using model and LOD.

@@ -208,7 +208,7 @@ public:
     /// Remove all in-memory gestures.
     void RemoveAllGestures();
     /// Set the mouse cursor position. Uses the backbuffer (Graphics width/height) coordinates.
-    void SetMousePosition(const IntVector2& position);
+    virtual void SetMousePosition(const IntVector2& position); // Craft;
     /// Center the mouse position.
     void CenterMousePosition();
 
@@ -243,7 +243,7 @@ public:
     /// Return the currently held down qualifiers.
     QualifierFlags GetQualifiers() const;
     /// Return mouse position within window. Should only be used with a visible mouse cursor. Uses the backbuffer (Graphics width/height) coordinates.
-    IntVector2 GetMousePosition() const;
+    virtual IntVector2 GetMousePosition() const; // Craft;
     /// Return mouse movement since last frame.
     IntVector2 GetMouseMove() const;
     /// Return horizontal mouse movement since last frame.
@@ -251,7 +251,9 @@ public:
     /// Return vertical mouse movement since last frame.
     int GetMouseMoveY() const;
     /// Return mouse wheel movement since last frame.
-    int GetMouseMoveWheel() const { return mouseMoveWheel_; }
+    int GetMouseMoveWheel() const { return mouseMoveWheelY_; } // Craft;
+    int GetMouseMoveWheelX() const { return mouseMoveWheelX_; } // Craft;
+    int GetMouseMoveWheelY() const { return mouseMoveWheelY_; } // Craft;
     /// Return input coordinate scaling. Should return non-unity on High DPI display.
     Vector2 GetInputScale() const { return inputScale_; }
 
@@ -298,7 +300,14 @@ public:
     /// Return whether application window is minimized.
     bool IsMinimized() const;
 
-private:
+	/// Handle a key change.
+	void SetKey(Key key, Scancode scancode, bool newState); // Craft;
+	/// Handle a mouse button change.
+	void SetMouseButton(MouseButton button, bool newState); // Craft;
+	/// Handle mouse wheel change.
+	void SetMouseWheel(int dx, int dy); // Craft;
+
+protected:
     /// Initialize when screen mode initially set.
     void Initialize();
     /// Open a joystick and return its ID. Return -1 if no joystick.
@@ -323,12 +332,6 @@ private:
     void PushTouchIndex(int touchID);
     /// Send an input focus or window minimization change event.
     void SendInputFocusEvent();
-    /// Handle a mouse button change.
-    void SetMouseButton(MouseButton button, bool newState);
-    /// Handle a key change.
-    void SetKey(Key key, Scancode scancode, bool newState);
-    /// Handle mouse wheel change.
-    void SetMouseWheel(int delta);
     /// Suppress next mouse movement.
     void SuppressNextMouseMove();
     /// Unsuppress mouse movement.
@@ -389,7 +392,8 @@ private:
     /// Mouse movement since last frame.
     IntVector2 mouseMove_;
     /// Mouse wheel movement since last frame.
-    int mouseMoveWheel_;
+    int mouseMoveWheelX_;
+    int mouseMoveWheelY_;
     /// Input coordinate scaling. Non-unity when window and backbuffer have different sizes (e.g. Retina display.)
     Vector2 inputScale_;
     /// SDL window ID.

@@ -562,6 +562,8 @@ void View::Update(const FrameInfo& frame)
 
 void View::Render()
 {
+	bool flipped = false; // Craft;
+
     SendViewEvent(E_BEGINVIEWRENDER);
 
     if (hasScenePasses_ && (!octree_ || !camera_))
@@ -602,7 +604,10 @@ void View::Render()
         // as a render texture produced on Direct3D9
 #ifdef CRAFT_OPENGL
         if (camera_)
+		{
             camera_->SetFlipVertical(true);
+			flipped = true; // Craft;
+		}
 #endif
     }
 
@@ -651,8 +656,10 @@ void View::Render()
     }
 
 #ifdef CRAFT_OPENGL
-    if (camera_)
+    if (camera_ && flipped) // Craft;
+	{
         camera_->SetFlipVertical(false);
+	}
 #endif
 
     // Run framebuffer blitting if necessary. If scene was resolved from backbuffer, do not touch depth
@@ -2591,6 +2598,45 @@ void View::SetupShadowCameras(LightQueryResult& query)
                 shadowCamera->SetFarClip(light->GetRange());
                 shadowCamera->SetFov(90.0f);
                 shadowCamera->SetAspectRatio(1.0f);
+
+				// Craft:
+                // Cameras are reusable, their flipping states must be set each time:
+                switch( i ){ 
+                case FACE_POSITIVE_X :
+                    {    
+                        Quaternion rot = cameraNode->GetPartialRotation();
+                        cameraNode->SetPartialRotation( rot * Quaternion(0,90,0) );
+                        shadowCamera->SetFlipVertical( true );
+                    }    
+                    break;
+                case FACE_NEGATIVE_X :
+                    {    
+                        Quaternion rot = cameraNode->GetPartialRotation();
+                        cameraNode->SetPartialRotation( rot * Quaternion(0,-90,0) );
+                        shadowCamera->SetFlipVertical( true );
+                    }    
+                    break;
+                case FACE_POSITIVE_Y :
+                    shadowCamera->SetFlipVertical( true );
+                    break;
+                case FACE_NEGATIVE_Y :
+                    {
+                        Quaternion rot = cameraNode->GetPartialRotation();
+                        cameraNode->SetPartialRotation( rot * Quaternion(0,180,0) );
+                        shadowCamera->SetFlipVertical( true );
+                    }
+                    break;
+                case FACE_POSITIVE_Z :
+                    shadowCamera->SetFlipVertical( true );
+                    break;
+                case FACE_NEGATIVE_Z :
+                    {
+                        Quaternion rot = cameraNode->GetPartialRotation();
+                        cameraNode->SetPartialRotation( rot * Quaternion(0,180,0) );
+                        shadowCamera->SetFlipVertical( true );
+                    }
+                    break;
+                }
             }
 
             splits = MAX_CUBEMAP_FACES;

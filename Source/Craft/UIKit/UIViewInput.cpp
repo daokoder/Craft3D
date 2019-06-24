@@ -177,11 +177,12 @@ void UIView::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
 
     using namespace MouseWheel;
 
-    int delta = eventData[P_WHEEL].GetInt();
+    int dx = eventData[P_WHEEL_DX].GetInt(); // Craft;
+    int dy = eventData[P_WHEEL_DY].GetInt();
 
     Input* input = GetSubsystem<Input>();
 
-    widget_->InvokeWheel(input->GetMousePosition().x_, input->GetMousePosition().y_, 0, -delta, tb::TB_MODIFIER_NONE);
+    widget_->InvokeWheel(input->GetMousePosition().x_, input->GetMousePosition().y_, dx, -dy, tb::TB_MODIFIER_NONE);
 
 }
 

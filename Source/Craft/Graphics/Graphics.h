@@ -99,11 +99,11 @@ public:
     /// Set window position. Sets initial position if window is not created yet.
     void SetWindowPosition(int x, int y);
     /// Set screen mode. Return true if successful.
-    bool SetMode
+    virtual bool SetMode // Craft;
         (int width, int height, bool fullscreen, bool borderless, bool resizable, bool highDPI, bool vsync, bool tripleBuffer,
             int multiSample, int monitor, int refreshRate);
     /// Set screen resolution only. Return true if successful.
-    bool SetMode(int width, int height);
+    virtual bool SetMode(int width, int height); // Craft;
     /// Set whether the main window uses sRGB conversion on write.
     void SetSRGB(bool enable);
     /// Set whether rendering output is dithered. Default true on OpenGL. No effect on Direct3D.
@@ -121,9 +121,9 @@ public:
     /// Take a screenshot. Return true if successful.
     bool TakeScreenShot(Image& destImage);
     /// Begin frame rendering. Return true if device available and can render.
-    bool BeginFrame();
+    virtual bool BeginFrame(); // Craft;
     /// End frame rendering and swap buffers.
-    void EndFrame();
+    virtual void EndFrame(); // Craft;
     /// Clear any or all of rendertarget, depth buffer and stencil buffer.
     void Clear(ClearTargetFlags flags, const Color& color = Color(0.0f, 0.0f, 0.0f, 0.0f), float depth = 1.0f, unsigned stencil = 0);
     /// Resolve multisampled backbuffer to a texture rendertarget. The texture's size should match the viewport size.
@@ -253,7 +253,7 @@ public:
     void SetShaderCacheDir(const String& path);
 
     /// Return whether rendering initialized.
-    bool IsInitialized() const;
+    virtual bool IsInitialized() const; // Craft;
 
     /// Return graphics implementation, which holds the actual API-specific resources.
     GraphicsImpl* GetImpl() const { return impl_; }
@@ -325,7 +325,7 @@ public:
     const String& GetOrientations() const { return orientations_; }
 
     /// Return whether graphics context is lost and can not render or load GPU resources.
-    bool IsDeviceLost() const;
+    virtual bool IsDeviceLost() const; // Craft;
 
     /// Return number of primitives drawn this frame.
     unsigned GetNumPrimitives() const { return numPrimitives_; }
@@ -498,7 +498,7 @@ public:
     /// Window was moved through user interaction. Called by Input subsystem.
     void OnWindowMoved();
     /// Restore GPU objects and reinitialize state. Requires an open window. Used only on OpenGL.
-    void Restore();
+    virtual void Restore(); // Craft;
     /// Maximize the window.
     void Maximize();
     /// Minimize the window.
@@ -527,6 +527,8 @@ public:
     void SetVBO(unsigned object);
     /// Bind a UBO, avoiding redundant operation. Used only on OpenGL.
     void SetUBO(unsigned object);
+
+	float GetDevicePixelRatio() const { return devicePixelRatio_; }  // Craft;
 
     /// Return the API-specific alpha texture format.
     static unsigned GetAlphaFormat();
@@ -571,7 +573,7 @@ public:
     /// Return whether is using an OpenGL 3 context. Return always false on Direct3D9 & Direct3D11.
     static bool GetGL3Support();
 
-private:
+protected:
     /// Create the application window.
     bool OpenWindow(int width, int height, bool resizable, bool borderless);
     /// Create the application window icon.
@@ -643,6 +645,8 @@ private:
     int width_{};
     /// Window height in pixels.
     int height_{};
+	/// Pixels per point.
+	float devicePixelRatio_{1.0f}; // Craft;
     /// Window position.
     IntVector2 position_;
     /// Multisampling mode.

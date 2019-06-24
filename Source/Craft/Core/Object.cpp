@@ -75,6 +75,7 @@ Object::Object(Context* context) :
     blockEvents_(false)
 {
     assert(context_);
+    enabled = true; // Craft;
 }
 
 Object::~Object()
@@ -296,6 +297,7 @@ void Object::SendEvent(StringHash eventType)
 
 void Object::SendEvent(StringHash eventType, VariantMap& eventData)
 {
+	if( not enabled ) return; // Craft;
     if (!Thread::IsMainThread())
     {
         CRAFT_LOGERROR("Sending events is only supported from the main thread");

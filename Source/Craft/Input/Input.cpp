@@ -354,7 +354,8 @@ Input::Input(Context* context) :
     mouseButtonDown_(0),
     mouseButtonPress_(0),
     lastVisibleMousePosition_(MOUSE_POSITION_OFFSCREEN),
-    mouseMoveWheel_(0),
+    mouseMoveWheelX_(0), // Craft;
+    mouseMoveWheelY_(0),
     inputScale_(Vector2::ONE),
     windowID_(0),
     toggleFullscreen_(true),
@@ -1570,7 +1571,8 @@ void Input::ResetInputAccumulation()
     scancodePress_.Clear();
     mouseButtonPress_ = MOUSEB_NONE;
     mouseMove_ = IntVector2::ZERO;
-    mouseMoveWheel_ = 0;
+    mouseMoveWheelX_ = 0; // Craft;
+    mouseMoveWheelY_ = 0;
     for (HashMap<SDL_JoystickID, JoystickState>::Iterator i = joysticks_.Begin(); i != joysticks_.End(); ++i)
     {
         for (unsigned j = 0; j < i->second_.buttonPress_.Size(); ++j)
@@ -1649,7 +1651,8 @@ void Input::ResetState()
     SetMouseButton(MOUSEB_MIDDLE, false);
 
     mouseMove_ = IntVector2::ZERO;
-    mouseMoveWheel_ = 0;
+    mouseMoveWheelX_ = 0; // Craft;
+    mouseMoveWheelY_ = 0;
     mouseButtonPress_ = MOUSEB_NONE;
 }
 
@@ -1809,16 +1812,18 @@ void Input::SetKey(Key key, Scancode scancode, bool newState)
         graphics_->ToggleFullscreen();
 }
 
-void Input::SetMouseWheel(int delta)
+void Input::SetMouseWheel(int dx, int dy) // Craft;
 {
-    if (delta)
+    if (dx || dy)
     {
-        mouseMoveWheel_ += delta;
+        mouseMoveWheelX_ += dx;
+        mouseMoveWheelY_ += dy;
 
         using namespace MouseWheel;
 
         VariantMap& eventData = GetEventDataMap();
-        eventData[P_WHEEL] = delta;
+        eventData[P_WHEEL_DX] = dx;
+        eventData[P_WHEEL_DY] = dy;
         eventData[P_BUTTONS] = (unsigned)mouseButtonDown_;
         eventData[P_QUALIFIERS] = (unsigned)GetQualifiers();
         SendEvent(E_MOUSEWHEEL, eventData);
@@ -2038,7 +2043,7 @@ void Input::HandleSDLEvent(void* sdlEvent)
 
     case SDL_MOUSEWHEEL:
         if (!touchEmulation_)
-            SetMouseWheel(evt.wheel.y);
+            SetMouseWheel(evt.wheel.x, evt.wheel.y);  // Craft;
         break;
 
     case SDL_FINGERDOWN:

@@ -59,7 +59,8 @@ CRAFT_EVENT(E_MOUSEMOVE, MouseMove)
 /// Mouse wheel moved.
 CRAFT_EVENT(E_MOUSEWHEEL, MouseWheel)
 {
-    CRAFT_PARAM(P_WHEEL, Wheel);                  // int
+    CRAFT_PARAM(P_WHEEL_DX, WheelX);              // int; Craft;
+    CRAFT_PARAM(P_WHEEL_DY, WheelY);              // int
     CRAFT_PARAM(P_BUTTONS, Buttons);              // int
     CRAFT_PARAM(P_QUALIFIERS, Qualifiers);        // int
 }

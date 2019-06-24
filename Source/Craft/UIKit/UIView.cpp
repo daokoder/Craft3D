@@ -62,8 +62,12 @@ UIView::UIView(Context* context) : UIWidget(context, false),
     ui_->WrapWidget(this, widget_);
 
     // Set initial size for view
-    TBRect rect = ui_->GetRootWidget()->GetRect();
+    TBRect rect = ui_->GetRootView()->GetRect(); // Craft;
     widget_->SetSize(rect.w, rect.h);
+
+	// Remove all previous UIView, since the new one will cover all the viewport,
+	// and the previous ones will not receive user interaction:
+	ui_->GetRootView()->DeleteAllChildren(); // Craft;
 
     vertexBuffer_ = new VertexBuffer(context_);
 

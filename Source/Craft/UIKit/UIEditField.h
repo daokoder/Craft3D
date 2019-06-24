@@ -50,6 +50,8 @@ public:
     UIEditField(Context* context, bool createWidget = true);
     virtual ~UIEditField();
 
+	bool SetPlaceholderText(const String& text); // Craft;
+
     void AppendText(const String& text);
 
     void SetTextAlign(UI_TEXT_ALIGN align);
@@ -62,6 +64,8 @@ public:
     void SetReadOnly(bool readonly);
     void SetStyling(bool styling);
     void SetMultiline(bool multiline);
+
+	bool GetReadOnly() const; // Craft;
 
     void Reformat(bool update_fragments = false);
 

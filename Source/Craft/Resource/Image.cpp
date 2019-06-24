@@ -2358,7 +2358,15 @@ bool Image::SetSubimage(const Image* image, const IntRect& rect)
                 // Calculate float coordinates between 0 - 1 for resampling
                 const float xF = (image->width_ > 1) ? static_cast<float>(x) / (destWidth - 1) : 0.0f;
                 const float yF = (image->height_ > 1) ? static_cast<float>(y) / (destHeight - 1) : 0.0f;
-                const unsigned uintColor = image->GetPixelBilinear(xF, yF).ToUInt();
+				unsigned uintColor;
+				if( image->components_ > 3 ){
+					Color srcColor = image->GetPixelBilinear(xF, yF);
+					Color destColor = GetPixel( rect.left_ + x, rect.top_ + y );
+					Color color = destColor.Lerp( srcColor, srcColor.a_ );
+					uintColor = color.ToUInt();  // Craft;
+				}else{
+					uintColor = image->GetPixelBilinear(xF, yF).ToUInt();
+				}
 
                 memcpy(dest, reinterpret_cast<const unsigned char*>(&uintColor), components_);
 

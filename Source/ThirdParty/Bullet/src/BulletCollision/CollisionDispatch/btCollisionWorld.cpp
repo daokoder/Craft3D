@@ -20,6 +20,7 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 #include "BulletCollision/CollisionShapes/btConvexShape.h"
+#include "BulletCollision/CollisionShapes/btUniformScalingShape.h"
 #include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
 #include "BulletCollision/CollisionShapes/btSphereShape.h" //for raycasting
 #include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h" //for raycasting
@@ -1440,11 +1441,17 @@ void btCollisionWorld::debugDrawObject(const btTransform& worldTransform, const 
             }
         default:
             {
+				// Craft:
+				const btCollisionShape *cshape = shape;
+				if( shape->getShapeType() == UNIFORM_SCALING_SHAPE_PROXYTYPE ){
+					btUniformScalingShape *sshape = (btUniformScalingShape*) shape;
+					cshape = sshape->getChildShape();
+				}
 
                 /// for polyhedral shapes
-                if (shape->isPolyhedral())
+                if (cshape->isPolyhedral())
                 {
-                    btPolyhedralConvexShape* polyshape = (btPolyhedralConvexShape*) shape;
+                    btPolyhedralConvexShape* polyshape = (btPolyhedralConvexShape*) cshape;
                     
                     int i;
                     if (polyshape->getConvexPolyhedron())

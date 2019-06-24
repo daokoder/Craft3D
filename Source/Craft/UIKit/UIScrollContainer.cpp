@@ -106,6 +106,15 @@ UI_SCROLL_MODE UIScrollContainer::GetScrollMode()
 
 }
 
+void UIScrollContainer::AddContentWidget( UIWidget *widget ) // Craft;
+{
+    if (!widget_)
+        return;
+
+	TBScrollContainer *tbWidget = (TBScrollContainer*) widget_;
+    return tbWidget->GetContentRoot()->AddChild( widget->GetInternalWidget() );
+}
+
 void UIScrollContainer::ScrollTo(int x, int y)
 {
     if (!widget_)

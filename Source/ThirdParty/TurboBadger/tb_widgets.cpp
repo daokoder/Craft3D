@@ -210,6 +210,18 @@ TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_
     return nullptr;
 }
 
+TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const TBStr &text) // Craft;
+{
+    if (m_id == id && (text == "" || text.Compare( GetText().CStr() ) == 0))
+        return this;
+    for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
+    {
+        if (TBWidget *sub_child = child->GetWidgetByIDInternal(id, text))
+            return sub_child;
+    }
+    return nullptr;
+}
+
 TBWidget *TBWidget::GetWidgetByTouchId(unsigned touchId)
 {
     if (IsCaptured() && touchId_ == touchId)
@@ -1239,10 +1251,19 @@ PreferredSize TBWidget::GetPreferredSize(const SizeConstraints &in_constraints)
         LP_OVERRIDE(pref_h);
 
         // Sanitize results
+        //m_cached_ps.max_w = MAX(m_cached_ps.max_w, m_cached_ps.min_w);
+        //m_cached_ps.max_h = MAX(m_cached_ps.max_h, m_cached_ps.min_h);
+        //m_cached_ps.pref_w = MAX(m_cached_ps.pref_w, m_cached_ps.min_w);
+        //m_cached_ps.pref_h = MAX(m_cached_ps.pref_h, m_cached_ps.min_h);
+		// Craft:
+        m_cached_ps.min_w = MIN(m_cached_ps.max_w, m_cached_ps.min_w);
+        m_cached_ps.min_h = MIN(m_cached_ps.max_h, m_cached_ps.min_h);
         m_cached_ps.max_w = MAX(m_cached_ps.max_w, m_cached_ps.min_w);
         m_cached_ps.max_h = MAX(m_cached_ps.max_h, m_cached_ps.min_h);
         m_cached_ps.pref_w = MAX(m_cached_ps.pref_w, m_cached_ps.min_w);
         m_cached_ps.pref_h = MAX(m_cached_ps.pref_h, m_cached_ps.min_h);
+        m_cached_ps.pref_w = MIN(m_cached_ps.pref_w, m_cached_ps.max_w);
+        m_cached_ps.pref_h = MIN(m_cached_ps.pref_h, m_cached_ps.max_h);
     }
     return m_cached_ps;
 }
@@ -1369,6 +1390,9 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 
     // Paint content
     OnPaint(paint_props);
+
+	// Craft: To ensure Atomic::UITextureWidget is rendered in the right order:
+	g_renderer->EndPaint();  // Force flushing batches;
 
     if (used_element)
         g_renderer->Translate(used_element->content_ofs_x, used_element->content_ofs_y);
@@ -1973,11 +1997,18 @@ void TBWidget::SetHoveredWidget(TBWidget *widget, bool touch)
     if (widget && widget->GetState(WIDGET_STATE_DISABLED))
         return;
 
+	TBWidgetEvent ev(EVENT_TYPE_CUSTOM); // Craft;
+
     // We may apply hover state automatically so the widget might need to be updated.
     if (TBWidget::hovered_widget)
     {
         TBWidget::hovered_widget->Invalidate();
         TBWidget::hovered_widget->InvalidateSkinStates();
+
+		// Craft: TBIDC does not register the string with the UI system;
+		TBID refid("widget_hovered_state_off");
+		ev.ref_id = refid;
+		TBWidget::hovered_widget->InvokeEvent(ev);
     }
 
     TBWidget::hovered_widget = widget;
@@ -1990,6 +2021,11 @@ void TBWidget::SetHoveredWidget(TBWidget *widget, bool touch)
         // Cursor based movement should set hover state automatically, but touch
         // events should not (since touch doesn't really move unless pressed).
         TBWidget::hovered_widget->m_packed.no_automatic_hover_state = touch;
+
+		// Craft: TBIDC does not register the string with the UI system;
+		TBID refid("widget_hovered_state_on");
+		ev.ref_id = refid;
+		TBWidget::hovered_widget->InvokeEvent(ev);
     }
 }
 

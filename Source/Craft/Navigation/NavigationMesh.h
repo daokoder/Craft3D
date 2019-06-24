@@ -47,6 +47,7 @@ enum NavmeshPartitionType
     NAVMESH_PARTITION_MONOTONE
 };
 
+class CollisionShape; // Craft;
 class Geometry;
 class NavArea;
 
@@ -247,7 +248,7 @@ public:
     BoundingBox GetWorldBoundingBox() const;
 
     /// Return number of tiles.
-    IntVector2 GetNumTiles() const { return IntVector2(numTilesX_, numTilesZ_); }
+    IntVector2 GetNumTiles() const { return IntVector2(numTilesX_, numTilesY_); } // Craft;
 
     /// Set the partition type used for polygon generation.
     void SetPartitionType(NavmeshPartitionType partitionType);
@@ -285,6 +286,9 @@ protected:
     void CollectGeometries(Vector<NavigationGeometryInfo>& geometryList, Node* node, HashSet<Node*>& processedNodes, bool recursive);
     /// Get geometry data within a bounding box.
     void GetTileGeometry(NavBuildData* build, Vector<NavigationGeometryInfo>& geometryList, BoundingBox& box);
+
+	virtual void GetTileGeometry( NavBuildData *build, CollisionShape *shape, const Matrix3x4 &trans ){} // Craft;
+
     /// Add a triangle mesh to the geometry data.
     void AddTriMeshGeometry(NavBuildData* build, Geometry* geometry, const Matrix3x4& transform);
     /// Build one tile of the navigation mesh. Return true if successful.
@@ -336,8 +340,8 @@ protected:
     Vector3 padding_;
     /// Number of tiles in X direction.
     int numTilesX_;
-    /// Number of tiles in Z direction.
-    int numTilesZ_;
+    /// Number of tiles in Y direction.
+    int numTilesY_; // Craft;
     /// Whole navigation mesh bounding box.
     BoundingBox boundingBox_;
     /// Type of the heightfield partitioning.

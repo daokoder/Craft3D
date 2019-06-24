@@ -1922,9 +1922,14 @@ bool TBStyleEdit::KeyDown(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifi
         InsertBreak();
     else if (!packed.read_only && (key && !(ctrlOrSuper)) && special_key != TB_KEY_ENTER)
     {
-        char utf8[8];
-        int len = utf8::encode(key, utf8);
-        InsertText(utf8, len);
+		if( key >= -127 and key < 0 ){
+			char ch = key;
+			InsertText(&ch, 1);
+		}else{
+			char utf8[8];
+			int len = utf8::encode(key, utf8);
+			InsertText(utf8, len);
+		}
     }
     else
         handled = false;

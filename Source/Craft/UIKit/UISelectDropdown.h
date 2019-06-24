@@ -41,6 +41,9 @@ public:
 
     void SetSource(UISelectItemSource* source);
 
+	void SetCurrentIndex( int index ); // Craft;
+	int GetCurrentIndex(); // Craft;
+
 protected:
 
     virtual bool OnEvent(const tb::TBWidgetEvent &ev);

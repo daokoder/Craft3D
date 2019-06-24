@@ -57,6 +57,8 @@ Node::Node(Context* context) :
     id_(0),
     position_(Vector3::ZERO),
     rotation_(Quaternion::IDENTITY),
+    rotation2_(Quaternion::IDENTITY), // Craft;
+    orientation_(Quaternion::IDENTITY),
     scale_(Vector3::ONE),
     worldRotation_(Quaternion::IDENTITY)
 {
@@ -83,11 +85,15 @@ void Node::RegisterObject(Context* context)
     CRAFT_ACCESSOR_ATTRIBUTE("Tags", GetTags, SetTags, StringVector, Variant::emptyStringVector, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Position", GetPosition, SetPosition, Vector3, Vector3::ZERO, AM_FILE);
     CRAFT_ACCESSOR_ATTRIBUTE("Rotation", GetRotation, SetRotation, Quaternion, Quaternion::IDENTITY, AM_FILE);
+    CRAFT_ACCESSOR_ATTRIBUTE("Rotation", GetPartialRotation, SetPartialRotation, Quaternion, Quaternion::IDENTITY, AM_FILE);
+    CRAFT_ACCESSOR_ATTRIBUTE("Orientation", GetOrientation, SetOrientation, Quaternion, Quaternion::IDENTITY, AM_FILE);
     CRAFT_ACCESSOR_ATTRIBUTE("Scale", GetScale, SetScale, Vector3, Vector3::ONE, AM_DEFAULT);
     CRAFT_ATTRIBUTE("Variables", VariantMap, vars_, Variant::emptyVariantMap, AM_FILE); // Network replication of vars uses custom data
     CRAFT_ACCESSOR_ATTRIBUTE("Network Position", GetNetPositionAttr, SetNetPositionAttr, Vector3, Vector3::ZERO,
         AM_NET | AM_LATESTDATA | AM_NOEDIT);
     CRAFT_ACCESSOR_ATTRIBUTE("Network Rotation", GetNetRotationAttr, SetNetRotationAttr, PODVector<unsigned char>, Variant::emptyBuffer,
+        AM_NET | AM_LATESTDATA | AM_NOEDIT);
+    CRAFT_ACCESSOR_ATTRIBUTE("Network Orientation", GetNetOrientationAttr, SetNetOrientationAttr, PODVector<unsigned char>, Variant::emptyBuffer,
         AM_NET | AM_LATESTDATA | AM_NOEDIT);
     CRAFT_ACCESSOR_ATTRIBUTE("Network Parent Node", GetNetParentAttr, SetNetParentAttr, PODVector<unsigned char>, Variant::emptyBuffer,
         AM_NET | AM_NOEDIT);
@@ -445,9 +451,34 @@ void Node::SetPosition(const Vector3& position)
     MarkNetworkUpdate();
 }
 
+void Node::SetRotation( const Quaternion& rotation, bool full ) // Craft;
+{
+	if( full ){
+		rotation_ = rotation;
+		rotation2_ = rotation * orientation_.Inverse();
+	}else{
+		rotation_ = rotation * orientation_;
+		rotation2_ = rotation;
+	}
+    MarkDirty();
+
+    MarkNetworkUpdate();
+}
+
 void Node::SetRotation(const Quaternion& rotation)
 {
-    rotation_ = rotation;
+	SetRotation( rotation, true );
+}
+
+void Node::SetPartialRotation(const Quaternion& rotation)
+{
+	SetRotation( rotation, false );
+}
+
+void Node::SetOrientation(const Quaternion& orientation)
+{
+	rotation_ = rotation2_ * orientation;
+	orientation_ = orientation;
     MarkDirty();
 
     MarkNetworkUpdate();
@@ -455,7 +486,7 @@ void Node::SetRotation(const Quaternion& rotation)
 
 void Node::SetDirection(const Vector3& direction)
 {
-    SetRotation(Quaternion(Vector3::FORWARD, direction));
+    SetPartialRotation(Quaternion(Vector3::FORWARD, direction)); // Craft;
 }
 
 void Node::SetScale(float scale)
@@ -483,6 +514,7 @@ void Node::SetTransform(const Vector3& position, const Quaternion& rotation)
 {
     position_ = position;
     rotation_ = rotation;
+	rotation2_ = rotation_ * orientation_.Inverse(); // Craft;
     MarkDirty();
 
     MarkNetworkUpdate();
@@ -497,6 +529,7 @@ void Node::SetTransform(const Vector3& position, const Quaternion& rotation, con
 {
     position_ = position;
     rotation_ = rotation;
+	rotation2_ = rotation_ * orientation_.Inverse(); // Craft;
     scale_ = scale;
     MarkDirty();
 
@@ -599,6 +632,7 @@ void Node::Rotate(const Quaternion& delta, TransformSpace space)
         }
         break;
     }
+	rotation2_ = rotation_ * orientation_.Inverse(); // Craft;
 
     MarkDirty();
 
@@ -636,6 +670,7 @@ void Node::RotateAround(const Vector3& point, const Quaternion& delta, Transform
         }
         break;
     }
+	rotation2_ = rotation_ * orientation_.Inverse(); // Craft;
 
     Vector3 oldRelativePos = oldRotation.Inverse() * (position_ - parentSpacePoint);
     position_ = rotation_ * oldRelativePos + parentSpacePoint;
@@ -647,17 +682,17 @@ void Node::RotateAround(const Vector3& point, const Quaternion& delta, Transform
 
 void Node::Yaw(float angle, TransformSpace space)
 {
-    Rotate(Quaternion(angle, Vector3::UP), space);
+    Rotate(Quaternion(angle, orientation_.Inverse() * Vector3::UP), space); // Craft;
 }
 
 void Node::Pitch(float angle, TransformSpace space)
 {
-    Rotate(Quaternion(angle, Vector3::RIGHT), space);
+    Rotate(Quaternion(angle, orientation_.Inverse() * Vector3::RIGHT), space); // Craft;
 }
 
 void Node::Roll(float angle, TransformSpace space)
 {
-    Rotate(Quaternion(angle, Vector3::FORWARD), space);
+    Rotate(Quaternion(angle, orientation_.Inverse() * Vector3::FORWARD), space); // Craft;
 }
 
 bool Node::LookAt(const Vector3& target, const Vector3& up, TransformSpace space)
@@ -1013,7 +1048,7 @@ void Node::RemoveComponent(StringHash type)
 {
     for (Vector<SharedPtr<Component> >::Iterator i = components_.Begin(); i != components_.End(); ++i)
     {
-        if ((*i)->GetType() == type)
+        if ((*i)->IsInstanceOf( type )) // Craft;
         {
             RemoveComponent(i);
 
@@ -1056,7 +1091,7 @@ void Node::RemoveComponents(StringHash type)
 
     for (unsigned i = components_.Size() - 1; i < components_.Size(); --i)
     {
-        if (components_[i]->GetType() == type)
+        if (components_[i]->IsInstanceOf( type )) // Craft;
         {
             RemoveComponent(components_.Begin() + i);
             ++numRemoved;
@@ -1345,7 +1380,7 @@ void Node::GetComponents(PODVector<Component*>& dest, StringHash type, bool recu
     {
         for (Vector<SharedPtr<Component> >::ConstIterator i = components_.Begin(); i != components_.End(); ++i)
         {
-            if ((*i)->GetType() == type)
+            if ((*i)->IsInstanceOf( type ))
                 dest.Push(*i);
         }
     }
@@ -1357,7 +1392,7 @@ bool Node::HasComponent(StringHash type) const
 {
     for (Vector<SharedPtr<Component> >::ConstIterator i = components_.Begin(); i != components_.End(); ++i)
     {
-        if ((*i)->GetType() == type)
+        if ((*i)->IsInstanceOf( type ))
             return true;
     }
     return false;
@@ -1395,7 +1430,7 @@ Component* Node::GetComponent(StringHash type, bool recursive) const
 {
     for (Vector<SharedPtr<Component> >::ConstIterator i = components_.Begin(); i != components_.End(); ++i)
     {
-        if ((*i)->GetType() == type)
+        if ((*i)->IsInstanceOf( type ))
             return *i;
     }
 
@@ -1465,6 +1500,12 @@ void Node::SetNetRotationAttr(const PODVector<unsigned char>& value)
         SetRotation(buf.ReadPackedQuaternion());
 }
 
+void Node::SetNetOrientationAttr(const PODVector<unsigned char>& value)
+{
+    MemoryBuffer buf(value);
+	SetOrientation(buf.ReadPackedQuaternion());
+}
+
 void Node::SetNetParentAttr(const PODVector<unsigned char>& value)
 {
     Scene* scene = GetScene();
@@ -1510,7 +1551,14 @@ const Vector3& Node::GetNetPositionAttr() const
 const PODVector<unsigned char>& Node::GetNetRotationAttr() const
 {
     impl_->attrBuffer_.Clear();
-    impl_->attrBuffer_.WritePackedQuaternion(rotation_);
+    impl_->attrBuffer_.WritePackedQuaternion(rotation_ * orientation_.Inverse()); // Craft;
+    return impl_->attrBuffer_.GetBuffer();
+}
+
+const PODVector<unsigned char>& Node::GetNetOrientationAttr() const
+{
+    impl_->attrBuffer_.Clear();
+    impl_->attrBuffer_.WritePackedQuaternion(orientation_);
     return impl_->attrBuffer_.GetBuffer();
 }
 
@@ -1888,6 +1936,7 @@ void Node::SetTransformSilent(const Vector3& position, const Quaternion& rotatio
 {
     position_ = position;
     rotation_ = rotation;
+	rotation2_ = rotation_ * orientation_.Inverse(); // Craft;
     scale_ = scale;
 }
 
@@ -2152,7 +2201,7 @@ void Node::GetComponentsRecursive(PODVector<Component*>& dest, StringHash type) 
 {
     for (Vector<SharedPtr<Component> >::ConstIterator i = components_.Begin(); i != components_.End(); ++i)
     {
-        if ((*i)->GetType() == type)
+        if ((*i)->IsInstanceOf( type ))
             dest.Push(*i);
     }
     for (Vector<SharedPtr<Node> >::ConstIterator i = children_.Begin(); i != children_.End(); ++i)

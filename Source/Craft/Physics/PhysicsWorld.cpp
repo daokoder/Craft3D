@@ -57,7 +57,7 @@ const char* PHYSICS_CATEGORY = "Physics";
 extern const char* SUBSYSTEM_CATEGORY;
 
 static const int MAX_SOLVER_ITERATIONS = 256;
-static const Vector3 DEFAULT_GRAVITY = Vector3(0.0f, -9.81f, 0.0f);
+static const Vector3 DEFAULT_GRAVITY = Vector3(0.0f, 0.0f, -9.81f); // Craft;
 
 PhysicsWorldConfig PhysicsWorld::config;
 

@@ -455,18 +455,24 @@ public:
 
     /// Zero vector.
     static const Vector3 ZERO;
+    /// Unit vector: X-Axis.
+    static const Vector3 UNIT_X;
+    /// Unit vector: Y-Axis.
+    static const Vector3 UNIT_Y;
+    /// Unit vector: Z-Axis.
+    static const Vector3 UNIT_Z;
     /// (-1,0,0) vector.
     static const Vector3 LEFT;
     /// (1,0,0) vector.
     static const Vector3 RIGHT;
     /// (0,1,0) vector.
-    static const Vector3 UP;
-    /// (0,-1,0) vector.
-    static const Vector3 DOWN;
-    /// (0,0,1) vector.
     static const Vector3 FORWARD;
-    /// (0,0,-1) vector.
+    /// (0,-1,0) vector.
     static const Vector3 BACK;
+    /// (0,0,1) vector.
+    static const Vector3 UP;
+    /// (0,0,-1) vector.
+    static const Vector3 DOWN;
     /// (1,1,1) vector.
     static const Vector3 ONE;
 };

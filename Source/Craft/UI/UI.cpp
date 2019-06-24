@@ -1830,7 +1830,7 @@ void UI::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
 
     mouseButtons_ = MouseButtonFlags(eventData[P_BUTTONS].GetInt());
     qualifiers_ = QualifierFlags(eventData[P_QUALIFIERS].GetInt());
-    int delta = eventData[P_WHEEL].GetInt();
+    int delta = eventData[P_WHEEL_DY].GetInt(); // Craft;
     usingTouchInput_ = false;
 
     IntVector2 cursorPos;
