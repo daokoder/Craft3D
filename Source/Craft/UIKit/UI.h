@@ -40,12 +40,15 @@ class UIRenderer;
 class UIWidget;
 class UIView;
 class UIPopupWindow;
+class UI;
+
+typedef UI UIKitUI;
 
 class CRAFT_API UI : public Object, private tb::TBWidgetListener
 {
     friend class UIView;
 
-    CRAFT_OBJECT(UI, Object)
+    CRAFT_OBJECT(UIKitUI, Object)
 
 public:
 

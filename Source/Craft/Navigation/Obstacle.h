@@ -79,7 +79,7 @@ protected:
     /// Handle navigation mesh tile added.
     void HandleNavigationTileAdded(StringHash eventType, VariantMap& eventData);
 
-private:
+protected:
     /// Radius of this obstacle.
     float radius_;
     /// Height of this obstacle, extends 1/2 height below and 1/2 height above the owning node's position.
