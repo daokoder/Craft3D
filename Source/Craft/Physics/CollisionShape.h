@@ -58,7 +58,8 @@ enum ShapeType
     SHAPE_TRIANGLEMESH,
     SHAPE_CONVEXHULL,
     SHAPE_TERRAIN,
-    SHAPE_GIMPACTMESH
+    SHAPE_GIMPACTMESH,
+    SHAPE_MAX
 };
 
 /// Base class for collision shape geometry data.

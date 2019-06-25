@@ -1032,17 +1032,17 @@ void CollisionShape::UpdateShape()
             break;
 
         case SHAPE_CYLINDER:
-            shape_ = new btCylinderShape(btVector3(size_.x_ * 0.5f, size_.y_ * 0.5f, size_.z_ * 0.5f)); // Craft;
+            shape_ = new btCylinderShapeZ(btVector3(size_.x_ * 0.5f, size_.y_ * 0.5f, size_.z_ * 0.5f)); // Craft;
             shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_CAPSULE:
-            shape_ = new btCapsuleShape(size_.x_ * 0.5f, Max(size_.z_ - size_.x_, 0.0f));//Craft;
+            shape_ = new btCapsuleShapeZ(size_.x_ * 0.5f, Max(size_.z_ - size_.x_, 0.0f));//Craft;
             shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_CONE:
-            shape_ = new btConeShape(size_.x_ * 0.5f, size_.z_);
+            shape_ = new btConeShapeZ(size_.x_ * 0.5f, size_.z_);
             shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 

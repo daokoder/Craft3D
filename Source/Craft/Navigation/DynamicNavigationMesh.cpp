@@ -269,7 +269,7 @@ bool DynamicNavigationMesh::Allocate(const BoundingBox& boundingBox, unsigned ma
     unsigned maxPolys = 1u << (22 - tileBits);
 
     dtNavMeshParams params;     // NOLINT(hicpp-member-init)
-    rcVcopy(params.orig, &boundingBox_.min_.x_);
+    rcVcopy(params.orig, &min.x_); // Craft;
     params.tileWidth = tileEdgeLength;
     params.tileHeight = tileEdgeLength;
     params.maxTiles = maxTiles;
@@ -291,7 +291,7 @@ bool DynamicNavigationMesh::Allocate(const BoundingBox& boundingBox, unsigned ma
 
     dtTileCacheParams tileCacheParams;      // NOLINT(hicpp-member-init)
     memset(&tileCacheParams, 0, sizeof(tileCacheParams));
-    rcVcopy(tileCacheParams.orig, &boundingBox_.min_.x_);
+    rcVcopy(tileCacheParams.orig, &min.x_); // Craft;
     tileCacheParams.ch = cellHeight_;
     tileCacheParams.cs = cellSize_;
     tileCacheParams.width = tileSize_;
@@ -618,8 +618,8 @@ void DynamicNavigationMesh::DrawDebugGeometry(DebugRenderer* debug, bool depthTe
         for (int i = 0; i < tile->header->polyCount; ++i)
         {
             dtPoly* poly = tile->polys + i;
-			 Vector3 O(&tile->verts[poly->verts[0] * 3]);
-			 O = worldTransform * Vector3( O.x_, O.z_, O.y_ );
+			Vector3 O(&tile->verts[poly->verts[0] * 3]);
+			O = worldTransform * Vector3( O.x_, O.z_, O.y_ );
             for (unsigned j = 0; j < poly->vertCount; ++j)
             {
 				Vector3 A(&tile->verts[poly->verts[j] * 3]);
@@ -1106,7 +1106,8 @@ void DynamicNavigationMesh::AddObstacle(Obstacle* obstacle, bool silent)
 		// Craft TODO: rectangle obstacle;
         float pos[3];
         Vector3 obsPos = obstacle->GetNode()->GetWorldPosition();
-        rcVcopy(pos, &obsPos.x_);
+		Vector3 obsPos2( obsPos.x_, obsPos.z_, obsPos.y_ );
+        rcVcopy(pos, &obsPos2.x_);
         dtObstacleRef refHolder;
 
         // Because dtTileCache doesn't process obstacle requests while updating tiles

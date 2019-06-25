@@ -432,7 +432,7 @@ bool NavigationMesh::Build()
         unsigned maxPolys = 1u << (22 - tileBits);
 
         dtNavMeshParams params;     // NOLINT(hicpp-member-init)
-        rcVcopy(params.orig, &boundingBox_.min_.x_);
+        rcVcopy(params.orig, &min.x_); // Craft;
         params.tileWidth = tileEdgeLength;
         params.tileHeight = tileEdgeLength;
         params.maxTiles = maxTiles;
@@ -845,8 +845,10 @@ float NavigationMesh::GetDistanceToWall(const Vector3& point, float radius, cons
 	Vector3 hitNormal2( hitNormal->x_, hitNormal->z_, hitNormal->y_ );
     navMeshQuery_->findDistanceToWall(startRef, &localPoint2.x_, radius, queryFilter, &hitDist, &hitPos2.x_, &hitNormal2.x_);
 
+	hitPos->x_ = hitPos2.x_;
 	hitPos->y_ = hitPos2.z_;
 	hitPos->z_ = hitPos2.y_;
+	hitNormal->x_ = hitNormal2.x_;
 	hitNormal->y_ = hitNormal2.z_;
 	hitNormal->z_ = hitNormal2.y_;
     return hitDist;
@@ -888,6 +890,7 @@ Vector3 NavigationMesh::Raycast(const Vector3& start, const Vector3& end, const 
     if (t == FLT_MAX)
         t = 1.0f;
 
+	hitNormal->x_ = hitNormal2.x_;
 	hitNormal->y_ = hitNormal2.z_;
 	hitNormal->z_ = hitNormal2.y_;
     return start.Lerp(end, t);
@@ -1078,7 +1081,9 @@ void NavigationMesh::CollectGeometries(Vector<NavigationGeometryInfo>& geometryL
             continue;
 
         ShapeType type = shape->GetShapeType();
-        if ((type == SHAPE_BOX || type == SHAPE_TRIANGLEMESH || type == SHAPE_CONVEXHULL) && shape->GetCollisionShape())
+		bool navigable = shape->IsNavigable();
+		navigable |= type == SHAPE_BOX || type == SHAPE_TRIANGLEMESH || type == SHAPE_CONVEXHULL;
+        if (navigable && shape->GetCollisionShape())
         {
             Matrix3x4 shapeTransform(shape->GetPosition(), shape->GetRotation(), shape->GetSize());
 
@@ -1195,7 +1200,7 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
                             continue;
 
                         unsigned numVertices = data->vertexCount_;
-                        unsigned numIndices = data->indexCount_;
+                        unsigned numIndices = data->indexCount_/3;
                         unsigned destVertexStart = build->vertices_.Size();
 
                         for (unsigned j = 0; j < numVertices; ++j){
@@ -1245,6 +1250,7 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
                     break;
 
                 default:
+					if( shape->IsNavigable() ) GetTileGeometry( build, shape, transform );
                     break;
                 }
 
