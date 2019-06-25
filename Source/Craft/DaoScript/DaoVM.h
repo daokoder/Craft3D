@@ -66,7 +66,7 @@ public:
     DaoVM(Context* context);
     virtual ~DaoVM();
 
-    void InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player );
+    DaoVmSpace* InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player );
 
     bool ExecuteFile(File* file);
 

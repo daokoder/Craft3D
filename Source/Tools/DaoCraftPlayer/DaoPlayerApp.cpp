@@ -33,6 +33,10 @@
 extern void APP_CUSTOM_SETUP( DaoPlayerApp *app );
 #endif
 
+#ifdef APP_CUSTOM_INIT
+extern void APP_CUSTOM_INIT( Craft::Context *context, DaoVmSpace *vmspace );
+#endif
+
 #ifdef STANDALONE_APP
 CRAFT_DEFINE_APPLICATION_MAIN(DaoPlayerApp)
 #endif
@@ -132,7 +136,11 @@ void DaoPlayerApp::Start()
 	DaoPlayer *player = context_->GetSubsystem<DaoPlayer>();
 	daovm = daoscript->InstantiateVM( player );
 
-	daovm->InitVmSpace( vmSpace, player );
+	DaoVmSpace *vms = daovm->InitVmSpace( vmSpace, player );
+
+#ifdef APP_CUSTOM_INIT
+	APP_CUSTOM_INIT( context_, vms );
+#endif
 
 	printf( "DaoPlayerApp::Start()\n" );
 	if (!daovm->ExecuteMain()) SendEvent(E_EXITREQUESTED);

@@ -57,10 +57,6 @@ Craft::Context* DaoCraft_GetContext( DaoProcess *proc )
 #endif
 
 
-#ifdef APP_CUSTOM_INIT
-extern void APP_CUSTOM_INIT( Context *context, DaoVmSpace *vmspace );
-#endif
-
 
 namespace Craft
 {
@@ -96,7 +92,7 @@ DaoVM::~DaoVM()
 
 }
 
-void DaoVM::InitVmSpace(  DaoVmSpace *vmspace, DaoPlayer *player )
+DaoVmSpace* DaoVM::InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player )
 {
 	vmSpace = vmspace;
 
@@ -136,10 +132,6 @@ void DaoVM::InitVmSpace(  DaoVmSpace *vmspace, DaoPlayer *player )
 	printf( "DaoScript::Initialize(): %p %p\n", craftNS, playerNS );
 #endif
 
-#ifdef APP_CUSTOM_INIT
-	APP_CUSTOM_INIT( GetContext(), vmSpace );
-#endif
-
 	DaoVmSpace_SetSpaceData( vmSpace, (void*) DaoCraft_ContextKey, GetContext() );
 
 	//printf( "InitVmSpace: VMS = %p; NS = %p;\n", vmSpace, daoNS );
@@ -147,6 +139,7 @@ void DaoVM::InitVmSpace(  DaoVmSpace *vmspace, DaoPlayer *player )
     // handle this elsewhere?
     SubscribeToEvents();
 
+	return vmSpace;
 }
 
 
