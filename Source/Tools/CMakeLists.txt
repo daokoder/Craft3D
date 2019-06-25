@@ -38,6 +38,7 @@ if (CRAFT_ANGELSCRIPT OR CRAFT_LUA)
     # Add CraftPlayer as target only when one of the supported scripting subsystems is enabled
 endif ()
 add_subdirectory (CraftPlayer) # Craft;
+add_subdirectory (DaoCraftPlayer) # Craft;
 
 # Build PackageTool using host compiler toolchain
 if (CMAKE_CROSSCOMPILING AND CRAFT_PACKAGING)

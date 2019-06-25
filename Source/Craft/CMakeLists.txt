@@ -112,9 +112,15 @@ foreach (DIR IK Navigation Network Physics Craft2D WebP)
         list (APPEND EXCLUDED_SOURCE_DIRS ${DIR})
     endif ()
 endforeach ()
+
 if (NOT CRAFT_DAOSCRIPT)
-    list (APPEND EXCLUDED_SOURCE_DIRS DaoScript)
+    #list (APPEND EXCLUDED_SOURCE_DIRS DaoScript)
 endif ()
+
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DaoScript/dao_CraftEngine.h)
+	add_definitions (-DCRAFT_DAOSCRIPT_WRAPPED)
+endif ()
+
 if (NOT CRAFT_ANGELSCRIPT)
     list (APPEND EXCLUDED_SOURCE_DIRS AngelScript)
 endif ()
@@ -310,6 +316,10 @@ if (CRAFT_NAVIGATION)
     # DetourTileCache and DetourCrowd libraries depend on Detour's include dir to be added in the header search path
     list (APPEND INCLUDE_DIRS ${THIRD_PARTY_INCLUDE_DIR}/Detour)
 endif ()
+
+# Temporary:
+list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/kernel)
+
 if (CRAFT_LUA)
     # Lua/LuaJIT library depends on its own include dir to be added in the header search path
     # This is more practical than patching its header files in many places to make them work with relative path

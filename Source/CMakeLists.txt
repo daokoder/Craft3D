@@ -68,6 +68,9 @@ if (CRAFT_LIB_TYPE STREQUAL SHARED AND NOT WIN32 AND NOT ANDROID AND NOT IOS AND
     endif ()
 endif ()
 
+# Temporary:
+set (CRAFT_THIRDPARTY_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty)
+
 # Add targets
 foreach (TARGET FreeType LZ4 PugiXml rapidjson SDL StanHull STB TurboBadger nativefiledialog)
     add_subdirectory (ThirdParty/${TARGET})
