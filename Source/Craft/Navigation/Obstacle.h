@@ -61,21 +61,24 @@ public:
     /// Set the blocking radius of this obstacle.
     void SetRadius(float newRadius);
 
+	Vector3 GetOffset() const { return offset_; } // Craft;
+	void SetOffset( const Vector3 & offset ); // Craft;
+
     /// Get the internal obstacle ID.
     unsigned GetObstacleID() const { return obstacleId_; }
 
     /// Render debug information.
-    void DrawDebugGeometry(DebugRenderer* debug, bool depthTest) override;
+    virtual void DrawDebugGeometry(DebugRenderer* debug, bool depthTest) override; // Craft;
     /// Simplified rendering of debug information for script usage.
     void DrawDebugGeometry(bool depthTest);
 
 protected:
     /// Handle node being assigned.
-    void OnNodeSet(Node* node) override;
+    virtual void OnNodeSet(Node* node) override; // Craft;
     /// Handle scene being assigned, identify our DynamicNavigationMesh.
-    void OnSceneSet(Scene* scene) override;
+    virtual void OnSceneSet(Scene* scene) override; // Craft;
     /// Handle node transform being dirtied.
-    void OnMarkedDirty(Node* node) override;
+    virtual void OnMarkedDirty(Node* node) override; // Craft;
     /// Handle navigation mesh tile added.
     void HandleNavigationTileAdded(StringHash eventType, VariantMap& eventData);
 
@@ -84,6 +87,9 @@ protected:
     float radius_;
     /// Height of this obstacle, extends 1/2 height below and 1/2 height above the owning node's position.
     float height_;
+
+	/// Offset of this obstacle relative to the node position.
+	Vector3 offset_;
 
     /// Id received from tile cache.
     unsigned obstacleId_;

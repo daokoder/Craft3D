@@ -1105,7 +1105,9 @@ void DynamicNavigationMesh::AddObstacle(Obstacle* obstacle, bool silent)
     {
 		// Craft TODO: rectangle obstacle;
         float pos[3];
-        Vector3 obsPos = obstacle->GetNode()->GetWorldPosition();
+		Vector3 offset = obstacle->GetOffset();
+        Vector3 position = obstacle->GetNode()->GetWorldPosition();
+		Vector3 obsPos = position + offset;
 		Vector3 obsPos2( obsPos.x_, obsPos.z_, obsPos.y_ );
         rcVcopy(pos, &obsPos2.x_);
         dtObstacleRef refHolder;

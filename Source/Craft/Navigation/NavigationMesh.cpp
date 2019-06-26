@@ -630,7 +630,7 @@ Vector3 NavigationMesh::FindNearestPoint(const Vector3& point, const Vector3& ex
 
 	Vector3 localPoint2( localPoint.x_, localPoint.z_, localPoint.y_ );
 	Vector3 extents2( extents.x_, extents.z_, extents.y_ );
-    dtStatus status = navMeshQuery_->findNearestPoly(&localPoint2.x_, &extents2.x_, filter ? filter : filter, nearestRef, &nearestPoint.x_);
+    dtStatus status = navMeshQuery_->findNearestPoly(&localPoint2.x_, &extents2.x_, filter ? filter : queryFilter_.Get(), nearestRef, &nearestPoint.x_);
 	Vector3 nearestPoint2( nearestPoint.x_, nearestPoint.z_, nearestPoint.y_ );
 	if( status & DT_FAILURE ) *nearestRef = 0;
     return *nearestRef ? transform * nearestPoint2 : point;

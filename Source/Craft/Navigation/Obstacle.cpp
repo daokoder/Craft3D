@@ -57,6 +57,7 @@ void Obstacle::RegisterObject(Context* context)
     CRAFT_COPY_BASE_ATTRIBUTES(Component);
     CRAFT_ACCESSOR_ATTRIBUTE("Radius", GetRadius, SetRadius, float, 5.0f, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Height", GetHeight, SetHeight, float, 5.0f, AM_DEFAULT);
+	// TODO: offset;
 }
 
 void Obstacle::OnSetEnabled()
@@ -84,6 +85,14 @@ void Obstacle::SetRadius(float newRadius)
     if (ownerMesh_)
         ownerMesh_->ObstacleChanged(this);
     MarkNetworkUpdate();
+}
+
+void Obstacle::SetOffset( const Vector3 & offset )
+{
+	offset_ = offset;
+	if (ownerMesh_)
+		ownerMesh_->ObstacleChanged(this);
+	MarkNetworkUpdate();
 }
 
 void Obstacle::OnNodeSet(Node* node)

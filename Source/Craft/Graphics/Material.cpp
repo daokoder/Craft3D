@@ -218,7 +218,7 @@ bool Material::BeginLoad(Deserializer& source)
     String extension = GetExtension(source.GetName());
 
     bool success = false;
-    if (extension == ".xml")
+    if (extension == ".xml" || extension == ".material")  // Craft;
     {
         success = BeginLoadXML(source);
         if (!success)
