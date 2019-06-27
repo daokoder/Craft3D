@@ -34,7 +34,7 @@
 #include "DaoVM.h"
 #include "DaoScript.h"
 
-#ifdef DCRAFT_DAOSCRIPT_WRAPPED
+#ifdef HAS_DAO_CRAFT_MODULE
 #include "dao_CraftEngine.h"
 #endif
 
@@ -113,7 +113,7 @@ DaoVmSpace* DaoVM::InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player )
 		DaoVmSpace_AddPath( vmSpace, resourcePaths[i-1].CString() );
 	}
 
-#ifdef DCRAFT_DAOSCRIPT_WRAPPED
+#ifdef HAS_DAO_CRAFT_MODULE
 	DaoNamespace *moduleNS = DaoVmSpace_GetNamespace( vmSpace, "CraftModule" );
 	printf( "DaoScript::Initialize(): %p %p\n", vmSpace, moduleNS );
 	DaoCraftEngine_OnLoad( vmSpace, moduleNS );

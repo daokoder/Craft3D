@@ -142,6 +142,7 @@ include (CMakeDependentOption)
 cmake_dependent_option (IOS "Setup build for iOS platform" FALSE "XCODE" FALSE)
 cmake_dependent_option (TVOS "Setup build for tvOS platform" FALSE "XCODE" FALSE)
 cmake_dependent_option (CRAFT_64BIT "Enable 64-bit build, the default is set based on the native ABI of the chosen compiler toolchain" "${NATIVE_64BIT}" "NOT MSVC AND NOT ANDROID AND NOT (ARM AND NOT IOS) AND NOT WEB AND NOT POWERPC" "${NATIVE_64BIT}")     # Intentionally only enable the option for iOS but not for tvOS as the latter is 64-bit only
+option (CRAFT_DAO "Enable Dao scripting support" TRUE)
 option (CRAFT_ANGELSCRIPT "Enable AngelScript scripting support" FALSE)
 option (CRAFT_IK "Enable inverse kinematics support" TRUE)
 option (CRAFT_LUA "Enable additional Lua scripting support" FALSE)
@@ -434,6 +435,10 @@ endif ()
 
 if (CRAFT_DATABASE_ODBC)
     find_package (ODBC REQUIRED)
+endif ()
+
+if (NOT CRAFT_DAO)
+	add_definitions (-DCRAFT_USE_FLAGSET)
 endif ()
 
 # Define preprocessor macros (for building the Craft library) based on the configured build options

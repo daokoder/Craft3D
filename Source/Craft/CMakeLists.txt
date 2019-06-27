@@ -113,12 +113,25 @@ foreach (DIR IK Navigation Network Physics Craft2D WebP)
     endif ()
 endforeach ()
 
-if (NOT CRAFT_DAOSCRIPT)
-    #list (APPEND EXCLUDED_SOURCE_DIRS DaoScript)
-endif ()
+list (APPEND EXCLUDED_SOURCE_DIRS DaoScript/CraftModule)
 
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DaoScript/dao_CraftEngine.h)
-	add_definitions (-DCRAFT_DAOSCRIPT_WRAPPED)
+set (DAO_CRAFT_MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/DaoScript/CraftModule)
+
+if (NOT CRAFT_DAO)
+    #list (APPEND EXCLUDED_SOURCE_DIRS DaoScript)
+else ()
+
+	set (CLANGDAO ${CMAKE_SOURCE_DIR}/../Dao/bin/clangdao)
+	#message (FATAL_ERROR "${DAO_CRAFT_MODULE_DIR}\n${CLANGDAO}")
+
+	if (NOT EXISTS ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine.h)
+		execute_process( COMMAND ${CLANGDAO} -I${CMAKE_CURRENT_SOURCE_DIR} DaoCraftEngineMod.cpp -o ./ WORKING_DIRECTORY ${DAO_CRAFT_MODULE_DIR} OUTPUT_QUIET ERROR_QUIET)
+	endif ()
+
+	add_custom_command (OUTPUT ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine.cpp
+			COMMAND ${CLANGDAO} -I$../ DaoCraftEngineMod.cpp -o ./
+			DEPENDS ${DAO_CRAFT_MODULE_DIR}/DaoCraftEngineMod.cpp
+			WORKING_DIRECTORY ${DAO_CRAFT_MODULE_DIR})
 endif ()
 
 if (NOT CRAFT_ANGELSCRIPT)
@@ -317,8 +330,21 @@ if (CRAFT_NAVIGATION)
     list (APPEND INCLUDE_DIRS ${THIRD_PARTY_INCLUDE_DIR}/Detour)
 endif ()
 
-# Temporary:
-list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/kernel)
+
+if (CRAFT_DAO)
+	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao)
+	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/kernel)
+	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/kernel/modules/auxlib)
+	if (#FALSE AND # TODO
+		EXISTS ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine.h)
+		add_definitions (-DHAS_DAO_CRAFT_MODULE)
+		list (APPEND INCLUDE_DIRS ${DAO_CRAFT_MODULE_DIR})
+		list (APPEND SOURCE_FILES ${DAO_CRAFT_MODULE_DIR}/DaoCraftEngine.cpp)
+		list (APPEND SOURCE_FILES ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine.cpp)
+		list (APPEND SOURCE_FILES ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine2.cpp)
+		list (APPEND SOURCE_FILES ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine3.cpp)
+	endif ()
+endif ()
 
 if (CRAFT_LUA)
     # Lua/LuaJIT library depends on its own include dir to be added in the header search path

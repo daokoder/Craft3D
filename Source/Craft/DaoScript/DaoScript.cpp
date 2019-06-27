@@ -35,7 +35,7 @@
 #include "DaoComponentFile.h"
 #include "DaoVM.h"
 
-#ifdef DCRAFT_DAOSCRIPT_WRAPPED
+#ifdef HAS_DAO_CRAFT_MODULE
 #include "dao_CraftEngine.h"
 #endif
 

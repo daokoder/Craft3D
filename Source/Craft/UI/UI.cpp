@@ -73,7 +73,7 @@ namespace Craft
 
 static MouseButton MakeTouchIDMask(int id)
 {
-    return static_cast<MouseButton>(1u << static_cast<MouseButtonFlags::Integer>(id)); // NOLINT(misc-misplaced-widening-cast)
+    return static_cast<MouseButton>(1u << static_cast<unsigned>(id)); // NOLINT(misc-misplaced-widening-cast)
 }
 
 StringHash VAR_ORIGIN("Origin");

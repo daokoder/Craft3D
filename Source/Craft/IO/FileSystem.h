@@ -104,6 +104,19 @@ public:
     /// Return path of temporary directory. Path always ends with a forward slash.
     String GetTemporaryDir() const;
 
+// ATOMIC BEGIN
+
+    /// Check if a file or directory exists at the specified path
+    bool Exists(const String& pathName) const { return FileExists(pathName) || DirExists(pathName); }
+
+    bool CopyDir(const String& directoryIn, const String& directoryOut);
+
+    bool CreateDirs(const String& root, const String& subdirectory);
+    bool CreateDirsRecursive(const String& directoryIn);
+
+    bool RemoveDir(const String& directoryIn, bool recursive);
+// ATOMIC END
+
 private:
     /// Scan directory, called internally.
     void ScanDirInternal
@@ -150,5 +163,14 @@ CRAFT_API String GetNativePath(const String& pathName);
 CRAFT_API WString GetWideNativePath(const String& pathName);
 /// Return whether a path is absolute.
 CRAFT_API bool IsAbsolutePath(const String& pathName);
+
+// ATOMIC BEGIN
+CRAFT_API bool IsAbsoluteParentPath(const String& absParentPath, const String& fullPath);
+CRAFT_API String GetSanitizedPath(const String& path);
+
+/// Given two absolute directory paths, get the relative path from one to the other
+/// Returns false if either path isn't absolute, or if they are unrelated
+CRAFT_API bool GetRelativePath(const String& fromPath, const String& toPath, String& output);
+// ATOMIC END
 
 }

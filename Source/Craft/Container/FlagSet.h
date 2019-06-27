@@ -35,6 +35,8 @@ template <typename T> struct IsFlagSet
     constexpr static bool value_ = false;
 };
 
+#ifdef CRAFT_USE_FLAGSET // Craft;
+
 /// Enable enum for using in FlagSet. Shall be called within Craft namespace.
 #define CRAFT_ENABLE_FLAGSET(enumName) \
     template<> struct IsFlagSet<enumName> { constexpr static bool value_ = true; } \
@@ -43,6 +45,13 @@ template <typename T> struct IsFlagSet
 #define CRAFT_FLAGSET(enumName, flagsetName) \
     CRAFT_ENABLE_FLAGSET(enumName); \
     using flagsetName = FlagSet<enumName>
+
+#else
+
+#define CRAFT_ENABLE_FLAGSET(enumName)
+#define CRAFT_FLAGSET(enumName, flagsetName)  using flagsetName = unsigned
+
+#endif
 
 /// A set of flags defined by an Enum.
 template <class E, class = typename std::enable_if<IsFlagSet<E>::value_>::type>
@@ -169,6 +178,12 @@ public:
     operator bool () const
     {
         return value_ != 0;
+    }
+
+    /// Cast to underlying type of enum.
+    operator unsigned () const // Craft;
+    {
+        return static_cast<unsigned>( value_ );
     }
 
     /// Cast to underlying type of enum.

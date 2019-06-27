@@ -96,7 +96,7 @@ void Camera::RegisterObject(Context* context)
     CRAFT_ACCESSOR_ATTRIBUTE("Zoom", GetZoom, SetZoom, float, 1.0f, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("LOD Bias", GetLodBias, SetLodBias, float, 1.0f, AM_DEFAULT);
     CRAFT_ATTRIBUTE("View Mask", int, viewMask_, DEFAULT_VIEWMASK, AM_DEFAULT);
-    CRAFT_ATTRIBUTE("View Override Flags", unsigned, viewOverrideFlags_.AsInteger(), VO_NONE, AM_DEFAULT);
+    CRAFT_ATTRIBUTE("View Override Flags", unsigned, viewOverrideFlags_, VO_NONE, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Projection Offset", GetProjectionOffset, SetProjectionOffset, Vector2, Vector2::ZERO, AM_DEFAULT);
     CRAFT_MIXED_ACCESSOR_ATTRIBUTE("Reflection Plane", GetReflectionPlaneAttr, SetReflectionPlaneAttr, Vector4,
         Vector4(0.0f, 1.0f, 0.0f, 0.0f), AM_DEFAULT);

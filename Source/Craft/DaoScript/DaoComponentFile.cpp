@@ -33,7 +33,7 @@
 #include "DaoVM.h"
 #include "DaoScript.h"
 
-#ifdef DCRAFT_DAOSCRIPT_WRAPPED
+#ifdef HAS_DAO_CRAFT_MODULE
 #include "dao_CraftEngine.h"
 #endif
 
@@ -94,7 +94,7 @@ bool DaoComponentFile::PushModule()
 
 	if( nspace == NULL ) return 0;
 
-#ifdef DCRAFT_DAOSCRIPT_WRAPPED
+#ifdef HAS_DAO_CRAFT_MODULE
 	DaoType *type_DaoComponent = DaoVmSpace_GetType( vmspace, dao_Craft_DaoComponent_Core );
 	int i;
 	for(i=0; i<nspace->constants->size; ++i){
@@ -115,7 +115,7 @@ bool DaoComponentFile::PushModule()
 DaoComponent* DaoComponentFile::CreateDaoComponent()
 {
 	printf( "DaoComponentFile::CreateDaoComponent()\n" );
-#ifdef DCRAFT_DAOSCRIPT_WRAPPED
+#ifdef HAS_DAO_CRAFT_MODULE
 	if( klass == NULL ) return new DaoComponent(context_);
 
 	DaoRoutine *routine = klass->initRoutines;
