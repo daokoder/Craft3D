@@ -53,7 +53,7 @@ public:
     ~DebugHud() override;
 
     /// Update. Called by HandlePostUpdate().
-    void Update();
+    void Update(float timeStep);
     /// Set UI elements' style from an XML file.
     void SetDefaultStyle(XMLFile* style);
     /// Set elements to show.
@@ -131,6 +131,15 @@ private:
     bool useRendererStats_;
     /// Current shown-element mode.
     unsigned mode_;
+
+	/// ATOMIC BEGIN
+    /// Time since last fps display update
+    float fpsTimeSinceUpdate_;
+    /// Frames since last fps display update
+    float fpsFramesSinceUpdate_;
+    /// Calculated fps
+    unsigned fps_;
+	/// ATOMIC END
 };
 
 }

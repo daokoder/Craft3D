@@ -59,12 +59,17 @@ static const char* shadowQualityTexts[] =
     "Blurred VSM"
 };
 
+static const float FPS_UPDATE_INTERVAL = 0.5f;
+
 DebugHud::DebugHud(Context* context) :
     Object(context),
     profilerMaxDepth_(M_MAX_UNSIGNED),
     profilerInterval_(1000),
     useRendererStats_(false),
-    mode_(DEBUGHUD_SHOW_NONE)
+    mode_(DEBUGHUD_SHOW_NONE),
+    fpsTimeSinceUpdate_(FPS_UPDATE_INTERVAL),
+    fpsFramesSinceUpdate_(0),
+    fps_(0)
 {
     auto* ui = GetSubsystem<UI>();
     UIElement* uiRoot = ui->GetRoot();
@@ -111,7 +116,7 @@ DebugHud::~DebugHud()
     eventProfilerText_->Remove();
 }
 
-void DebugHud::Update()
+void DebugHud::Update(float timeStep)
 {
     auto* graphics = GetSubsystem<Graphics>();
     auto* renderer = GetSubsystem<Renderer>();
@@ -130,6 +135,17 @@ void DebugHud::Update()
 
     if (statsText_->IsVisible())
     {
+		// ATOMIC BEGIN
+        fpsTimeSinceUpdate_ += timeStep;
+        ++fpsFramesSinceUpdate_;
+        if (fpsTimeSinceUpdate_ > FPS_UPDATE_INTERVAL)
+        {
+            fps_ = (int)(fpsFramesSinceUpdate_ / fpsTimeSinceUpdate_);
+            fpsFramesSinceUpdate_ = 0;
+            fpsTimeSinceUpdate_ = 0;
+        }
+		// ATOMIC END
+
         unsigned primitives, batches;
         if (!useRendererStats_)
         {
@@ -143,7 +159,8 @@ void DebugHud::Update()
         }
 
         String stats;
-        stats.AppendWithFormat("Triangles %u\nBatches %u\nViews %u\nLights %u\nShadowmaps %u\nOccluders %u",
+        stats.AppendWithFormat("FPS %d\nTriangles %u\nBatches %u\nViews %u\nLights %u\nShadowmaps %u\nOccluders %u",
+            fps_,
             primitives,
             batches,
             renderer->GetNumViews(),
@@ -304,7 +321,7 @@ void DebugHud::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace PostUpdate;
 
-    Update();
+    Update(eventData[P_TIMESTEP].GetFloat());
 }
 
 }

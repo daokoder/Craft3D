@@ -75,6 +75,19 @@ void UIBatch::SetDefaultColor()
     }
 }
 
+static void ReverseQuadVertices( float *data )
+{
+	for(unsigned i=0; i<3; ++i){
+		float *front = data + 6*i;
+		float *back = data + 6*(5-i);
+		for(unsigned j=0; j<6; ++j){
+			float value = front[j];
+			front[j] = back[j];
+			back[j] = value;
+		}
+	}
+}
+
 void UIBatch::AddQuad(float x, float y, float width, float height, int texOffsetX, int texOffsetY, int texWidth, int texHeight)
 {
     unsigned topLeftColor, topRightColor, bottomLeftColor, bottomRightColor;
@@ -156,6 +169,8 @@ void UIBatch::AddQuad(float x, float y, float width, float height, int texOffset
     ((unsigned&)dest[33]) = bottomLeftColor;
     dest[34] = leftUV;
     dest[35] = bottomUV;
+
+	ReverseQuadVertices( dest ); // Craft;
 }
 
 void UIBatch::AddQuad(const Matrix3x4& transform, int x, int y, int width, int height, int texOffsetX, int texOffsetY,
@@ -238,6 +253,8 @@ void UIBatch::AddQuad(const Matrix3x4& transform, int x, int y, int width, int h
     ((unsigned&)dest[33]) = bottomLeftColor;
     dest[34] = leftUV;
     dest[35] = bottomUV;
+
+	ReverseQuadVertices( dest ); // Craft;
 }
 
 void UIBatch::AddQuad(int x, int y, int width, int height, int texOffsetX, int texOffsetY, int texWidth, int texHeight, bool tiled)
@@ -333,6 +350,8 @@ void UIBatch::AddQuad(const Matrix3x4& transform, const IntVector2& a, const Int
     ((unsigned&)dest[33]) = color_;
     dest[34] = uv4.x_;
     dest[35] = uv4.y_;
+
+	ReverseQuadVertices( dest ); // Craft;
 }
 
 void UIBatch::AddQuad(const Matrix3x4& transform, const IntVector2& a, const IntVector2& b, const IntVector2& c, const IntVector2& d,
@@ -400,6 +419,8 @@ void UIBatch::AddQuad(const Matrix3x4& transform, const IntVector2& a, const Int
     ((unsigned&)dest[33]) = c4;
     dest[34] = uv4.x_;
     dest[35] = uv4.y_;
+
+	ReverseQuadVertices( dest ); // Craft;
 }
 
 bool UIBatch::Merge(const UIBatch& batch)
