@@ -547,6 +547,10 @@ public:
     /** Return the skin background element, or nullptr. */
     TBSkinElement *GetSkinBgElement();
 
+	/** Craft: widget for UIView. */
+    void SetIsViewRoot(bool view_root) { m_packed.is_view_root = view_root; }
+    bool GetIsViewRoot() const { return m_packed.is_view_root; }
+
     /** Set if this widget is a group root. Grouped widgets (such as TBRadioButton) will toggle all other
         widgets with the same group_id under the nearest parent group root. TBWindow is a group root by default. */
     void SetIsGroupRoot(bool group_root) { m_packed.is_group_root = group_root; }
@@ -1089,6 +1093,7 @@ private:
     TBStr tooltip_;
     union {
         struct {
+            uint16 is_view_root : 1; // Craft;
             uint16 is_group_root : 1;
             uint16 is_focusable : 1;
             uint16 click_by_key : 1;

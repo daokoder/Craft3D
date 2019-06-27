@@ -1386,7 +1386,7 @@ bool Input::GetQualifierPress(Qualifier qualifier) const
 
 QualifierFlags Input::GetQualifiers() const
 {
-    QualifierFlags ret;
+    QualifierFlags ret = 0;
     if (GetQualifierDown(QUAL_SHIFT))
         ret |= QUAL_SHIFT;
     if (GetQualifierDown(QUAL_CTRL))

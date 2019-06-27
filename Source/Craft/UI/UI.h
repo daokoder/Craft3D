@@ -224,7 +224,7 @@ public:
     struct DragData
     {
         /// Which button combo initiated the drag.
-        MouseButtonFlags dragButtons;
+        MouseButtonFlags dragButtons{0};
         /// How many buttons initiated the drag.
         int numDragButtons;
         /// Sum of all touch locations

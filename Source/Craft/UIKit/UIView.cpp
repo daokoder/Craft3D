@@ -55,6 +55,7 @@ UIView::UIView(Context* context) : UIWidget(context, false),
 
     widget_ = new TBWidget();
     widget_->SetDelegate(this);
+	widget_->SetIsViewRoot(true);
 
     // Set gravity all so we resize correctly
     widget_->SetGravity(WIDGET_GRAVITY_ALL);

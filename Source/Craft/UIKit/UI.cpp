@@ -345,7 +345,7 @@ void UI::RemoveUIView(UIView* uiView)
         SetFocusedView(0);
     }
 
-    rootWidget_->RemoveChild(uiView->GetInternalWidget());
+    rootView_->RemoveChild(uiView->GetInternalWidget()); // Craft;
     uiViews_.Remove(SharedPtr<UIView>(uiView));
 }
 

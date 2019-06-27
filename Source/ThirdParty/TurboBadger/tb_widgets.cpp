@@ -933,7 +933,7 @@ TBWidget *TBWidget::GetParentRoot(bool view_root)
 
     while (tmp->m_parent)
     {
-        if (view_root && !tmp->m_parent->m_parent)
+        if( view_root && tmp->m_packed.is_view_root )
         {
             return tmp;
         }
