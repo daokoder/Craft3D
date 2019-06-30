@@ -109,6 +109,17 @@ void UISelectItemSource::RemoveItemWithStr(const String& str)
     }
 }
 
+UISelectItem* UISelectItemSource::GetItem(int index)
+{
+    int nn = 0;
+    for (List<SharedPtr<UISelectItem> >::Iterator itr = items_.Begin(); itr != items_.End(); itr++)
+    {
+        if ( nn == index) return *itr;
+        nn++;
+    }
+    return NULL;
+}
+
 const String& UISelectItemSource::GetItemStr(int index)
 {
     int nn = 0;

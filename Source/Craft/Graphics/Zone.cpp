@@ -39,7 +39,7 @@ namespace Craft
 static const Vector3 DEFAULT_BOUNDING_BOX_MIN(-10.0f, -10.0f, -10.0f);
 static const Vector3 DEFAULT_BOUNDING_BOX_MAX(10.0f, 10.0f, 10.0f);
 static const Color DEFAULT_AMBIENT_COLOR(0.1f, 0.1f, 0.1f);
-static const Color DEFAULT_FOG_COLOR(0.0f, 0.0f, 0.0f);
+static const Color DEFAULT_FOG_COLOR(0.0f, 0.0f, 0.0f, 0.0f); // Craft: UISceneView (Trans.BK);
 static const float DEFAULT_FOG_START = 250.0f;
 static const float DEFAULT_FOG_END = 1000.0f;
 static const float DEFAULT_FOG_HEIGHT = 0.0f;

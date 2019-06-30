@@ -90,7 +90,7 @@ extern CRAFT_API const StringHash PSP_LIGHTMATRICES("LightMatricesPS");
 extern CRAFT_API const StringHash PSP_VSMSHADOWPARAMS("VSMShadowParams");
 extern CRAFT_API const StringHash PSP_ROUGHNESS("Roughness");
 extern CRAFT_API const StringHash PSP_METALLIC("Metallic");
-extern CRAFT_API const StringHash PSP_LIGHTRAD("LightRad");
+extern CRAFT_API const StringHash PSP_LIGHTRAD("LightRadPS"); // Craft;
 extern CRAFT_API const StringHash PSP_LIGHTLENGTH("LightLength");
 extern CRAFT_API const StringHash PSP_ZONEMIN("ZoneMin");
 extern CRAFT_API const StringHash PSP_ZONEMAX("ZoneMax");

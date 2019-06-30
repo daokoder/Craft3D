@@ -1022,6 +1022,11 @@ double UIWidget::GetValue()
 
 }
 
+void UIWidget::EnsureVisible()
+{
+	if (widget_) widget_->ScrollIntoViewRecursive();
+}
+
 void UIWidget::Enable()
 {
     if (!widget_)

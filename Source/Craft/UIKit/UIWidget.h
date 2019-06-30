@@ -301,6 +301,8 @@ class CRAFT_API UIWidget : public Object, public tb::TBWidgetDelegate
 
     void SetTooltip(const String& text);
 
+	void EnsureVisible(); // Craft;
+
     void Enable();
     void Disable();
 

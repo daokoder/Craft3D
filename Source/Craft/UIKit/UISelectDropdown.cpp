@@ -51,8 +51,15 @@ UISelectDropdown::~UISelectDropdown()
 
 }
 
+UISelectItemSource* UISelectDropdown::GetSource()
+{
+	return source;
+}
+
 void UISelectDropdown::SetSource(UISelectItemSource* source)
 {
+	this->source = source;
+
     if (!widget_)
         return;
 

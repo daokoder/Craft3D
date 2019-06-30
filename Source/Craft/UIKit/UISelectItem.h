@@ -82,6 +82,8 @@ public:
 
     void Clear() { items_.Clear(); }
 
+    UISelectItem* GetItem(int index);
+
     /// Returns item string for the index. Returns empty string for invalid indexes.
     const String& GetItemStr(int index);
 

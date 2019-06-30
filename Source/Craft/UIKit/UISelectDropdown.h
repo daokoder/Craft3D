@@ -39,6 +39,8 @@ public:
     UISelectDropdown(Context* context, bool createWidget = true);
     virtual ~UISelectDropdown();
 
+	UISelectItemSource* GetSource();
+
     void SetSource(UISelectItemSource* source);
 
 	void SetCurrentIndex( int index ); // Craft;
@@ -49,6 +51,8 @@ protected:
     virtual bool OnEvent(const tb::TBWidgetEvent &ev);
 
 private:
+
+	SharedPtr<UISelectItemSource> source;
 
 };
 
