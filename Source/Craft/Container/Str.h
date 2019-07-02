@@ -618,9 +618,23 @@ public:
     /// Return character data.
     const wchar_t* CString() const { return buffer_; }
 
+    /// Append a character.
+    WString& Append(wchar_t c){
+        unsigned oldLength = length_;
+        Resize(length_ + 1);
+        buffer_[oldLength] = c;
+
+        return *this;
+	}
+
+    /// Initial dynamic allocation size.
+    static const unsigned MIN_CAPACITY = 2;
+
 private:
     /// String length.
     unsigned length_;
+    /// Capacity, zero if buffer not allocated.
+    unsigned capacity_;
     /// String buffer, null if not allocated.
     wchar_t* buffer_;
 };

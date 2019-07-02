@@ -131,6 +131,7 @@ WeakPtr<Context> UI::uiContext_;
 UI::UI(Context* context) :
     Object(context),
     rootWidget_(0),
+	eventEnabled_(true),
     inputDisabled_(false),
     keyboardDisabled_(false),
     initialized_(false),
@@ -989,7 +990,7 @@ UIWidget* UI::GetWidgetAt(int x, int y, bool include_children)
 
 bool UI::OnWidgetInvokeEvent(tb::TBWidget *widget, const tb::TBWidgetEvent &ev)
 {
-    return false;
+    return not eventEnabled_;
 }
 
 void UI::DebugShowSettingsWindow(UIWidget* parent)

@@ -221,6 +221,8 @@ public:
         items of type TBGenericStringItem to this widget. */
     TBGenericStringItemSource *GetDefaultSource() { return &m_default_source; }
 
+    TBFontDescription GetFontDescription() const { return TBWidget::GetFontDescription(); }
+
     /** Save the selected item. Transfers value from menu to button parent */
     virtual void SetValue(int value);
     virtual int GetValue() { return m_value; }

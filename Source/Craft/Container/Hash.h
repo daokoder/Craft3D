@@ -105,4 +105,10 @@ template <> inline unsigned MakeHash(const unsigned char& value)
     return value;
 }
 
+/// Wide char hash function.
+template <> inline unsigned MakeHash(const wchar_t& value)
+{
+    return value;
+}
+
 }

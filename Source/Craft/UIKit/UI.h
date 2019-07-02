@@ -135,6 +135,9 @@ public:
 
     void SetBlockChangedEvents(bool blocked = true);
 
+	void SetEventEnabled( bool enable ) { eventEnabled_ = enable; }
+	bool GetEventEnabled() const { return eventEnabled_; }
+
     UIWidget* GetHoveredWidget();
 
     // Debugging
@@ -180,6 +183,7 @@ private:
 
     int changedEventsBlocked_;
 
+	bool eventEnabled_; // Craft;
     bool inputDisabled_;
     bool keyboardDisabled_;
     bool initialized_;

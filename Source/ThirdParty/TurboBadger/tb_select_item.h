@@ -36,6 +36,8 @@ public:
     void SetSource(TBSelectItemSource *source);
     TBSelectItemSource *GetSource() const { return m_source; }
 
+    virtual TBFontDescription GetFontDescription() const = 0; // Craft;
+
     /** Called when the source has changed or been unset by calling SetSource. */
     virtual void OnSourceChanged() = 0;
 

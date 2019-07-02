@@ -1236,12 +1236,14 @@ void String::Replace(unsigned pos, unsigned length, const char* srcStart, unsign
 
 WString::WString() :
     length_(0),
+    capacity_(0),
     buffer_(nullptr)
 {
 }
 
 WString::WString(const String& str) :
     length_(0),
+    capacity_(0),
     buffer_(nullptr)
 {
 #ifdef _WIN32
@@ -1279,25 +1281,39 @@ WString::~WString()
 
 void WString::Resize(unsigned newLength)
 {
-    if (!newLength)
+    if (!capacity_)
     {
-        delete[] buffer_;
-        buffer_ = nullptr;
-        length_ = 0;
+        // If zero length requested, do not allocate buffer yet
+        if (!newLength)
+            return;
+
+        // Calculate initial capacity
+        capacity_ = newLength + 1;
+        if (capacity_ < MIN_CAPACITY)
+            capacity_ = MIN_CAPACITY;
+
+        buffer_ = new wchar_t[capacity_];
     }
     else
     {
-        auto* newBuffer = new wchar_t[newLength + 1];
-        if (buffer_)
+        if (newLength && capacity_ < newLength + 1)
         {
-            unsigned copyLength = length_ < newLength ? length_ : newLength;
-            memcpy(newBuffer, buffer_, copyLength * sizeof(wchar_t));
+            // Increase the capacity with half each time it is exceeded
+            while (capacity_ < newLength + 1)
+                capacity_ += (capacity_ + 1) >> 1u;
+
+            auto* newBuffer = new wchar_t[capacity_];
+            // Move the existing data to the new buffer, then delete the old buffer
+            if (length_)
+				memmove( newBuffer, buffer_, length_*sizeof(wchar_t) );
             delete[] buffer_;
+
+            buffer_ = newBuffer;
         }
-        newBuffer[newLength] = 0;
-        buffer_ = newBuffer;
-        length_ = newLength;
     }
+
+    buffer_[newLength] = 0;
+    length_ = newLength;
 }
 
 }

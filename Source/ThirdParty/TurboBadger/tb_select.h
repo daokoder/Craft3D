@@ -36,6 +36,8 @@ public:
         external item source. */
     TBGenericStringItemSource *GetDefaultSource() { return &m_default_source; }
 
+    TBFontDescription GetFontDescription() const { return TBWidget::GetFontDescription(); }
+
     /** Set filter string so only matching items will be showed.
         Set nullptr or empty string to remove filter and show all items. */
     void SetFilter(const char *filter);
@@ -141,6 +143,8 @@ public:
         between several TBSelectDropDown/TBSelectList widgets, use SetSource using a
         external item source. */
     TBGenericStringItemSource *GetDefaultSource() { return &m_default_source; }
+
+    TBFontDescription GetFontDescription() const { return TBWidget::GetFontDescription(); }
 
     /** Set the selected item. */
     virtual void SetValue(int value);

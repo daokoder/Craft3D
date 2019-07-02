@@ -295,16 +295,12 @@ ListViewItemWidget::ListViewItemWidget(ListViewItem *item, ListViewItemSource *s
         GetContentRoot()->AddChild(icon_);
     }
 
-    TBFontDescription fd;
-    fd.SetID(TBIDC("Vera"));
-    fd.SetSize(11);
-
     TBTextField* tfield = textField_ = new TBTextField();
     tfield->SetIgnoreInput(true);
 
     tfield->SetSkinBg(item->textSkin_.Length() ? TBIDC(item->textSkin_.CString()) : TBIDC("Folder"));
     tfield->SetText(item->str);
-    tfield->SetFontDescription(fd);
+    tfield->SetFontDescription( sourceviewer->GetFontDescription() );
 
     SetSkinBg(TBIDC("TBSelectItem"));
     GetContentRoot()->AddChild(tfield);
