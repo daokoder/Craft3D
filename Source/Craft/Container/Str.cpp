@@ -1154,10 +1154,11 @@ String& String::AppendWithFormatArgs(const char* formatString, va_list args)
 
         // Hex
         case 'x':
+        case 'X':
             {
                 char buf[CONVERSION_BUFFER_LENGTH];
                 int arg = va_arg(args, int);
-                int arglen = ::sprintf(buf, "%x", arg);
+                int arglen = ::sprintf(buf, format == 'x' ? "%x" : "%X", arg);
                 Append(buf, (unsigned)arglen);
                 break;
             }

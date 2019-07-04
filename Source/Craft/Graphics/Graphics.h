@@ -499,6 +499,8 @@ public:
     void OnWindowMoved();
     /// Restore GPU objects and reinitialize state. Requires an open window. Used only on OpenGL.
     virtual void Restore(); // Craft;
+	/// Resize the window.
+	void Resize( unsigned width, unsigned height ); // Craft;
     /// Maximize the window.
     void Maximize();
     /// Minimize the window.

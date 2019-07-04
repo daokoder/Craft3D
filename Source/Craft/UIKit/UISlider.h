@@ -43,6 +43,9 @@ public:
     double GetMinValue() const;
     double GetMaxValue() const;
 
+	void SetStepNumber( unsigned number );
+	unsigned GetStepNumber() const;
+
 protected:
 
     virtual bool OnEvent(const tb::TBWidgetEvent &ev);

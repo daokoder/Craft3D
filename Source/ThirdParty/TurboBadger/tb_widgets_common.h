@@ -365,11 +365,14 @@ public:
     /** Set the min, max limits for the slider. */
     void SetLimits(double min, double max);
 
+	void SetStepNumber( unsigned number ) { m_steps = number; }
+	unsigned GetStepNumber() const { return m_steps; }
+
     double GetMinValue() const { return m_min; }
     double GetMaxValue() const { return m_max; }
 
     /** Get a small value (depending on the min and max limits) for stepping by f.ex. keyboard. */
-    double GetSmallStep() const { return (m_max - m_min) / 100.0; }
+    double GetSmallStep() const { return (m_max - m_min) / (float) m_steps; }
 
     /** Same as SetValue, but with double precision. */
     virtual void SetValueDouble(double value);
@@ -384,6 +387,7 @@ public:
 protected:
     TBWidget m_handle;
     AXIS m_axis;
+	short  m_steps;
     double m_value;
     double m_min, m_max;
     double m_to_pixel_factor;

@@ -588,6 +588,7 @@ void TBScrollBar::OnResized(int old_w, int old_h)
 
 TBSlider::TBSlider()
     : m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
+	, m_steps(100)
     , m_value(0)
     , m_min(0)
     , m_max(1)

@@ -65,7 +65,7 @@ double UISlider::GetMinValue() const
     if (!widget_)
         return 0.0;
 
-   return ((UISlider*) widget_)->GetMinValue();
+   return ((TBSlider*) widget_)->GetMinValue();
 
 }
 
@@ -74,8 +74,22 @@ double UISlider::GetMaxValue() const
     if (!widget_)
         return 0.0;
 
-   return ((UISlider*) widget_)->GetMaxValue();
+   return ((TBSlider*) widget_)->GetMaxValue();
 
+}
+
+void UISlider::SetStepNumber( unsigned number )
+{
+    if (widget_)
+		((TBSlider*) widget_)->SetStepNumber(number);
+}
+
+unsigned UISlider::GetStepNumber() const
+{
+    if (!widget_)
+        return 0;
+
+    return ((TBSlider*) widget_)->GetStepNumber();
 }
 
 bool UISlider::OnEvent(const tb::TBWidgetEvent &ev)

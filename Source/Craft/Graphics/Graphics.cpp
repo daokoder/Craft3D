@@ -104,6 +104,18 @@ void Graphics::SetOrientations(const String& orientations)
 
 bool Graphics::ToggleFullscreen()
 {
+	if( window_ ){ // Craft;
+		fullscreen_ = ! fullscreen_;
+		if( fullscreen_ ){
+			SDL_DisplayMode DM;
+
+			SDL_GetCurrentDisplayMode( 0, &DM );
+			SDL_SetWindowSize( window_, DM.w, DM.h );
+		}else{ // TODO: Save old size to restore?
+			SDL_SetWindowSize( window_, width_, height_ );
+		}
+		return SDL_SetWindowFullscreen( window_, fullscreen_ ? SDL_WINDOW_FULLSCREEN : 0 ) == 0;
+	}
     return SetMode(width_, height_, !fullscreen_, borderless_, resizable_, highDPI_, vsync_, tripleBuffer_, multiSample_, monitor_, refreshRate_);
 }
 
@@ -231,6 +243,15 @@ int Graphics::GetMonitorCount() const
 int Graphics::GetCurrentMonitor() const
 {
     return window_ ? SDL_GetWindowDisplayIndex(window_) : 0;
+}
+
+void Graphics::Resize( unsigned width, unsigned height )
+{
+	if( window_ ){
+		width_ = width;
+		height_ = height;
+		SDL_SetWindowSize( window_, width_, height_ );
+	}
 }
 
 bool Graphics::GetMaximized() const
