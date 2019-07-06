@@ -438,7 +438,10 @@ if (CRAFT_DATABASE_ODBC)
 endif ()
 
 if (NOT CRAFT_DAO)
-	add_definitions (-DCRAFT_USE_FLAGSET)
+	option (CRAFT_USE_FLAGSET "Use FlagSet class for flags" FALSE)
+	if (CRAFT_USE_FLAGSET)
+		add_definitions (-DCRAFT_USE_FLAGSET)
+	endif ()
 endif ()
 
 # Define preprocessor macros (for building the Craft library) based on the configured build options

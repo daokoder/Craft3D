@@ -32,6 +32,7 @@
 #include "../Graphics/DecalSet.h"
 #include "../Graphics/Graphics.h"
 #include "../Graphics/GraphicsImpl.h"
+#include "../Graphics/GraphicsEvents.h"
 #include "../Graphics/Material.h"
 #include "../Graphics/Octree.h"
 #include "../Graphics/ParticleEffect.h"
@@ -110,9 +111,12 @@ bool Graphics::ToggleFullscreen()
 			SDL_DisplayMode DM;
 
 			SDL_GetCurrentDisplayMode( 0, &DM );
-			SDL_SetWindowSize( window_, DM.w, DM.h );
-		}else{ // TODO: Save old size to restore?
-			SDL_SetWindowSize( window_, width_, height_ );
+
+			logicalWidth_ = DM.w;
+			logicalHeight_ = DM.h;
+			width_ = logicalWidth_ * devicePixelRatio_;
+			height_ = logicalHeight_ * devicePixelRatio_;
+			SDL_SetWindowSize( window_, logicalWidth_, logicalHeight_ );
 		}
 		return SDL_SetWindowFullscreen( window_, fullscreen_ ? SDL_WINDOW_FULLSCREEN : 0 ) == 0;
 	}
@@ -243,15 +247,6 @@ int Graphics::GetMonitorCount() const
 int Graphics::GetCurrentMonitor() const
 {
     return window_ ? SDL_GetWindowDisplayIndex(window_) : 0;
-}
-
-void Graphics::Resize( unsigned width, unsigned height )
-{
-	if( window_ ){
-		width_ = width;
-		height_ = height;
-		SDL_SetWindowSize( window_, width_, height_ );
-	}
 }
 
 bool Graphics::GetMaximized() const

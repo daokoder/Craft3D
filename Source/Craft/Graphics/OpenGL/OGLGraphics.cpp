@@ -482,21 +482,15 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     monitor_ = monitor;
     refreshRate_ = refreshRate;
 
-	int widthInPoint = 0; // Craft;
-	int heightInPoint = 0;
-
-	SDL_GetWindowSize( window_, & widthInPoint, & heightInPoint );
-
     SDL_GL_GetDrawableSize(window_, &width_, &height_);
-
-	devicePixelRatio_ = width_ / (float) widthInPoint; // Craft;
 
     if (!fullscreen)
         SDL_GetWindowPosition(window_, &position_.x_, &position_.y_);
 
-    int logicalWidth, logicalHeight;
-    SDL_GetWindowSize(window_, &logicalWidth, &logicalHeight);
-    highDPI_ = (width_ != logicalWidth) || (height_ != logicalHeight);
+    SDL_GetWindowSize(window_, &logicalWidth_, &logicalHeight_);
+
+    highDPI_ = (width_ != logicalWidth_) || (height_ != logicalHeight_);
+	devicePixelRatio_ = width_ / (float) logicalWidth_; // Craft;
 
     // Reset rendertargets and viewport for the new screen mode
     ResetRenderTargets();
@@ -540,6 +534,14 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
 bool Graphics::SetMode(int width, int height)
 {
     return SetMode(width, height, fullscreen_, borderless_, resizable_, highDPI_, vsync_, tripleBuffer_, multiSample_, monitor_, refreshRate_);
+}
+
+void Graphics::Resize( unsigned width, unsigned height )
+{
+	if( window_ ){
+		SDL_SetWindowSize( window_, width, height );
+		SDL_GL_GetDrawableSize( window_, &width_, &height_ );
+	}
 }
 
 void Graphics::SetSRGB(bool enable)
@@ -2246,9 +2248,9 @@ void Graphics::OnWindowResized()
     width_ = newWidth;
     height_ = newHeight;
 
-    int logicalWidth, logicalHeight;
-    SDL_GetWindowSize(window_, &logicalWidth, &logicalHeight);
-    highDPI_ = (width_ != logicalWidth) || (height_ != logicalHeight);
+    SDL_GetWindowSize(window_, &logicalWidth_, &logicalHeight_);
+    highDPI_ = (width_ != logicalWidth_) || (height_ != logicalHeight_);
+	devicePixelRatio_ = width_ / (float) logicalWidth_; // Craft;
 
     // Reset rendertargets and viewport for the new screen size. Also clean up any FBO's, as they may be screen size dependent
     CleanupFramebuffers();

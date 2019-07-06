@@ -279,11 +279,20 @@ public:
     /// Return window height in pixels.
     int GetHeight() const { return height_; }
 
+    /// Return window width in screen coordinates.
+    int GetLogicalWidth() const { return logicalWidth_; } // Craft;
+
+    /// Return window height in screen coordinates.
+    int GetLogicalHeight() const { return logicalHeight_; } // Craft;
+
     /// Return multisample mode (1 = no multisampling.)
     int GetMultiSample() const { return multiSample_; }
 
     /// Return window size in pixels.
     IntVector2 GetSize() const { return IntVector2(width_, height_); }
+
+    /// Return window size in screen coordinates.
+    IntVector2 GetLogicalSize() const { return IntVector2(logicalWidth_, logicalHeight_); }
 
     /// Return whether window is fullscreen.
     bool GetFullscreen() const { return fullscreen_; }
@@ -647,6 +656,10 @@ protected:
     int width_{};
     /// Window height in pixels.
     int height_{};
+    /// Window width in pixels.
+    int logicalWidth_{};
+    /// Window height in pixels.
+    int logicalHeight_{};
 	/// Pixels per point.
 	float devicePixelRatio_{1.0f}; // Craft;
     /// Window position.

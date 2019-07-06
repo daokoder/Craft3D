@@ -181,12 +181,6 @@ public:
     }
 
     /// Cast to underlying type of enum.
-    operator unsigned () const // Craft;
-    {
-        return static_cast<unsigned>( value_ );
-    }
-
-    /// Cast to underlying type of enum.
     operator Integer() const
     {
         return value_;
