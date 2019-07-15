@@ -539,7 +539,7 @@ public:
     /// Bind a UBO, avoiding redundant operation. Used only on OpenGL.
     void SetUBO(unsigned object);
 
-	float GetDevicePixelRatio() const { return devicePixelRatio_; }  // Craft;
+	float GetPixelDensity() const { return pixelDensity_; }  // Craft;
 
     /// Return the API-specific alpha texture format.
     static unsigned GetAlphaFormat();
@@ -661,7 +661,7 @@ protected:
     /// Window height in pixels.
     int logicalHeight_{};
 	/// Pixels per point.
-	float devicePixelRatio_{1.0f}; // Craft;
+	float pixelDensity_{1.0f}; // Craft;
     /// Window position.
     IntVector2 position_;
     /// Multisampling mode.

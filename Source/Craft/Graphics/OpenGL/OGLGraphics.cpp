@@ -490,7 +490,7 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     SDL_GetWindowSize(window_, &logicalWidth_, &logicalHeight_);
 
     highDPI_ = (width_ != logicalWidth_) || (height_ != logicalHeight_);
-	devicePixelRatio_ = width_ / (float) logicalWidth_; // Craft;
+	pixelDensity_ = width_ / (float) logicalWidth_; // Craft;
 
     // Reset rendertargets and viewport for the new screen mode
     ResetRenderTargets();
@@ -2250,7 +2250,7 @@ void Graphics::OnWindowResized()
 
     SDL_GetWindowSize(window_, &logicalWidth_, &logicalHeight_);
     highDPI_ = (width_ != logicalWidth_) || (height_ != logicalHeight_);
-	devicePixelRatio_ = width_ / (float) logicalWidth_; // Craft;
+	pixelDensity_ = width_ / (float) logicalWidth_; // Craft;
 
     // Reset rendertargets and viewport for the new screen size. Also clean up any FBO's, as they may be screen size dependent
     CleanupFramebuffers();

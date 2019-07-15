@@ -114,8 +114,8 @@ bool Graphics::ToggleFullscreen()
 
 			logicalWidth_ = DM.w;
 			logicalHeight_ = DM.h;
-			width_ = logicalWidth_ * devicePixelRatio_;
-			height_ = logicalHeight_ * devicePixelRatio_;
+			width_ = logicalWidth_ * pixelDensity_;
+			height_ = logicalHeight_ * pixelDensity_;
 			SDL_SetWindowSize( window_, logicalWidth_, logicalHeight_ );
 		}
 		return SDL_SetWindowFullscreen( window_, fullscreen_ ? SDL_WINDOW_FULLSCREEN : 0 ) == 0;

@@ -804,11 +804,11 @@ void UIWidget::SetAutoOpacity(float autoOpacity)
     if (autoOpacity == 0.0f)
     {
         widget_->SetOpacity(autoOpacity);
-        widget_->SetVisibilility(tb::WIDGET_VISIBILITY_INVISIBLE);
+        widget_->SetVisibility(tb::WIDGET_VISIBILITY_INVISIBLE);
     }
     else
     {
-        widget_->SetVisibilility(tb::WIDGET_VISIBILITY_VISIBLE);
+        widget_->SetVisibility(tb::WIDGET_VISIBILITY_VISIBLE);
         widget_->SetOpacity(autoOpacity);
     }
 }
@@ -950,7 +950,7 @@ void UIWidget::SetVisibility(UI_WIDGET_VISIBILITY visibility)
     if (!widget_)
         return;
 
-    widget_->SetVisibilility((WIDGET_VISIBILITY) visibility);
+    widget_->SetVisibility((WIDGET_VISIBILITY) visibility);
 
 }
 

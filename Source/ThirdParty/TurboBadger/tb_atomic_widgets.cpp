@@ -772,7 +772,7 @@ TBDockWindow::TBDockWindow( TBStr title, TBWidget *contentptr, int minwidth, int
         m_redock_button.SetSkinBg(TBIDC("arrow.down"));  // fallback skin for editor
     m_redock_button.SetIsFocusable(false);
     m_redock_button.SetID(TBIDC("TBWindow.redock"));
-    m_redock_button.SetVisibilility(WIDGET_VISIBILITY_INVISIBLE);
+    m_redock_button.SetVisibility(WIDGET_VISIBILITY_INVISIBLE);
 
     SetText(title);
 
@@ -798,7 +798,7 @@ void TBDockWindow::SetDockOrigin( TBID dockid )
     m_dockid = dockid;
     if ( m_dockid > 0 ) //enable/show the (re)dock button is a return id is specified
     {
-        m_redock_button.SetVisibilility(WIDGET_VISIBILITY_VISIBLE);
+        m_redock_button.SetVisibility(WIDGET_VISIBILITY_VISIBLE);
     }
 }
 

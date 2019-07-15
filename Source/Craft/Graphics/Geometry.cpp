@@ -299,7 +299,7 @@ void Geometry::GetRawDataShared(SharedArrayPtr<unsigned char>& vertexData, unsig
     }
 }
 
-float Geometry::GetHitDistance(const Ray& ray, Vector3* outNormal, Vector2* outUV) const
+float Geometry::GetHitDistance(const Ray& ray, Vector3* outNormal, Vector2* outUV, bool backface) const
 {
     const unsigned char* vertexData;
     const unsigned char* indexData;
@@ -322,8 +322,8 @@ float Geometry::GetHitDistance(const Ray& ray, Vector3* outNormal, Vector2* outU
         outUV = nullptr;
     }
 
-    return indexData ? ray.HitDistance(vertexData, vertexSize, indexData, indexSize, indexStart_, indexCount_, outNormal, outUV,
-        uvOffset) : ray.HitDistance(vertexData, vertexSize, vertexStart_, vertexCount_, outNormal, outUV, uvOffset);
+	return indexData ? ray.HitDistance(vertexData, vertexSize, indexData, indexSize, indexStart_, indexCount_, outNormal, outUV,
+        uvOffset, backface) : ray.HitDistance(vertexData, vertexSize, vertexStart_, vertexCount_, outNormal, outUV, uvOffset, backface);
 }
 
 bool Geometry::IsInside(const Ray& ray) const

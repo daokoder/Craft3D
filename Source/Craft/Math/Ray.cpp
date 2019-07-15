@@ -244,7 +244,7 @@ float Ray::HitDistance(const Vector3& v0, const Vector3& v1, const Vector3& v2, 
 }
 
 float Ray::HitDistance(const void* vertexData, unsigned vertexStride, unsigned vertexStart, unsigned vertexCount,
-    Vector3* outNormal, Vector2* outUV, unsigned uvOffset) const
+    Vector3* outNormal, Vector2* outUV, unsigned uvOffset, bool backface) const
 {
     float nearest = M_INFINITY;
     const unsigned char* vertices = ((const unsigned char*)vertexData) + vertexStart * vertexStride;
@@ -258,6 +258,9 @@ float Ray::HitDistance(const void* vertexData, unsigned vertexStride, unsigned v
         const Vector3& v1 = *((const Vector3*)(&vertices[(index + 1) * vertexStride]));
         const Vector3& v2 = *((const Vector3*)(&vertices[(index + 2) * vertexStride]));
         float distance = HitDistance(v0, v1, v2, outNormal, outBary);
+		if( backface and distance == M_INFINITY ){
+			distance = HitDistance(v0, v2, v1, outNormal, outBary);
+		}
         if (distance < nearest)
         {
             nearestIdx = index;
@@ -285,7 +288,7 @@ float Ray::HitDistance(const void* vertexData, unsigned vertexStride, unsigned v
 }
 
 float Ray::HitDistance(const void* vertexData, unsigned vertexStride, const void* indexData, unsigned indexSize,
-    unsigned indexStart, unsigned indexCount, Vector3* outNormal, Vector2* outUV, unsigned uvOffset) const
+    unsigned indexStart, unsigned indexCount, Vector3* outNormal, Vector2* outUV, unsigned uvOffset, bool backface) const
 {
     float nearest = M_INFINITY;
     const auto* vertices = (const unsigned char*)vertexData;
@@ -305,7 +308,10 @@ float Ray::HitDistance(const void* vertexData, unsigned vertexStride, const void
             const Vector3& v1 = *((const Vector3*)(&vertices[indices[1] * vertexStride]));
             const Vector3& v2 = *((const Vector3*)(&vertices[indices[2] * vertexStride]));
             float distance = HitDistance(v0, v1, v2, outNormal, outBary);
-            if (distance < nearest)
+			if( backface and distance == M_INFINITY ){
+				distance = HitDistance(v0, v2, v1, outNormal, outBary);
+			}
+			if (distance < nearest)
             {
                 nearestIndices = indices;
                 nearest = distance;
@@ -341,7 +347,10 @@ float Ray::HitDistance(const void* vertexData, unsigned vertexStride, const void
             const Vector3& v1 = *((const Vector3*)(&vertices[indices[1] * vertexStride]));
             const Vector3& v2 = *((const Vector3*)(&vertices[indices[2] * vertexStride]));
             float distance = HitDistance(v0, v1, v2, outNormal, outBary);
-            if (distance < nearest)
+			if( backface and distance == M_INFINITY ){
+				distance = HitDistance(v0, v2, v1, outNormal, outBary);
+			}
+			if (distance < nearest)
             {
                 nearestIndices = indices;
                 nearest = distance;

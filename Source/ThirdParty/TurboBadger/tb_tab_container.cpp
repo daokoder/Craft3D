@@ -106,7 +106,7 @@ void TBTabContainer::SetValue(int index)
     for (   ; page && tab; page = page->GetNext(), tab = tab->GetNext(), index++)
     {
         bool active = index == m_current_page;
-        page->SetVisibilility(active ? WIDGET_VISIBILITY_VISIBLE : WIDGET_VISIBILITY_INVISIBLE);
+        page->SetVisibility(active ? WIDGET_VISIBILITY_VISIBLE : WIDGET_VISIBILITY_INVISIBLE);
         tab->SetValue(active ? 1 : 0);
 
         if (active)

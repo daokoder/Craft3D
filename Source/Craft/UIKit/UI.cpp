@@ -247,9 +247,9 @@ void UI::Initialize(const String& languageFile)
     int width = graphics_->GetWidth();
     int height = graphics_->GetHeight();
     rootWidget_->SetSize(width, height);
-    rootWidget_->SetVisibilility(tb::WIDGET_VISIBILITY_VISIBLE);
+    rootWidget_->SetVisibility(tb::WIDGET_VISIBILITY_VISIBLE);
     rootView_->SetSize(width, height); // Craft;
-    rootView_->SetVisibilility(tb::WIDGET_VISIBILITY_VISIBLE);
+    rootView_->SetVisibility(tb::WIDGET_VISIBILITY_VISIBLE);
 
     SubscribeToEvent(E_UPDATE, CRAFT_HANDLER(UI, HandleUpdate));
     SubscribeToEvent(E_SCREENMODE, CRAFT_HANDLER(UI, HandleScreenMode));
@@ -511,6 +511,7 @@ void UI::HandleUpdate(StringHash eventType, VariantMap& eventData)
             {
                 UITextField* fullTextField = new UITextField(context_, true);
 				fullTextField->SetFontId( hoveredWidget->GetFontId() ); // Craft;
+				fullTextField->SetFontSize( 15*graphics_->GetPixelDensity() ); // Craft;
                 fullTextField->SetText(hoveredWidget->GetText());
                 tooltipLayout->AddChild(fullTextField);
             }
@@ -518,7 +519,7 @@ void UI::HandleUpdate(StringHash eventType, VariantMap& eventData)
             {
                 UITextField* tooltipTextField = new UITextField(context_, true);
 				tooltipTextField->SetFontId( hoveredWidget->GetFontId() ); // Craft;
-				tooltipTextField->SetFontSize( 15 ); // Craft;
+				tooltipTextField->SetFontSize( 15*graphics_->GetPixelDensity() ); // Craft;
                 tooltipTextField->SetText(hoveredWidget->GetTooltip());
                 tooltipLayout->AddChild(tooltipTextField);
             }

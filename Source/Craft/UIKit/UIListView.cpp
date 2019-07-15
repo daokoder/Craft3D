@@ -627,7 +627,7 @@ void UIListView::UpdateItemVisibility()
         if (!item->widget_)
             continue;
 
-        item->widget_->SetVisibilility(WIDGET_VISIBILITY_VISIBLE);
+        item->widget_->SetVisibility(WIDGET_VISIBILITY_VISIBLE);
         item->widget_->SetState(WIDGET_STATE_SELECTED, item->GetSelected());
 
         ListViewItem* parent = item->parent_;
@@ -640,7 +640,7 @@ void UIListView::UpdateItemVisibility()
         }
 
         if (parent)
-            item->widget_->SetVisibilility(WIDGET_VISIBILITY_GONE);
+            item->widget_->SetVisibility(WIDGET_VISIBILITY_GONE);
     }
 
     tb::TBScrollContainer* scroll = (tb::TBScrollContainer*) rootList_->GetInternalWidget()->GetFirstChild();
