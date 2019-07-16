@@ -2579,10 +2579,10 @@ void View::SetupShadowCameras(LightQueryResult& query)
             {
                 &Vector3::RIGHT,
                 &Vector3::LEFT,
+                &Vector3::FORWARD,
+                &Vector3::BACK,
                 &Vector3::UP,
                 &Vector3::DOWN,
-                &Vector3::FORWARD,
-                &Vector3::BACK
             };
 
             for (unsigned i = 0; i < MAX_CUBEMAP_FACES; ++i)
