@@ -48,6 +48,10 @@ set (SOURCE_FILES ${CPP_FILES} ${H_FILES})
 # Define dependency libs
 set (INCLUDE_DIRS src)
 
+if( CRAFT_BULLET_DOUBLE )
+    add_definitions (-DBT_USE_DOUBLE_PRECISION)
+endif ()
+
 # Setup target
 setup_library ()
 

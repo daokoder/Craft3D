@@ -363,6 +363,7 @@ dtStatus dtNavMeshQuery::findRandomPointAroundCircle(dtPolyRef startRef, const f
 		const dtMeshTile* bestTile = 0;
 		const dtPoly* bestPoly = 0;
 		m_nav->getTileAndPolyByRefUnsafe(bestRef, &bestTile, &bestPoly);
+		if( bestPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 
 		// Place random locations on on ground.
 		if (bestPoly->getType() == DT_POLYTYPE_GROUND)
@@ -1080,6 +1081,7 @@ dtStatus dtNavMeshQuery::findPath(dtPolyRef startRef, dtPolyRef endRef,
 		const dtMeshTile* bestTile = 0;
 		const dtPoly* bestPoly = 0;
 		m_nav->getTileAndPolyByRefUnsafe(bestRef, &bestTile, &bestPoly);
+		if( bestPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		
 		// Get parent poly and tile.
 		dtPolyRef parentRef = 0;
@@ -1102,8 +1104,9 @@ dtStatus dtNavMeshQuery::findPath(dtPolyRef startRef, dtPolyRef endRef,
 			// The API input has been cheked already, skip checking internal data.
 			const dtMeshTile* neighbourTile = 0;
 			const dtPoly* neighbourPoly = 0;
-			m_nav->getTileAndPolyByRefUnsafe(neighbourRef, &neighbourTile, &neighbourPoly);			
-			
+			m_nav->getTileAndPolyByRef(neighbourRef, &neighbourTile, &neighbourPoly);
+			if( neighbourPoly == NULL ) continue;  // Craft: workaround;
+
 			if (!filter->passFilter(neighbourRef, neighbourTile, neighbourPoly))
 				continue;
 
@@ -1399,6 +1402,8 @@ dtStatus dtNavMeshQuery::updateSlicedFindPath(const int maxIter, int* doneIters)
 			if ((parentRef != 0) && (dtVdistSqr(parentNode->pos, bestNode->pos) < m_query.raycastLimitSqr))
 				tryLOS = true;
 		}
+
+		if( bestPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		
 		for (unsigned int i = bestPoly->firstLink; i != DT_NULL_LINK; i = bestTile->links[i].next)
 		{
@@ -1784,6 +1789,7 @@ dtStatus dtNavMeshQuery::appendPortals(const int startIdx, const int endIdx, con
 	
 		if (options & DT_STRAIGHTPATH_AREA_CROSSINGS)
 		{
+			if( fromPoly == NULL or toPoly == NULL ) continue; // Craft: workaround; 2019-02-26
 			// Skip intersection if only area crossings are requested.
 			if (fromPoly->getArea() == toPoly->getArea())
 				continue;
@@ -2126,6 +2132,7 @@ dtStatus dtNavMeshQuery::moveAlongSurface(dtPolyRef startRef, const float* start
 		const dtMeshTile* curTile = 0;
 		const dtPoly* curPoly = 0;
 		m_nav->getTileAndPolyByRefUnsafe(curRef, &curTile, &curPoly);			
+		if( curPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		
 		// Collect vertices.
 		const int nverts = curPoly->vertCount;
@@ -2276,12 +2283,14 @@ dtStatus dtNavMeshQuery::getPortalPoints(dtPolyRef from, dtPolyRef to, float* le
 	const dtPoly* fromPoly = 0;
 	if (dtStatusFailed(m_nav->getTileAndPolyByRef(from, &fromTile, &fromPoly)))
 		return DT_FAILURE | DT_INVALID_PARAM;
+	if( fromPoly == NULL ) return DT_FAILURE;  // Craft: workaround; 2019-08-14
 	fromType = fromPoly->getType();
 
 	const dtMeshTile* toTile = 0;
 	const dtPoly* toPoly = 0;
 	if (dtStatusFailed(m_nav->getTileAndPolyByRef(to, &toTile, &toPoly)))
 		return DT_FAILURE | DT_INVALID_PARAM;
+	if( toPoly == NULL ) return DT_FAILURE;  // Craft: workaround; 2019-08-14
 	toType = toPoly->getType();
 		
 	return getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, left, right);
@@ -2527,6 +2536,7 @@ dtStatus dtNavMeshQuery::raycast(dtPolyRef startRef, const float* startPos, cons
 
 	while (curRef)
 	{
+		if( poly == NULL ) break;  // Craft: workaround; 2019-08-14
 		// Cast ray against current polygon.
 		
 		// Collect vertices.
@@ -2585,6 +2595,7 @@ dtStatus dtNavMeshQuery::raycast(dtPolyRef startRef, const float* startPos, cons
 			nextTile = 0;
 			nextPoly = 0;
 			m_nav->getTileAndPolyByRefUnsafe(link->ref, &nextTile, &nextPoly);
+			if( nextPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 			
 			// Skip off-mesh connections.
 			if (nextPoly->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)
@@ -2802,6 +2813,7 @@ dtStatus dtNavMeshQuery::findPolysAroundCircle(dtPolyRef startRef, const float* 
 			status |= DT_BUFFER_TOO_SMALL;
 		}
 		
+		if( bestPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		for (unsigned int i = bestPoly->firstLink; i != DT_NULL_LINK; i = bestTile->links[i].next)
 		{
 			const dtLink* link = &bestTile->links[i];
@@ -2973,6 +2985,7 @@ dtStatus dtNavMeshQuery::findPolysAroundShape(dtPolyRef startRef, const float* v
 			status |= DT_BUFFER_TOO_SMALL;
 		}
 		
+		if( bestPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		for (unsigned int i = bestPoly->firstLink; i != DT_NULL_LINK; i = bestTile->links[i].next)
 		{
 			const dtLink* link = &bestTile->links[i];
@@ -3147,6 +3160,7 @@ dtStatus dtNavMeshQuery::findLocalNeighbourhood(dtPolyRef startRef, const float*
 		const dtMeshTile* curTile = 0;
 		const dtPoly* curPoly = 0;
 		m_nav->getTileAndPolyByRefUnsafe(curRef, &curTile, &curPoly);
+		if( curPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		
 		for (unsigned int i = curPoly->firstLink; i != DT_NULL_LINK; i = curTile->links[i].next)
 		{
@@ -3168,6 +3182,7 @@ dtStatus dtNavMeshQuery::findLocalNeighbourhood(dtPolyRef startRef, const float*
 			const dtMeshTile* neighbourTile = 0;
 			const dtPoly* neighbourPoly = 0;
 			m_nav->getTileAndPolyByRefUnsafe(neighbourRef, &neighbourTile, &neighbourPoly);
+			if( neighbourPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 			
 			// Skip off-mesh connections.
 			if (neighbourPoly->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)
@@ -3222,6 +3237,7 @@ dtStatus dtNavMeshQuery::findLocalNeighbourhood(dtPolyRef startRef, const float*
 				const dtMeshTile* pastTile = 0;
 				const dtPoly* pastPoly = 0;
 				m_nav->getTileAndPolyByRefUnsafe(pastRef, &pastTile, &pastPoly);
+				if( pastPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 				
 				// Get vertices and test overlap
 				const int npb = pastPoly->vertCount;
@@ -3324,6 +3340,7 @@ dtStatus dtNavMeshQuery::getPolyWallSegments(dtPolyRef ref, const dtQueryFilter*
 	
 	dtStatus status = DT_SUCCESS;
 	
+	if( poly == NULL ) return DT_FAILURE | DT_INVALID_PARAM;  // Craft: workaround; 2019-02-26
 	for (int i = 0, j = (int)poly->vertCount-1; i < (int)poly->vertCount; j = i++)
 	{
 		// Skip non-solid edges.
@@ -3502,6 +3519,7 @@ dtStatus dtNavMeshQuery::findDistanceToWall(dtPolyRef startRef, const float* cen
 		if (parentRef)
 			m_nav->getTileAndPolyByRefUnsafe(parentRef, &parentTile, &parentPoly);
 		
+		if( bestPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 		// Hit test walls.
 		for (int i = 0, j = (int)bestPoly->vertCount-1; i < (int)bestPoly->vertCount; j = i++)
 		{
@@ -3567,6 +3585,7 @@ dtStatus dtNavMeshQuery::findDistanceToWall(dtPolyRef startRef, const float* cen
 			const dtMeshTile* neighbourTile = 0;
 			const dtPoly* neighbourPoly = 0;
 			m_nav->getTileAndPolyByRefUnsafe(neighbourRef, &neighbourTile, &neighbourPoly);
+			if( neighbourPoly == NULL ) continue;  // Craft: workaround; 2019-02-26
 			
 			// Skip off-mesh connections.
 			if (neighbourPoly->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)

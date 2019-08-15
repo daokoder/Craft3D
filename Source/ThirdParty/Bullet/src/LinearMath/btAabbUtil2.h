@@ -192,9 +192,9 @@ SIMD_FORCE_INLINE	void btTransformAabb(const btVector3& halfExtents, btScalar ma
 
 SIMD_FORCE_INLINE	void btTransformAabb(const btVector3& localAabbMin,const btVector3& localAabbMax, btScalar margin,const btTransform& trans,btVector3& aabbMinOut,btVector3& aabbMaxOut)
 {
-		btAssert(localAabbMin.getX() <= localAabbMax.getX());
-		btAssert(localAabbMin.getY() <= localAabbMax.getY());
-		btAssert(localAabbMin.getZ() <= localAabbMax.getZ());
+		//btAssert(localAabbMin.getX() <= localAabbMax.getX()); // Craft workaround: 2019-08-15
+		//btAssert(localAabbMin.getY() <= localAabbMax.getY());
+		//btAssert(localAabbMin.getZ() <= localAabbMax.getZ());
 		btVector3 localHalfExtents = btScalar(0.5)*(localAabbMax-localAabbMin);
 		localHalfExtents+=btVector3(margin,margin,margin);
 

@@ -361,6 +361,9 @@ if (CRAFT_D3D11)
     set (CRAFT_OPENGL 0)
     unset (CRAFT_OPENGL CACHE)
 endif ()
+if (CRAFT_PHYSICS)
+    option (CRAFT_BULLET_DOUBLE "Enable double precision in Bullet Physics Engine" TRUE)
+endif ()
 if (CRAFT_DATABASE_ODBC)
     set (CRAFT_DATABASE_SQLITE 0)
     unset (CRAFT_DATABASE_SQLITE CACHE)
@@ -451,6 +454,7 @@ foreach (OPT
         CRAFT_FILEWATCHER
         CRAFT_IK
         CRAFT_LOGGING
+		CRAFT_DAO
         CRAFT_LUA
         CRAFT_MINIDUMPS
         CRAFT_NAVIGATION
