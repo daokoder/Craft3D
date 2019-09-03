@@ -29,6 +29,25 @@ const char *special_char_space = "·";		// 00B7 MIDDLE DOT
 const char *special_char_tab = "»";		// 00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
 const char *special_char_password = "•";	// 2022 BULLET
 
+const unsigned cjk_charts[][2] = 
+{
+    {0x3400, 0x4DBF},   /* Extension A; */
+    {0x4E00, 0x9FFF},   /* Basic Block; */
+    {0xF900, 0xFAFF},   /* Compatibility; */
+    {0x20000, 0x2A6DF}, /* Extension B; */
+    {0x2A700, 0x2B73F}, /* Extension C; */
+    {0x2B740, 0x2B81F}, /* Extension D; */
+    {0x2F800, 0x2FA1F}, /* Compatibility Supplement; */
+};
+
+static bool is_character_cjk( unsigned ch ) 
+{
+    int i = 0; 
+    while( i < 7 && cjk_charts[i][1] < ch ) i += 1;
+    if( i >= 7 || cjk_charts[i][0] > ch ) return false;
+    return true;
+}
+
 static bool is_space(int8 c)
 {
     switch(c)
@@ -85,6 +104,17 @@ static bool is_wordbreak(int8 c)
         return true;
     }
     return is_space(c);
+}
+
+static int is_wordbreak(const char *str, int ofs, int len)
+{
+	if( is_wordbreak(str[ofs]) ) return 1;
+
+	int pos = ofs;
+	UCS4 code = utf8::decode_next(str, &pos, len);
+	if( code == 0xFFFF ) return 0;
+	if( is_character_cjk( code ) ) return pos - ofs;
+	return 0;
 }
 
 /** Check if no line wrapping is allowed before the character at the given offset.
@@ -167,11 +197,13 @@ static bool GetNextFragment(const char *text, TBTextFragmentContentFactory *cont
         }
     }
     int i = 0;
-    while (!is_wordbreak(text[i]))
+	int k = 0;
+	int len = strlen( text );
+    while (!is_wordbreak(text, i, len))
         i++;
     if (i == 0)
-        if (is_wordbreak(text[i]))
-            i++;
+        if ((k = is_wordbreak(text, i, len)))
+            i += k;
     *frag_len = i;
     if (text[i] == 0)
         return false;
@@ -486,20 +518,22 @@ bool TBCaret::Move(bool forward, bool word)
     if (word && !(forward && pos.ofs == len) && !(!forward && pos.ofs == 0))
     {
         const char *str = pos.block->str;
+		int len = strlen( str );
+		int k = 0;
         if (forward)
         {
             if (is_linebreak(str[pos.ofs]))
             {
                 pos.ofs++;
             }
-            else if (is_wordbreak(str[pos.ofs]))
+            else if (is_wordbreak(str, pos.ofs, len))
             {
-                while (pos.ofs < len && is_wordbreak(str[pos.ofs]) && !is_linebreak(str[pos.ofs]))
-                    pos.ofs++;
+                while (pos.ofs < len && (k=is_wordbreak(str, pos.ofs, len)) && !is_linebreak(str[pos.ofs]))
+                    pos.ofs += k;
             }
             else
             {
-                while (pos.ofs < len && !is_wordbreak(str[pos.ofs]))
+                while (pos.ofs < len && !is_wordbreak(str, pos.ofs, len))
                     pos.ofs++;
 
                 // This is causing trailing space to be selected

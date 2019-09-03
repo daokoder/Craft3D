@@ -168,13 +168,13 @@ public:
     static const IntVector3 LEFT;
     /// (1,0,0) vector.
     static const IntVector3 RIGHT;
-    /// (0,1,0) vector.
-    static const IntVector3 UP;
-    /// (0,-1,0) vector.
-    static const IntVector3 DOWN;
     /// (0,0,1) vector.
-    static const IntVector3 FORWARD;
+    static const IntVector3 UP;
     /// (0,0,-1) vector.
+    static const IntVector3 DOWN;
+    /// (0,1,0) vector.
+    static const IntVector3 FORWARD;
+    /// (0,-1,0) vector.
     static const IntVector3 BACK;
     /// (1,1,1) vector.
     static const IntVector3 ONE;
