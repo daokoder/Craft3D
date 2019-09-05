@@ -26,6 +26,7 @@ namespace Craft
 {
 
 // Engine parameters
+static const String EP_APPLICATION_NAME = "ApplicationName";
 static const String EP_AUTOLOAD_PATHS = "AutoloadPaths";
 static const String EP_BORDERLESS = "Borderless";
 static const String EP_DUMP_SHADERS = "DumpShaders";

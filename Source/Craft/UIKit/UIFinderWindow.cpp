@@ -23,6 +23,7 @@
 #include <TurboBadger/tb_widgets.h>
 #include <TurboBadger/tb_widgets_common.h>
 
+#include <../Engine/Engine.h>
 #include <../IO/FileSystem.h>
 #include <../IO/Log.h>
 #include <../IO/File.h>
@@ -546,13 +547,15 @@ void UIFinderWindow::DeleteBookmark ( int bkindex )
 void UIFinderWindow::LoadBookmarks()
 {
     FileSystem* filesystem = GetSubsystem<FileSystem>();
+	Engine* engine = GetSubsystem<Engine>();
+	String appname = engine->GetApplicationName();
     String bkdata = "";
     String bkpath = "";
     
 #if defined(CRAFT_PLATFORM_ANDROID) || defined(CRAFT_PLATFORM_IOS)
     bkpath = filesystem->GetUserDocumentsDir(); // somewhere writable on mobile
 #else
-    bkpath = filesystem->GetAppPreferencesDir("CraftGameEngine", "Bookmarks"); // desktop systems
+    bkpath = filesystem->GetAppPreferencesDir(appname, "Bookmarks"); // desktop systems
 #endif
     
     bkpath += "/Bookmarks.txt";
@@ -581,12 +584,14 @@ void UIFinderWindow::SaveBookmarks()
     if ( bookmarksDirty_ > 0 )
     {
         FileSystem* filesystem = GetSubsystem<FileSystem>();
+		Engine* engine = GetSubsystem<Engine>();
+		String appname = engine->GetApplicationName();
         String bkpath = "";
 
 #if defined(CRAFT_PLATFORM_ANDROID) || defined(CRAFT_PLATFORM_IOS)
         bkpath = filesystem->GetUserDocumentsDir();
 #else
-        bkpath = filesystem->GetAppPreferencesDir("CraftGameEngine", "Bookmarks");
+        bkpath = filesystem->GetAppPreferencesDir(appname, "Bookmarks");
 #endif
 
         bkpath += "/Bookmarks.txt";

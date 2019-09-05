@@ -131,7 +131,7 @@ WeakPtr<Context> UI::uiContext_;
 UI::UI(Context* context) :
     Object(context),
     rootWidget_(0),
-	eventEnabled_(true),
+    eventEnabled_(true),
     inputDisabled_(false),
     keyboardDisabled_(false),
     initialized_(false),
@@ -242,7 +242,7 @@ void UI::Initialize(const String& languageFile)
 
     rootWidget_ = new TBWidget();
     rootView_ = new TBWidget(); // Craft;
-	rootWidget_->AddChild( rootView_ );
+    rootWidget_->AddChild( rootView_ );
 
     int width = graphics_->GetWidth();
     int height = graphics_->GetHeight();
@@ -313,6 +313,9 @@ void UI::SetDefaultFont(const String& name, int size)
     fd.SetID(tb::TBIDC(name.CString()));
     fd.SetSize(tb::g_tb_skin->GetDimensionConverter()->DpToPx(size));
     tb::g_font_manager->SetDefaultFontDescription(fd);
+
+    fontName_ = name;
+    fontSize_ = size;
 
     // Create the font now.
     tb::TBFontFace *font = tb::g_font_manager->CreateFontFace(tb::g_font_manager->GetDefaultFontDescription());
@@ -510,16 +513,16 @@ void UI::HandleUpdate(StringHash eventType, VariantMap& eventData)
             if (hoveredWidget->GetShortened())
             {
                 UITextField* fullTextField = new UITextField(context_, true);
-				fullTextField->SetFontId( hoveredWidget->GetFontId() ); // Craft;
-				fullTextField->SetFontSize( 15*graphics_->GetPixelDensity() ); // Craft;
+                fullTextField->SetFontId( fontName_ ); // Craft;
+                fullTextField->SetFontSize( 15*graphics_->GetPixelDensity() ); // Craft;
                 fullTextField->SetText(hoveredWidget->GetText());
                 tooltipLayout->AddChild(fullTextField);
             }
             if (hoveredWidget->GetTooltip().Length() > 0)
             {
                 UITextField* tooltipTextField = new UITextField(context_, true);
-				tooltipTextField->SetFontId( hoveredWidget->GetFontId() ); // Craft;
-				tooltipTextField->SetFontSize( 15*graphics_->GetPixelDensity() ); // Craft;
+                tooltipTextField->SetFontId( fontName_ ); // Craft;
+                tooltipTextField->SetFontSize( 15*graphics_->GetPixelDensity() ); // Craft;
                 tooltipTextField->SetText(hoveredWidget->GetTooltip());
                 tooltipLayout->AddChild(tooltipTextField);
             }

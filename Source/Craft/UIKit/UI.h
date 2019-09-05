@@ -58,8 +58,8 @@ public:
     virtual ~UI();
 
     tb::TBWidget* GetRootWidget() { return rootWidget_; }
-	tb::TBWidget* GetRootView() { return rootView_; } // Craft;
-	void SetRootView( tb::TBWidget *view ); // Craft;
+    tb::TBWidget* GetRootView() { return rootView_; } // Craft;
+    void SetRootView( tb::TBWidget *view ); // Craft;
 
     bool LoadResourceFile(tb::TBWidget* widget, const String& filename);
 
@@ -135,8 +135,8 @@ public:
 
     void SetBlockChangedEvents(bool blocked = true);
 
-	void SetEventEnabled( bool enable ) { eventEnabled_ = enable; }
-	bool GetEventEnabled() const { return eventEnabled_; }
+    void SetEventEnabled( bool enable ) { eventEnabled_ = enable; }
+    bool GetEventEnabled() const { return eventEnabled_; }
 
     UIWidget* GetHoveredWidget();
 
@@ -171,7 +171,7 @@ private:
     void RemoveUIView(UIView* uiView);
 
     tb::TBWidget* rootWidget_;
-	tb::TBWidget* rootView_; // Craft;
+    tb::TBWidget* rootView_; // Craft;
     UIRenderer* renderer_;
 
     WeakPtr<Graphics> graphics_;
@@ -181,9 +181,11 @@ private:
 
     WeakPtr<UIPopupWindow> tooltip_;
 
+    String  fontName_; // Craft;
+    short   fontSize_; // Craft;
     int changedEventsBlocked_;
 
-	bool eventEnabled_; // Craft;
+    bool eventEnabled_; // Craft;
     bool inputDisabled_;
     bool keyboardDisabled_;
     bool initialized_;

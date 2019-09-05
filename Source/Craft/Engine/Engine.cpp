@@ -189,6 +189,8 @@ bool Engine::Initialize(const VariantMap& parameters)
     RegisterCraft2DLibrary(context_);
 #endif
 
+	appName = GetParameter(parameters, EP_APPLICATION_NAME, "Craft").GetString();
+
     // Start logging
     auto* log = GetSubsystem<Log>();
     if (log)

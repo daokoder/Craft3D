@@ -48,6 +48,8 @@ public:
     bool InitializeResourceCache(const VariantMap& parameters, bool removeOld = true);
     /// Run one frame.
     void RunFrame();
+	/// Get application name.
+	String GetApplicationName() { return appName; }
     /// Create the console and return it. May return null if engine configuration does not allow creation (headless mode.)
     Console* CreateConsole();
     /// Create the debug hud.
@@ -127,6 +129,9 @@ private:
     void HandleExitRequested(StringHash eventType, VariantMap& eventData);
     /// Actually perform the exit actions.
     void DoExit();
+
+	/// Application Name;
+	String appName; // Craft;
 
     /// Frame update timer.
     HiresTimer frameTimer_;

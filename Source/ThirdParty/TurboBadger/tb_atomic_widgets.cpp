@@ -466,7 +466,7 @@ bool TBFinderWindow::Show(const char *title,
     "	lp: min-width: 512dp, min-height: 500dp\n"
     "	TBLayout: distribution: gravity, distribution-position: left\n"
     "		TBEditField: id: 1, multiline: 0, styling: 0, adapt-to-content: 0, gravity: left right\n"
-    "			tooltip current folder location\n"
+    "			tooltip Current folder location\n"
     "			font: size: 14dp\n"
     "		TBButton\n"
     "			lp: height: 28dp, width: 28dp\n"
