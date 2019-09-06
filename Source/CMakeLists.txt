@@ -72,7 +72,7 @@ endif ()
 set (CRAFT_THIRDPARTY_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty)
 
 # Add targets
-foreach (TARGET FreeType LZ4 PugiXml rapidjson SDL StanHull STB TurboBadger nativefiledialog)
+foreach (TARGET FreeType LZ4 PugiXml rapidjson SDL StanHull STB TurboBadger)
     add_subdirectory (ThirdParty/${TARGET})
 endforeach ()
 
