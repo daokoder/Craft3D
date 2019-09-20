@@ -76,6 +76,10 @@ foreach (TARGET FreeType LZ4 PugiXml rapidjson SDL StanHull STB TurboBadger)
     add_subdirectory (ThirdParty/${TARGET})
 endforeach ()
 
+if (CRAFT_DAO)
+    add_subdirectory (ThirdParty/Dao)
+endif ()
+
 if (CRAFT_ANGELSCRIPT)
     add_subdirectory (ThirdParty/AngelScript)
     if (WEB OR (ARM AND CRAFT_64BIT))

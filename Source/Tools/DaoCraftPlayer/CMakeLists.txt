@@ -18,7 +18,7 @@ endif ()
 setup_main_executable (NOBUNDLE)
 
 list (APPEND INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/Source/ThirdParty/Dao/kernel)
-list (APPEND LIBS ${CMAKE_SOURCE_DIR}/Source/ThirdParty/Dao/lib/libdao.dylib)
+#list (APPEND LIBS ${CMAKE_SOURCE_DIR}/Source/ThirdParty/Dao/lib/libdao.dylib)
 
 add_definitions( -DSTANDALONE_APP )
 
