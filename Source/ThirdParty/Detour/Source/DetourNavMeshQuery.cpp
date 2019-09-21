@@ -1789,7 +1789,7 @@ dtStatus dtNavMeshQuery::appendPortals(const int startIdx, const int endIdx, con
 	
 		if (options & DT_STRAIGHTPATH_AREA_CROSSINGS)
 		{
-			if( fromPoly == NULL or toPoly == NULL ) continue; // Craft: workaround; 2019-02-26
+			if( fromPoly == NULL || toPoly == NULL ) continue; // Craft: workaround; 2019-02-26
 			// Skip intersection if only area crossings are requested.
 			if (fromPoly->getArea() == toPoly->getArea())
 				continue;

@@ -152,10 +152,10 @@ if (CRAFT_CLANG_TOOLS)
 endif ()
 
 # Craft tools
-add_subdirectory (Tools)
+#add_subdirectory (Tools)
 
 # Craft samples
-add_subdirectory (Samples)
+#add_subdirectory (Samples)
 
 # Craft extras
 if (CRAFT_EXTRAS)

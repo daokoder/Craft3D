@@ -20,12 +20,13 @@
 // THE SOFTWARE.
 //
 
+#pragma once
+
 #include "../Craft/IO/Log.h"
 
 #include "ScriptSystem.h"
 #include "ScriptVariant.h"
 
-#pragma once
 
 namespace Craft
 {

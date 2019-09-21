@@ -20,11 +20,11 @@
 // THE SOFTWARE.
 //
 
+#pragma once
 
 #include "../Core/Context.h"
 #include "../Core/Object.h"
 
-#pragma once
 
 namespace Craft
 {

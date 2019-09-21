@@ -24,10 +24,13 @@
 set (TARGET_NAME Dao)
 
 # Define source files
-define_source_files (GLOB_CPP_PATTERNS kernel/*.c GLOB_H_PATTERNS kernel/*.h EXCLUDE_PATTERNS kernel/daoMain.c)
+define_source_files (GLOB_CPP_PATTERNS kernel/*.c modules/auxlib/*.c modules/stream/*.c GLOB_H_PATTERNS kernel/*.h modules/auxlib/*.h modules/stream/*.h EXCLUDE_PATTERNS kernel/daoMain.c)
 
 add_definitions (-DTARGET_PLAT="\\\"${CMAKE_SYSTEM_NAME}\\\"")
 add_definitions (-DDAO_WITH_NUMARRAY)
+
+list (APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/kernel)
+list (APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/modules/auxlib)
 
 # Define dependency libs
 if (READLINE_FOUND)
@@ -60,5 +63,5 @@ endif ()
 setup_library ()
 
 # Install headers for building and using the Craft library (no direct dependencies but library user may need them)
-install_header_files (DIRECTORY src/ DESTINATION ${DEST_INCLUDE_DIR}/ThirdParty/Dao FILES_MATCHING PATTERN *.h)  # Note: the trailing slash is significant
+install_header_files (DIRECTORY ./ DESTINATION ${DEST_INCLUDE_DIR}/ThirdParty/Dao FILES_MATCHING PATTERN *.h)  # Note: the trailing slash is significant
 

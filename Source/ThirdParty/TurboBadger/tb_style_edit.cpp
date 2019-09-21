@@ -27,7 +27,7 @@ const int TAB_SPACE = 4;
 const char *special_char_newln = "¶";		// 00B6 PILCROW SIGN
 const char *special_char_space = "·";		// 00B7 MIDDLE DOT
 const char *special_char_tab = "»";		// 00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-const char *special_char_password = "•";	// 2022 BULLET
+const char *special_char_password = "\u2022"; //"•";	// 2022 BULLET
 
 const unsigned cjk_charts[][2] = 
 {
@@ -1956,7 +1956,7 @@ bool TBStyleEdit::KeyDown(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifi
         InsertBreak();
     else if (!packed.read_only && (key && !(ctrlOrSuper)) && special_key != TB_KEY_ENTER)
     {
-		if( key >= -127 and key < 0 ){
+		if( key >= -127 && key < 0 ){
 			char ch = key;
 			InsertText(&ch, 1);
 		}else{

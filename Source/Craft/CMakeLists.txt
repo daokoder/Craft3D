@@ -116,12 +116,12 @@ endforeach ()
 list (APPEND EXCLUDED_SOURCE_DIRS DaoScript/CraftModule)
 
 set (DAO_CRAFT_MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/DaoScript/CraftModule)
+set (CLANGDAO ${CMAKE_SOURCE_DIR}/../Dao/bin/clangdao)
 
 if (NOT CRAFT_DAO)
     #list (APPEND EXCLUDED_SOURCE_DIRS DaoScript)
-else ()
+elseif (EXISTS ${CLANGDAO})
 
-	set (CLANGDAO ${CMAKE_SOURCE_DIR}/../Dao/bin/clangdao)
 	#message (FATAL_ERROR "${DAO_CRAFT_MODULE_DIR}\n${CLANGDAO}")
 
 	if (NOT EXISTS ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine.h)
@@ -337,7 +337,7 @@ endif ()
 if (CRAFT_DAO)
 	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao)
 	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/kernel)
-	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/kernel/modules/auxlib)
+	list (APPEND INCLUDE_DIRS ${CRAFT_THIRDPARTY_SOURCE_DIR}/Dao/modules/auxlib)
 	if (#FALSE AND # TODO
 		EXISTS ${DAO_CRAFT_MODULE_DIR}/dao_CraftEngine.h)
 		add_definitions (-DHAS_DAO_CRAFT_MODULE)
