@@ -24,9 +24,9 @@
 #pragma once
 
 
-#include <../Core/Variant.h>
-#include <../Physics/RigidBody.h>
-#include <../Scene/Node.h>
+#include "../Core/Variant.h"
+#include "../Physics/RigidBody.h"
+#include "../Scene/Node.h"
 
 namespace Craft
 {

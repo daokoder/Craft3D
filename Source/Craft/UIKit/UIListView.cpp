@@ -23,8 +23,8 @@
 #include <TurboBadger/tb_menu_window.h>
 #include <TurboBadger/tb_select.h>
 
-#include <../IO/Log.h>
-#include <../Core/Timer.h>
+#include "../IO/Log.h"
+#include "../Core/Timer.h"
 
 #include "UI.h"
 #include "UIEvents.h"

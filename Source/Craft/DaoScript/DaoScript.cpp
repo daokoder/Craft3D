@@ -21,14 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-#include <../Core/CoreEvents.h>
-#include <../Engine/EngineEvents.h>
-#include <../IO/File.h>
-#include <../IO/Log.h>
-#include <../Core/ProcessUtils.h>
-#include <../Core/Profiler.h>
-#include <../Resource/ResourceCache.h>
-#include <../Scene/Scene.h>
+#include "../Core/CoreEvents.h"
+#include "../Engine/EngineEvents.h"
+#include "../IO/File.h"
+#include "../IO/Log.h"
+#include "../Core/ProcessUtils.h"
+#include "../Core/Profiler.h"
+#include "../Resource/ResourceCache.h"
+#include "../Scene/Scene.h"
 
 #include "DaoScript.h"
 #include "DaoComponent.h"

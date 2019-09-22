@@ -23,10 +23,10 @@
 #include <TurboBadger/tb_widgets.h>
 #include <TurboBadger/tb_widgets_common.h>
 
-#include <../Engine/Engine.h>
-#include <../IO/FileSystem.h>
-#include <../IO/Log.h>
-#include <../IO/File.h>
+#include "../Engine/Engine.h"
+#include "../IO/FileSystem.h"
+#include "../IO/Log.h"
+#include "../IO/File.h"
 
 #include "UI.h"
 #include "UIEvents.h"

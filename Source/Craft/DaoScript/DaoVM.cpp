@@ -21,15 +21,15 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-#include <../Core/Profiler.h>
-#include <../Core/CoreEvents.h>
+#include "../Core/Profiler.h"
+#include "../Core/CoreEvents.h"
 
-#include <../IO/File.h>
-#include <../IO/Log.h>
-#include <../IO/FileSystem.h>
-#include <../IO/PackageFile.h>
+#include "../IO/File.h"
+#include "../IO/Log.h"
+#include "../IO/FileSystem.h"
+#include "../IO/PackageFile.h"
 
-#include <../Resource/ResourceCache.h>
+#include "../Resource/ResourceCache.h"
 
 #include "DaoVM.h"
 #include "DaoScript.h"
@@ -194,7 +194,7 @@ bool DaoVM::ExecuteMain()
 
 	printf( "ExecuteMain(): %i %i\n", maindao, maindac );
 
-	if( not (maindao or maindac) ) return true;
+	if( ! (maindao || maindac) ) return true;
 
 	DaoScript* daoscript = GetSubsystem<DaoScript>();
 

@@ -116,7 +116,7 @@ endforeach ()
 list (APPEND EXCLUDED_SOURCE_DIRS DaoScript/CraftModule)
 
 set (DAO_CRAFT_MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/DaoScript/CraftModule)
-set (CLANGDAO ${CMAKE_SOURCE_DIR}/../Dao/bin/clangdao)
+set (CLANGDAO ${CMAKE_SOURCE_DIR}/../Dao/bin/clangdao) # TODO: option;
 
 if (NOT CRAFT_DAO)
     #list (APPEND EXCLUDED_SOURCE_DIRS DaoScript)

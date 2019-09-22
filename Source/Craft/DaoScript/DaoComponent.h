@@ -24,7 +24,7 @@
 #ifndef __DAO_COMPONENT_H__
 #define __DAO_COMPONENT_H__
 
-#include <../Script/ScriptComponent.h>
+#include "../Script/ScriptComponent.h"
 
 #include "DaoComponentFile.h"
 

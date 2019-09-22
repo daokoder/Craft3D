@@ -24,11 +24,11 @@
 #ifndef __DAO_COMPONENT_FILE_H__
 #define __DAO_COMPONENT_FILE_H__
 
-#include <../Resource/Resource.h>
-#include <../Container/ArrayPtr.h>
-#include <../Container/List.h>
+#include "../Resource/Resource.h"
+#include "../Container/ArrayPtr.h"
+#include "../Container/List.h"
 
-#include <../Script/ScriptComponentFile.h>
+#include "../Script/ScriptComponentFile.h"
 
 #include "DaoVM.h"
 

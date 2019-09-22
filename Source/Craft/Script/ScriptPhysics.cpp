@@ -21,9 +21,9 @@
 //
 
 
-#include <../IO/MemoryBuffer.h>
-#include <../Physics/PhysicsEvents.h>
-#include <../Scene/Node.h>
+#include "../IO/MemoryBuffer.h"
+#include "../Physics/PhysicsEvents.h"
+#include "../Scene/Node.h"
 #include "ScriptPhysics.h"
 
 

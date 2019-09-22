@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <../Scene/Component.h>
+#include "../Scene/Component.h"
 
 namespace Craft
 {

@@ -23,8 +23,8 @@
 #include <TurboBadger/tb_widgets.h>
 #include <TurboBadger/tb_atomic_widgets.h>
 
-#include <../IO/Log.h>
-#include <../Graphics/Texture.h>
+#include "../IO/Log.h"
+#include "../Graphics/Texture.h"
 
 #include "UIEvents.h"
 #include "UI.h"

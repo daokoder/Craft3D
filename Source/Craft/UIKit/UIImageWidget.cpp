@@ -24,7 +24,7 @@
 #include <TurboBadger/tb_widgets_common.h>
 #include <TurboBadger/image/tb_image_widget.h>
 
-#include <../IO/Log.h>
+#include "../IO/Log.h"
 
 #include "UI.h"
 #include "UIEvents.h"

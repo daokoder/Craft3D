@@ -24,12 +24,12 @@
 #ifndef __DAO_VM_H__
 #define __DAO_VM_H__
 
-#include <../Core/Context.h>
-#include <../Core/Object.h>
-#include <../Container/List.h>
+#include "../Core/Context.h"
+#include "../Core/Object.h"
+#include "../Container/List.h"
 
-#include <../IO/Log.h>
-#include <../IO/FileSystem.h>
+#include "../IO/Log.h"
+#include "../IO/FileSystem.h"
 #include "DaoPlayer.h"
 
 //#define DAOVM_DEBUG

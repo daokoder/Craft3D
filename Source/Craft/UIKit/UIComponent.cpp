@@ -40,10 +40,10 @@
 #include "UIView.h"
 #include "UIComponent.h"
 
-#include <../Input/Input.h>
-#include <../Input/InputEvents.h>
-#include <../UIKit/UI.h>
-#include <../UIKit/UIEvents.h>
+#include "../Input/Input.h"
+#include "../Input/InputEvents.h"
+#include "../UIKit/UI.h"
+#include "../UIKit/UIEvents.h"
 
 namespace Craft {
 

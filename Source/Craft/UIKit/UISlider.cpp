@@ -23,7 +23,7 @@
 #include <TurboBadger/tb_widgets.h>
 #include <TurboBadger/tb_widgets_common.h>
 
-#include <../IO/Log.h>
+#include "../IO/Log.h"
 
 #include "UIEvents.h"
 #include "UI.h"

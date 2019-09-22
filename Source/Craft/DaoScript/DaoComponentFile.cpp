@@ -21,12 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-#include <../Core/Context.h>
-#include <../IO/Deserializer.h>
-#include <../IO/Log.h>
-#include <../Core/Profiler.h>
-#include <../Resource/ResourceCache.h>
-#include <../IO/Serializer.h>
+#include "../Core/Context.h"
+#include "../IO/Deserializer.h"
+#include "../IO/Log.h"
+#include "../Core/Profiler.h"
+#include "../Resource/ResourceCache.h"
+#include "../IO/Serializer.h"
 
 #include "DaoComponentFile.h"
 #include "DaoComponent.h"
@@ -85,7 +85,7 @@ bool DaoComponentFile::PushModule()
 
 	nspace = daoscript->LoadScript( vmspace, pathName.CString() );
 
-	reloaded = prevNS != NULL and nspace != prevNS;
+	reloaded = prevNS != NULL && nspace != prevNS;
 	//nspace = DaoVmSpace_Load( vmspace, pathName.CString() );
 
 	//klass = DaoValue_CastClass( DaoNamespace_FindData( nspace, "RoboManComponent" ) );
@@ -102,7 +102,7 @@ bool DaoComponentFile::PushModule()
 		if( K != NULL ) printf( "%s\n", K->className->chars );
 		if( K != NULL && K->nameSpace != nspace ) continue;
 		if( K != NULL ) printf( "%s\n", K->className->chars );
-		if( K != NULL and DaoType_ChildOf( K->objType, type_DaoComponent ) ){
+		if( K != NULL && DaoType_ChildOf( K->objType, type_DaoComponent ) ){
 			klass = K;
 			break;
 		}
@@ -136,7 +136,7 @@ DaoComponent* DaoComponentFile::CreateDaoComponent()
 
 	DaoGC_IncRC( (DaoValue*) object );
 	object->isInited = 1;
-	if( not passContext ){
+	if( ! passContext ){
 		DaoProcess_Call( process, routine, (DaoValue*) object, NULL, 0 );
 	}else{
 		DaoCdata *ctx = DaoProcess_NewCdata( process, type_Context, (void*) context_, 0 );
@@ -189,7 +189,7 @@ bool DaoComponentFile::BeginLoad(Deserializer& source)
 bool DaoComponentFile::EndLoad()
 {
 	printf( "DaoComponentFile::EndLoad()\n" );
-	if( not reloaded ) return true;
+	if( ! reloaded ) return true;
 
 	Vector<DaoComponent*> coms = components;
 	components.Clear();

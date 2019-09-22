@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <../Core/Object.h>
-#include <../Graphics/Viewport.h>
-#include <../Scene/Scene.h>
+#include "../Core/Object.h"
+#include "../Graphics/Viewport.h"
+#include "../Scene/Scene.h"
 
 
 namespace Craft

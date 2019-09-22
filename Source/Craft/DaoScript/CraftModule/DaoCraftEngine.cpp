@@ -1,6 +1,14 @@
 
 #include "dao_CraftEngine.h"
-#include <../Graphics/OpenGL/OGLGraphicsImpl.h>
+#include "../../Graphics/OpenGL/OGLGraphicsImpl.h"
+
+// Disambiguity for VS2017:
+namespace Craft
+{
+	class String;
+	class Vector2;
+	class Vector3;
+};
 
 using namespace Craft;
 
@@ -149,7 +157,7 @@ bool DaoCxx_Craft_UIKit_UITextField::OnEvent(const tb::TBWidgetEvent &ev)
 
 bool DaoCxx_Craft_UIKit_UIMessageWindow::OnEvent(const tb::TBWidgetEvent &ev)
 {
-	if( ev.type == tb::EVENT_TYPE_CLICK and (ev.ref_id) ){
+	if( ev.type == tb::EVENT_TYPE_CLICK && (ev.ref_id) ){
 		int cs = 0;
 		if( OnClick( cs, (ev.ref_id) ) ) return true;
 	}

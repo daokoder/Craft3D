@@ -30,11 +30,11 @@
 #undef _WIN32_WINNT
 #define _WIN32_WINNT  0x501   /* Need 0x410 for AlphaBlend() and 0x500 for EnumDisplayDevices(), 0x501 for raw input */
 
-#include <../IO/Log.h>
-#include <../Core/Context.h>
-#include <../Core/CoreEvents.h>
-#include <../Input/InputEvents.h>
-#include <../Graphics/Graphics.h>
+#include "../IO/Log.h"
+#include "../Core/Context.h"
+#include "../Core/CoreEvents.h"
+#include "../Input/InputEvents.h"
+#include "../Graphics/Graphics.h"
 
 #include "UIDragDrop.h"
 #include "UIDragDropMac.h"

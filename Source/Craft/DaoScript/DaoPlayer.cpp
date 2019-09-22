@@ -20,13 +20,13 @@
 // THE SOFTWARE.
 //
 
-#include <../IO/Log.h>
+#include "../IO/Log.h"
 
-#include <../Input/InputEvents.h>
+#include "../Input/InputEvents.h"
 
-#include <../Resource/ResourceCache.h>
-#include <../Graphics/Renderer.h>
-#include <../Graphics/Camera.h>
+#include "../Resource/ResourceCache.h"
+#include "../Graphics/Renderer.h"
+#include "../Graphics/Camera.h"
 
 #include "DaoPlayerEvents.h"
 #include "DaoPlayer.h"

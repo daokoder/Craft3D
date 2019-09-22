@@ -25,9 +25,9 @@
 
 #include "UIWidget.h"
 
-#include <../Graphics/Texture2D.h>
-#include <../Graphics/Viewport.h>
-#include <../Scene/Scene.h>
+#include "../Graphics/Texture2D.h"
+#include "../Graphics/Viewport.h"
+#include "../Scene/Scene.h"
 
 #include <TurboBadger/tb_widgets.h>
 

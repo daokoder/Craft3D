@@ -24,8 +24,8 @@
 #include <TurboBadger/tb_widgets_common.h>
 #include <TurboBadger/tb_atomic_widgets.h>
 
-#include <../IO/Log.h>
-#include <../IO/FileSystem.h>
+#include "../IO/Log.h"
+#include "../IO/FileSystem.h"
 
 #include "UIEvents.h"
 #include "UI.h"
