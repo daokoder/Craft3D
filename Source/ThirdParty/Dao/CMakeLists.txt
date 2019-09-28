@@ -27,6 +27,8 @@ set (TARGET_NAME Dao)
 define_source_files (GLOB_CPP_PATTERNS kernel/*.c modules/auxlib/*.c modules/stream/*.c GLOB_H_PATTERNS kernel/*.h modules/auxlib/*.h modules/stream/*.h EXCLUDE_PATTERNS kernel/daoMain.c)
 
 add_definitions (-DTARGET_PLAT="\\\"${CMAKE_SYSTEM_NAME}\\\"")
+add_definitions (-DDAO_STATIC_BUILD)
+add_definitions (-DDAO_KERNEL)
 add_definitions (-DDAO_WITH_NUMARRAY)
 
 list (APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/kernel)

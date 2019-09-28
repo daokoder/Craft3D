@@ -44,7 +44,7 @@ if (ARM)
         set (ASM_FILES source/as_callfunc_arm_gcc.S)
         set (CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${ARM_CFLAGS}")
     endif ()
-elseif (MSVC AND URHO3D_64BIT)
+elseif (MSVC AND CRAFT_64BIT)
     enable_language (ASM_MASM)
     # Commented out due to cmake bug - todo: Recheck if this workaround is still necessary when increasing CMake minimum version
     #set (ASM_FILES source/as_callfunc_x64_msvc_asm.asm)
