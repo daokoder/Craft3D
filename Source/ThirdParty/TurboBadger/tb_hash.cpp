@@ -19,7 +19,7 @@ uint32 TBGetHash(const char *str)
     while (str[i])
     {
         char c = str[i++];
-        hash = (16777619U * hash) ^ c;
+        hash = (hash ^ c) * 16777619U;  // Equivalent to TBGetHash_one();
     }
     return hash;
 }
