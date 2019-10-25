@@ -1413,26 +1413,36 @@ IntVector2 Input::GetMousePosition() const
 
 IntVector2 Input::GetMouseMove() const
 {
+	IntVector2 delta = IntVector2::ZERO;
     if (!suppressNextMouseMove_)
-        return mouseMoveScaled_ ? mouseMove_ : IntVector2((int)(mouseMove_.x_ * inputScale_.x_), (int)(mouseMove_.y_ * inputScale_.y_));
-    else
-        return IntVector2::ZERO;
+        delta = mouseMoveScaled_ ? mouseMove_ : IntVector2((int)(mouseMove_.x_ * inputScale_.x_), (int)(mouseMove_.y_ * inputScale_.y_));
+
+    // On Mac OS X with retina screen, static mouse may have non-zero move values
+    // due to rounding errors after position scaling:
+    if( abs( delta.x_ ) < inputScale_.x_ ) delta.x_ = 0;
+    if( abs( delta.y_ ) < inputScale_.y_ ) delta.y_ = 0;
+
+	return delta;
 }
 
 int Input::GetMouseMoveX() const
 {
+    int delta = 0;
     if (!suppressNextMouseMove_)
-        return mouseMoveScaled_ ? mouseMove_.x_ : (int)(mouseMove_.x_ * inputScale_.x_);
-    else
-        return 0;
+        delta = mouseMoveScaled_ ? mouseMove_.x_ : (int)(mouseMove_.x_ * inputScale_.x_);
+
+    if( abs( delta ) < inputScale_.x_ ) delta = 0;
+	return delta;
 }
 
 int Input::GetMouseMoveY() const
 {
+    int delta = 0;
     if (!suppressNextMouseMove_)
-        return mouseMoveScaled_ ? mouseMove_.y_ : mouseMove_.y_ * inputScale_.y_;
-    else
-        return 0;
+        delta = mouseMoveScaled_ ? mouseMove_.y_ : mouseMove_.y_ * inputScale_.y_;
+
+    if( abs( delta ) < inputScale_.y_ ) delta = 0;
+	return delta;
 }
 
 TouchState* Input::GetTouch(unsigned index) const

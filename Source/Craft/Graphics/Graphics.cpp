@@ -118,6 +118,20 @@ bool Graphics::ToggleFullscreen()
 			height_ = logicalHeight_ * pixelDensity_;
 			SDL_SetWindowSize( window_, logicalWidth_, logicalHeight_ );
 		}
+
+		using namespace ScreenMode;
+
+		VariantMap& eventData = GetEventDataMap();
+		eventData[P_WIDTH] = width_;
+		eventData[P_HEIGHT] = height_;
+		eventData[P_FULLSCREEN] = fullscreen_;
+		eventData[P_BORDERLESS] = borderless_;
+		eventData[P_RESIZABLE] = resizable_;
+		eventData[P_HIGHDPI] = highDPI_;
+		eventData[P_MONITOR] = monitor_;
+		eventData[P_REFRESHRATE] = refreshRate_;
+		SendEvent(E_SCREENMODE, eventData);
+
 		return SDL_SetWindowFullscreen( window_, fullscreen_ ? SDL_WINDOW_FULLSCREEN : 0 ) == 0;
 	}
     return SetMode(width_, height_, !fullscreen_, borderless_, resizable_, highDPI_, vsync_, tripleBuffer_, multiSample_, monitor_, refreshRate_);
