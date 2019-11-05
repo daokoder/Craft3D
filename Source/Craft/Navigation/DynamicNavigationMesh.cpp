@@ -1117,7 +1117,38 @@ void DynamicNavigationMesh::AddObstacle(Obstacle* obstacle, bool silent)
         while (tileCache_->isObstacleQueueFull())
             tileCache_->update(1, navMesh_);
 
-        if (dtStatusFailed(tileCache_->addObstacle(pos, obstacle->GetRadius(), obstacle->GetHeight(), &refHolder)))
+        dtStatus status = 0;
+		ObstacleType obstacleType = obstacle->GetObstacleType();
+        float radius = obstacle->GetRadius();
+        float width = obstacle->GetWidth();
+        float length = obstacle->GetLength();
+        float height = obstacle->GetHeight();
+
+		if( obstacleType == OBSTACLE_CYLINDER ){
+            status = tileCache_->addObstacle(pos, radius, height, &refHolder);
+		}else if( obstacleType == OBSTACLE_AABBOX ){
+			float bmin[3], bmax[3];
+
+			bmin[0] = obsPos.x_ - 0.5*width;
+			bmin[1] = obsPos.z_ - 0.5*height;
+			bmin[2] = obsPos.y_ - 0.5*length;
+			bmax[0] = obsPos.x_ + 0.5*width;
+			bmax[1] = obsPos.z_ + 0.5*height;
+			bmax[2] = obsPos.y_ + 0.5*length;
+
+            status = tileCache_->addBoxObstacle(bmin, bmax, &refHolder);
+		}else if( obstacleType == OBSTACLE_OBBOX ){
+			float radians = obstacle->GetYawAngle() * 3.1415926 / 180.0;
+			float extents[3];
+
+			extents[0] = 0.5*width;
+			extents[1] = 0.5*height;
+			extents[2] = 0.5*length;
+
+            status = tileCache_->addBoxObstacle(pos, extents, radians, &refHolder);
+        }
+
+        if (dtStatusFailed( status ))
         {
             CRAFT_LOGERROR("Failed to add obstacle");
             return;

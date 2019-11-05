@@ -39,8 +39,12 @@ extern const char* NAVIGATION_CATEGORY;
 
 Obstacle::Obstacle(Context* context) :
     Component(context),
+	type_(OBSTACLE_CYLINDER),
+    width_(5.0f),
+    length_(5.0f),
     height_(5.0f),
     radius_(5.0f),
+    yawAngle_(0.0f),
     obstacleId_(0)
 {
 }
@@ -56,8 +60,10 @@ void Obstacle::RegisterObject(Context* context)
     context->RegisterFactory<Obstacle>(NAVIGATION_CATEGORY);
     CRAFT_COPY_BASE_ATTRIBUTES(Component);
     CRAFT_ACCESSOR_ATTRIBUTE("Radius", GetRadius, SetRadius, float, 5.0f, AM_DEFAULT);
+    CRAFT_ACCESSOR_ATTRIBUTE("Width", GetWidth, SetWidth, float, 5.0f, AM_DEFAULT);
+    CRAFT_ACCESSOR_ATTRIBUTE("Length", GetLength, SetLength, float, 5.0f, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Height", GetHeight, SetHeight, float, 5.0f, AM_DEFAULT);
-	// TODO: offset;
+	// TODO: type and offset;
 }
 
 void Obstacle::OnSetEnabled()
@@ -71,6 +77,14 @@ void Obstacle::OnSetEnabled()
     }
 }
 
+void Obstacle::SetObstacleType(ObstacleType newType)
+{
+    type_ = newType;
+    if (ownerMesh_)
+        ownerMesh_->ObstacleChanged(this);
+    MarkNetworkUpdate();
+}
+
 void Obstacle::SetHeight(float newHeight)
 {
     height_ = newHeight;
@@ -82,6 +96,30 @@ void Obstacle::SetHeight(float newHeight)
 void Obstacle::SetRadius(float newRadius)
 {
     radius_ = newRadius;
+    if (ownerMesh_)
+        ownerMesh_->ObstacleChanged(this);
+    MarkNetworkUpdate();
+}
+
+void Obstacle::SetWidth(float newWidth)
+{
+    width_ = newWidth;
+    if (ownerMesh_)
+        ownerMesh_->ObstacleChanged(this);
+    MarkNetworkUpdate();
+}
+
+void Obstacle::SetLength(float newLength)
+{
+    length_ = newLength;
+    if (ownerMesh_)
+        ownerMesh_->ObstacleChanged(this);
+    MarkNetworkUpdate();
+}
+
+void Obstacle::SetYawAngle(float newYawAngle)
+{
+    yawAngle_ = newYawAngle;
     if (ownerMesh_)
         ownerMesh_->ObstacleChanged(this);
     MarkNetworkUpdate();
@@ -158,8 +196,24 @@ void Obstacle::HandleNavigationTileAdded(StringHash eventType, VariantMap& event
 
 void Obstacle::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
 {
-    if (debug && IsEnabledEffective())
-        debug->AddCylinder(node_->GetWorldPosition(), radius_, height_, Color(0.0f, 1.0f, 1.0f), depthTest);
+    if (debug && IsEnabledEffective()){
+        Vector3 position = node_->GetWorldPosition();
+        Color color(0.0f, 1.0f, 1.0f);
+
+        if( type_ == OBSTACLE_CYLINDER ){
+            debug->AddCylinder(position, radius_, height_, color, depthTest);
+        }else if( type_ == OBSTACLE_AABBOX ){
+			Vector3 extent( 0.5*width_, 0.5*length_, 0.5*height_ );
+			BoundingBox box( position - extent, position + extent );
+            debug->AddBoundingBox(box, color, depthTest, false);
+        }else if( type_ == OBSTACLE_OBBOX ){
+			Vector3 extent( 0.5*width_, 0.5*length_, 0.5*height_ );
+			BoundingBox box( - extent, extent );
+			Quaternion rotation( yawAngle_, Vector3::UP );
+			Matrix3x4 matrix( position, rotation, Vector3::ONE );
+            debug->AddBoundingBox(box, matrix, color, depthTest, false);
+        }
+    }
 }
 
 void Obstacle::DrawDebugGeometry(bool depthTest)

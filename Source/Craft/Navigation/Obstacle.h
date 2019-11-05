@@ -28,6 +28,13 @@
 namespace Craft
 {
 
+enum ObstacleType
+{
+    OBSTACLE_CYLINDER,
+    OBSTACLE_AABBOX,
+    OBSTACLE_OBBOX,
+};
+
 class DynamicNavigationMesh;
 
 /// Obstacle for dynamic navigation mesh.
@@ -49,6 +56,12 @@ public:
     /// Update the owning mesh when enabled status has changed.
     void OnSetEnabled() override;
 
+    /// Get the type of this obstacle.
+    ObstacleType GetObstacleType() const { return type_; }
+
+    /// Set the type of this obstacle.
+    void SetObstacleType(ObstacleType newType);
+
     /// Get the height of this obstacle.
     float GetHeight() const { return height_; }
 
@@ -60,6 +73,24 @@ public:
 
     /// Set the blocking radius of this obstacle.
     void SetRadius(float newRadius);
+
+    /// Get the width of this obstacle.
+    float GetWidth() const { return width_; }
+
+    /// Set the width of this obstacle.
+    void SetWidth(float newWidth);
+
+    /// Get the length of this obstacle.
+    float GetLength() const { return length_; }
+
+    /// Set the length of this obstacle.
+    void SetLength(float newLength);
+
+    /// Get the yaw of this obstacle.
+    float GetYawAngle() const { return yawAngle_; }
+
+    /// Set the yaw of this obstacle.
+    void SetYawAngle(float newYawAngle);
 
 	Vector3 GetOffset() const { return offset_; } // Craft;
 	void SetOffset( const Vector3 & offset ); // Craft;
@@ -83,10 +114,18 @@ protected:
     void HandleNavigationTileAdded(StringHash eventType, VariantMap& eventData);
 
 protected:
+    /// Type of this obstacle.
+    ObstacleType type_;
     /// Radius of this obstacle.
     float radius_;
+    /// Width of this obstacle.
+    float width_;
+    /// Length of this obstacle.
+    float length_;
     /// Height of this obstacle, extends 1/2 height below and 1/2 height above the owning node's position.
     float height_;
+	/// Yaw angle of oriented bounding box obstacle.
+	float yawAngle_;
 
 	/// Offset of this obstacle relative to the node position.
 	Vector3 offset_;
