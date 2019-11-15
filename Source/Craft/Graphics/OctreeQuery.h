@@ -223,11 +223,12 @@ class CRAFT_API RayOctreeQuery
 public:
     /// Construct with ray and query parameters.
     RayOctreeQuery(PODVector<RayQueryResult>& result, const Ray& ray, RayQueryLevel level = RAY_TRIANGLE,
-        float maxDistance = M_INFINITY, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK) :
+        float maxDistance = M_INFINITY, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK, unsigned customFlags = 0) :
         result_(result),
         ray_(ray),
         drawableFlags_(drawableFlags),
         viewMask_(viewMask),
+        customFlags_(customFlags),
         maxDistance_(maxDistance),
         level_(level)
     {
@@ -246,6 +247,8 @@ public:
     unsigned char drawableFlags_;
     /// Drawable layers to include.
     unsigned viewMask_;
+    /// Custom flags.
+    unsigned customFlags_;
     /// Maximum ray distance.
     float maxDistance_;
     /// Raycast detail level.
@@ -268,3 +271,4 @@ public:
 };
 
 }
+
