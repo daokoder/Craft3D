@@ -195,6 +195,7 @@ struct CRAFT_API RayQueryResult
         return position_ != rhs.position_ ||
                normal_ != rhs.normal_ ||
                textureUV_ != rhs.textureUV_ ||
+               backface_ != rhs.backface_ ||
                distance_ != rhs.distance_ ||
                drawable_ != rhs.drawable_ ||
                node_ != rhs.node_ ||
@@ -207,6 +208,8 @@ struct CRAFT_API RayQueryResult
     Vector3 normal_;
     /// Hit texture position
     Vector2 textureUV_;
+    /// Backface hit.
+    bool backface_{};
     /// Distance from ray origin.
     float distance_{};
     /// Drawable.
