@@ -52,7 +52,8 @@ enum Qualifier : unsigned
     QUAL_SHIFT = 1,
     QUAL_CTRL = 2,
     QUAL_ALT = 4,
-    QUAL_ANY = 8
+    QUAL_CAPS = 8,
+    QUAL_ANY = 16
 };
 CRAFT_FLAGSET(Qualifier, QualifierFlags);
 

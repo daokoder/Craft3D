@@ -1368,6 +1368,8 @@ bool Input::GetQualifierDown(Qualifier qualifier) const
         return GetKeyDown(KEY_LCTRL) || GetKeyDown(KEY_RCTRL);
     if (qualifier == QUAL_ALT)
         return GetKeyDown(KEY_LALT) || GetKeyDown(KEY_RALT);
+    if (qualifier == QUAL_CAPS)
+        return SDL_GetModState() & KMOD_CAPS;
 
     return false;
 }
@@ -1393,6 +1395,8 @@ QualifierFlags Input::GetQualifiers() const
         ret |= QUAL_CTRL;
     if (GetQualifierDown(QUAL_ALT))
         ret |= QUAL_ALT;
+    if (GetQualifierDown(QUAL_CAPS))
+        ret |= QUAL_CAPS;
 
     return ret;
 }
