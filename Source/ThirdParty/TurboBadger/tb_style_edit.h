@@ -402,6 +402,7 @@ public:
     void AppendText(const char *text, int32 len = TB_ALL_TO_TERMINATION, bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
     void InsertBreak();
 
+    TBBlock *GetFirstBlock() { return blocks.GetFirst(); }
     TBBlock *FindBlock(int32 y) const;
     int32 GetCaretLine();
 

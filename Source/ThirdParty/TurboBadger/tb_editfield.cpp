@@ -686,7 +686,25 @@ TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const ch
         {
             if (TBTextFragmentContentWidget *cw = new TBTextFragmentContentWidget(editfield, widget))
             {
-                g_widgets_reader->LoadData(widget, text + 8, text_len - 9);
+                TBTempBuffer buffer; // Craft: better support widget embedding;
+                for(int i=0; i<text_len-9; ++i){
+                    char ch = text[8+i];
+                    if( ch == '\\' && i < text_len-10 ){
+                        char next = text[9+i];
+                        if( next == 't' ){
+                            buffer.Append( "\t", 1 );
+                            i += 1;
+                        }else if( next == 'n' ){
+                            buffer.Append( "\n", 1 );
+                            i += 1;
+                        }else{
+                            buffer.Append( text + 8 + i, 1 );
+                        }
+                    }else{
+                        buffer.Append( text + 8 + i, 1 );
+                    }
+                }
+                g_widgets_reader->LoadData(widget, buffer.GetData(), buffer.GetAppendPos());
                 return cw;
             }
             delete widget;
