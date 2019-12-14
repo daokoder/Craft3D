@@ -233,6 +233,9 @@ void UI::Initialize(const String& languageFile)
 
     TBWidgetsAnimationManager::Init();
 
+	TBSystem::SetDPI( 96*graphics->GetPixelDensity() );
+	TBSystem::SetPixelsPerPoint( graphics->GetPixelDensity() );
+
     renderer_ = new UIRenderer(graphics_->GetContext());
     tb_core_init(renderer_, languageFile.CString());
 

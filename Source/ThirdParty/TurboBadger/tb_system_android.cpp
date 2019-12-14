@@ -41,6 +41,9 @@ namespace tb {
 
 // == TBSystem ========================================
 
+static int system_dpi = 0;
+static float system_point_pixels = 1.0;
+
 double TBSystem::GetTimeMS()
 {
     struct timeval now;
@@ -69,6 +72,8 @@ int TBSystem::GetPixelsPerLine()
 
 int TBSystem::GetDPI()
 {
+    if( system_dpi ) return system_dpi;
+
     AConfiguration *config = AConfiguration_new();
     AConfiguration_fromAssetManager(config, g_pManager);
     int32_t density = AConfiguration_getDensity(config);
@@ -76,6 +81,21 @@ int TBSystem::GetDPI()
     if (density == 0 || density == ACONFIGURATION_DENSITY_NONE)
         return 120;
     return density;
+}
+
+void TBSystem::SetDPI(int dpi)
+{
+    system_dpi = dpi;
+}
+
+float TBSystem::GetPixelsPerPoint()
+{
+    return system_point_pixels;
+}
+
+void TBSystem::SetPixelsPerPoint(float pixels)
+{
+    system_point_pixels = pixels;
 }
 
 // == TBFile =====================================

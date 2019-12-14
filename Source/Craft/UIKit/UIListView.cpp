@@ -223,8 +223,11 @@ ListViewItem* ListViewItem::AddChild(const char *text, const char* icon, const T
             continue;
         }
 
-        if (strcmp(item->str.CStr(), text) >= 0)
-            break;
+        if (source_->GetSort() == TB_SORT_ASCENDING)
+        {
+            if (strcmp(item->str.CStr(), text) >= 0)
+                break;
+        }
 
         insert = item;
 
@@ -434,6 +437,16 @@ UIListView::UIListView(Context* context, bool createWidget) :
 UIListView::~UIListView()
 {
 
+}
+
+void UIListView::SetSort(UISortType sort)
+{
+    source_->SetSort( (TB_SORT)sort );
+}
+
+UISortType UIListView::GetSort() const
+{
+    return (UISortType)source_->GetSort();
 }
 
 unsigned UIListView::AddRootItem(const String& text, const String& icon, const String& id)

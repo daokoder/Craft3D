@@ -44,6 +44,7 @@ class TBSkin;
 class TBWidgetsReader;
 class TBLanguage;
 class TBFontManager;
+class TBDimensionConverter;
 
 extern TBRenderer *g_renderer;
 extern TBSkin *g_tb_skin;

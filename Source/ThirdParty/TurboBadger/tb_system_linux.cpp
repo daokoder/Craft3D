@@ -23,6 +23,9 @@ namespace tb {
 
 // == TBSystem ========================================
 
+static int system_dpi = 0;
+static float system_point_pixels = 1.0;
+
 double TBSystem::GetTimeMS()
 {
     struct timeval now;
@@ -53,8 +56,24 @@ int TBSystem::GetPixelsPerLine()
 
 int TBSystem::GetDPI()
 {
+    if( system_dpi ) return system_dpi;
     // FIX: Implement!
     return 96;
+}
+
+void TBSystem::SetDPI(int dpi)
+{
+    system_dpi = dpi;
+}
+
+float TBSystem::GetPixelsPerPoint()
+{
+    return system_point_pixels;
+}
+
+void TBSystem::SetPixelsPerPoint(float pixels)
+{
+    system_point_pixels = pixels;
 }
 
 }; // namespace tb

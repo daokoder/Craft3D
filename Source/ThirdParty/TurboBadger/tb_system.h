@@ -47,6 +47,11 @@ public:
 
     /** Get Dots Per Inch for the main screen. */
     static int GetDPI();
+
+	static void SetDPI(int dpi);
+
+	static float GetPixelsPerPoint();
+	static void SetPixelsPerPoint( float pixels );
 };
 
 /** TBClipboard is a porting interface for the clipboard. */

@@ -24,6 +24,9 @@ namespace tb {
 
 // == TBSystem ========================================
 
+static int system_dpi = 0;
+static float system_point_pixels = 1.0;
+
 double TBSystem::GetTimeMS()
 {
     return timeGetTime();
@@ -52,6 +55,7 @@ int TBSystem::GetPixelsPerLine()
 
 int TBSystem::GetDPI()
 {
+    if( system_dpi ) return system_dpi;
     return 96;
     /*
     HDC hdc = GetDC(nullptr);
@@ -62,6 +66,21 @@ int TBSystem::GetDPI()
 #endif
     return DPI_x;
     */
+}
+
+void TBSystem::SetDPI(int dpi)
+{
+    system_dpi = dpi;
+}
+
+float TBSystem::GetPixelsPerPoint()
+{
+    return system_point_pixels;
+}
+
+void TBSystem::SetPixelsPerPoint(float pixels)
+{
+    system_point_pixels = pixels;
 }
 
 }; // namespace tb

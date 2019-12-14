@@ -30,6 +30,14 @@ namespace Craft {
 namespace UIKit
 {
 
+enum UISortType
+{
+    UI_SORT_NONE ,       // No sorting;
+    UI_SORT_ASCENDING ,  // Ascending sort;
+    //UI_SORT_DESCENDING   // Descending sort;
+};
+
+
 class ListViewItemSource;
 class ListViewItem;
 
@@ -44,10 +52,12 @@ public:
     /// Destruct.
     virtual ~UIListView();
 
+    void SetSort(UISortType sort);
+    UISortType GetSort() const;
+
     unsigned AddRootItem(const String& text, const String& icon, const String& id);
 
     unsigned AddChildItem(unsigned parentItemID, const String& text, const String& icon, const String& id);
-
 
     void SetItemText(const String& id, const String& text);
     void SetItemTextSkin(const String& id, const String& skin);
