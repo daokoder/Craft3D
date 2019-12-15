@@ -37,16 +37,6 @@ class RefCounted;
 
 typedef const void* ClassID;
 
-/// Macro to be included in RefCounted derived classes for efficient RTTI;
-/// From Atomic Game Engine;
-#define CRAFT_REFCOUNTED(typeName) \
-    public: \
-        virtual Craft::ClassID GetClassID() const { return GetClassIDStatic(); } \
-        static Craft::ClassID GetClassIDStatic() { static const int typeID = 0; return (Craft::ClassID) &typeID; } \
-        virtual const String& GetTypeName() const { return GetTypeNameStatic(); } \
-        static const String& GetTypeNameStatic() { static const String _typeName(#typeName); return _typeName; }
-
-
 /// Reference count structure.
 struct RefCount
 {
@@ -74,8 +64,6 @@ struct RefCount
 /// Base class for intrusively reference-counted objects. These are noncopyable and non-assignable.
 class CRAFT_API RefCounted
 {
-	CRAFT_REFCOUNTED( RefCounted );  // TODO: Add to derived classes;
-
 public:
     /// Construct. Allocate the reference count structure and set an initial self weak reference.
     RefCounted();

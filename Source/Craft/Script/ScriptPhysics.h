@@ -36,8 +36,6 @@ namespace Craft
     {
         friend class PhysicsNodeCollision;
 
-        CRAFT_REFCOUNTED(PhysicsNodeContact)
-
     public:
 
         PhysicsContact() {};
@@ -66,8 +64,6 @@ namespace Craft
 
     class CRAFT_API PhysicsNodeCollision : public RefCounted
     {
-        CRAFT_REFCOUNTED(PhysicsNodeCollision)
-
     public:
 
         PhysicsNodeCollision() : trigger_(false)

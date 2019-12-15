@@ -1802,7 +1802,7 @@ public:
 
     const String& GetCategory() const;
 
-    static const String& GetTypeNameStatic();
+    //static const String& GetTypeNameStatic();
 };
 
 

@@ -48,7 +48,7 @@ public:
     void DeleteAllChildren();
 
     UIWidget* GetFirstChild();
-    UIWidget* GetWidget(const String& id);
+    UIWidget* GetWidget(const String& id, const String& text = "");
 
 
 protected:

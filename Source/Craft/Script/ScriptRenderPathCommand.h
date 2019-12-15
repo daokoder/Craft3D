@@ -31,8 +31,6 @@ namespace Craft
     /// Wrapper around RenderPathCommand as that is setup as a struct and usage a significant delta in order to change to RefCounted
     class CRAFT_API ScriptRenderPathCommand : public RefCounted
     {
-        CRAFT_REFCOUNTED(ScriptRenderPathCommand)
-
     public:
 
         /// Construct.

@@ -51,8 +51,6 @@ class CRAFT_API UIPreferredSize : public RefCounted
 {
     friend class UIWidget;
 
-    CRAFT_REFCOUNTED(UIPreferredSize)
-
 public:
 
     UIPreferredSize(int w = 0, int h = 0);

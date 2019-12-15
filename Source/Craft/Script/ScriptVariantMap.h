@@ -34,8 +34,6 @@ namespace Craft
 /// For performance sensitive code, specialized marshaling should be used instead (for example physics event data)
 class ScriptVariantMap : public RefCounted
 {
-    CRAFT_REFCOUNTED(ScriptVariantMap)
-
 public:
 
     ScriptVariantMap() : RefCounted()

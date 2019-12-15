@@ -31,10 +31,9 @@
 namespace Craft
 {
 
+#if 0
 class ScriptVector : public RefCounted
 {
-    CRAFT_REFCOUNTED(ScriptVector)
-
 public:
 
     ScriptVector() : RefCounted()
@@ -282,5 +281,6 @@ private:
     Vector<SharedPtr<RefCounted>> refVector_;
 
 };
+#endif
 
 }

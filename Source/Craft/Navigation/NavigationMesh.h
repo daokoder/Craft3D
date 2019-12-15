@@ -292,7 +292,7 @@ protected:
     /// Add a triangle mesh to the geometry data.
     void AddTriMeshGeometry(NavBuildData* build, Geometry* geometry, const Matrix3x4& transform);
     /// Build one tile of the navigation mesh. Return true if successful.
-    virtual bool BuildTile(Vector<NavigationGeometryInfo>& geometryList, int x, int z);
+    bool BuildTile(Vector<NavigationGeometryInfo>& geometryList, int x, int z);
     /// Build tiles in the rectangular area. Return number of built tiles.
     unsigned BuildTiles(Vector<NavigationGeometryInfo>& geometryList, const IntVector2& from, const IntVector2& to);
     /// Ensure that the navigation mesh query is initialized. Return true if successful.

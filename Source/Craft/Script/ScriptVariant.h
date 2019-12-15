@@ -33,8 +33,6 @@ namespace Craft
     /// For performance sensitive code, specialized marshaling should be used instead
     class ScriptVariant : public RefCounted
     {
-        CRAFT_REFCOUNTED(ScriptVariant)
-
     public:
 
         ScriptVariant() : RefCounted()

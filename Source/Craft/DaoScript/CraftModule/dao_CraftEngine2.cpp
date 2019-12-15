@@ -6509,7 +6509,6 @@ extern void dao_Craft_Object_HasSubscribedToEvent( DaoProcess *_proc, DaoValue *
 extern void dao_Craft_Object_HasSubscribedToEvent_dao_2( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_Object_HasEventHandlers( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_Object_GetCategory( DaoProcess *_proc, DaoValue *_p[], int _n );
-static void dao_Craft_Object_GetTypeNameStatic( DaoProcess *_proc, DaoValue *_p[], int _n );
 
 static DaoFunctionEntry dao_Craft_Object_Meths[] = 
 {
@@ -6531,7 +6530,6 @@ static DaoFunctionEntry dao_Craft_Object_Meths[] =
   { dao_Craft_Object_HasSubscribedToEvent_dao_2, "HasSubscribedToEvent( self: Craft::Object, sender: Craft::Object, eventType :string )=>bool" },
   { dao_Craft_Object_HasEventHandlers, "HasEventHandlers( self: Craft::Object )=>bool" },
   { dao_Craft_Object_GetCategory, "GetCategory( self: Craft::Object )=>string" },
-  { dao_Craft_Object_GetTypeNameStatic, "GetTypeNameStatic(  )=>string" },
   { NULL, NULL }
 };
 static void Dao_Craft_Object_Delete( DaoValue *self )
@@ -6666,13 +6664,6 @@ static void dao_Craft_Object_GetCategory( DaoProcess *_proc, DaoValue *_p[], int
 
   const Craft::String& _GetCategory = self->GetCategory(  );
   DaoProcess_PutBytes( _proc, (char*) _GetCategory.CString(), _GetCategory.Length() );
-}
-/* DaoCraftEngineMod.cpp */
-static void dao_Craft_Object_GetTypeNameStatic( DaoProcess *_proc, DaoValue *_p[], int _n )
-{
-
-  const Craft::String& _GetTypeNameStatic = Craft::Object::GetTypeNameStatic(  );
-  DaoProcess_PutBytes( _proc, (char*) _GetTypeNameStatic.CString(), _GetTypeNameStatic.Length() );
 }
 /* DaoCraftEngineMod.cpp */
 

@@ -118,8 +118,10 @@ UIWidget* UISection::GetFirstChild()
     return GetSubsystem<UI>()->WrapWidget(TBSafeCast<TBSection>(widget_)->GetFirstToggleChild());
 }
 
-UIWidget* UISection::GetWidget(const String& id)
+UIWidget* UISection::GetWidget(const String& id, const String& text)
 {
+    if (text.Length()) return UIWidget::GetWidget(id, text);
+
     if (!widget_)
         return 0;
 
