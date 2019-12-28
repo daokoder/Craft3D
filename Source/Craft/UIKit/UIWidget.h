@@ -239,6 +239,9 @@ class CRAFT_API UIWidget : public Object, public tb::TBWidgetDelegate
     void SetState(UI_WIDGET_STATE state, bool on);
     bool GetState(UI_WIDGET_STATE state);
 
+	void SetVisible(bool visible);
+	bool IsVisible();
+
     void SetVisibility(UI_WIDGET_VISIBILITY visibility);
     UI_WIDGET_VISIBILITY GetVisibility();
 

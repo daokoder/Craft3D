@@ -944,6 +944,26 @@ void UIWidget::SetFocusRecursive()
     widget_->SetFocusRecursive(WIDGET_FOCUS_REASON_UNKNOWN);
 }
 
+void UIWidget::SetVisible(bool visible)
+{
+    UI_WIDGET_VISIBILITY vis = GetVisibility();
+
+    if( visible ){
+        if( GetVisibility() != UI_WIDGET_VISIBILITY_VISIBLE ){
+            SetVisibility( UI_WIDGET_VISIBILITY_VISIBLE );
+        }
+    }else{
+        if( GetVisibility() == UI_WIDGET_VISIBILITY_VISIBLE ){
+            SetVisibility( UI_WIDGET_VISIBILITY_INVISIBLE );
+        }
+    }
+}
+
+bool UIWidget::IsVisible()
+{
+    return GetVisibility() == UI_WIDGET_VISIBILITY_VISIBLE;
+}
+
 void UIWidget::SetVisibility(UI_WIDGET_VISIBILITY visibility)
 {
 
