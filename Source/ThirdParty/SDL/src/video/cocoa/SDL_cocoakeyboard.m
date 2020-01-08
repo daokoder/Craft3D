@@ -590,6 +590,13 @@ Cocoa_InitKeyboard(_THIS)
 }
 
 void
+SDL_UpdateModState()
+{
+    unsigned modifierFlags = [NSEvent modifierFlags];
+    SDL_ToggleModState(KMOD_CAPS, (modifierFlags & NSEventModifierFlagCapsLock) != 0);
+}
+
+void
 Cocoa_StartTextInput(_THIS)
 { @autoreleasepool
 {

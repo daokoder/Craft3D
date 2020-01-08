@@ -844,10 +844,19 @@ SDL_GetKeyboardState(int *numkeys)
     return keyboard->keystate;
 }
 
+extern void SDL_UpdateModState();
+
 SDL_Keymod
 SDL_GetModState(void)
 {
     SDL_Keyboard *keyboard = &SDL_keyboard;
+
+    /* Workaround for CapsLock: */
+#if defined(__WIN32__) && !defined(__WINRT__)
+    SDL_UpdateModState();
+#elif defined(__APPLE__) && defined(SDL_VIDEO_DRIVER_COCOA)
+    SDL_UpdateModState();
+#endif
 
     return (SDL_Keymod) keyboard->modstate;
 }

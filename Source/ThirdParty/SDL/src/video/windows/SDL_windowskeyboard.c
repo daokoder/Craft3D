@@ -112,6 +112,13 @@ WIN_InitKeyboard(_THIS)
 }
 
 void
+SDL_UpdateModState()
+{
+    SDL_ToggleModState(KMOD_CAPS, (GetKeyState(VK_CAPITAL) & 0x0001) != 0);
+    SDL_ToggleModState(KMOD_NUM, (GetKeyState(VK_NUMLOCK) & 0x0001) != 0);
+}
+
+void
 WIN_UpdateKeymap()
 {
     int i;
