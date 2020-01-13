@@ -138,7 +138,12 @@ TBFontGlyphCache::TBFontGlyphCache()
 {
     // Only use one map for the font face. The glyph cache will start forgetting
     // glyphs that haven't been used for a while if the map gets full.
-    m_frag_manager.SetNumMapsLimit(1);
+    //
+    // Craft:
+    // More maps are required for properly rendering a large amount of Chinese texts
+    // on retina screens. Assuming 64x64 pixels per glyph, 16 default size maps may
+    // support 1K distinctive glyphs for simultaneous display.
+    m_frag_manager.SetNumMapsLimit(16);
     m_frag_manager.SetDefaultMapSize(TB_GLYPH_CACHE_WIDTH, TB_GLYPH_CACHE_HEIGHT);
 
     g_renderer->AddListener(this);
