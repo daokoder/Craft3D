@@ -142,7 +142,7 @@ void DaoPlayerApp::Start()
 	APP_CUSTOM_INIT( context_, vms );
 #endif
 
-	printf( "DaoPlayerApp::Start()\n" );
+	//printf( "DaoPlayerApp::Start()\n" );
 	if (!daovm->ExecuteMain()) SendEvent(E_EXITREQUESTED);
 }
 
@@ -200,7 +200,7 @@ void DaoCraftBundleApp_Setup( DaoPlayerApp *app )
 	app->GetParameters()[ "FrameLimiter" ] = true;
 	app->GetParameters()[ "MultiSample" ] = 4;
 
-	printf( ">>>>>>>>>>>>>>>>>>>>>>> DaoCraftBundleApp_Setup\n" );
+	//printf( ">>>>>>>>>>>>>>>>>>>>>>> DaoCraftBundleApp_Setup\n" );
 }
 
 
