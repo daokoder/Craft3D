@@ -52,7 +52,6 @@ DaoComponentFile::DaoComponentFile(Context* context) :
 
 DaoComponentFile::~DaoComponentFile()
 {
-	printf( "DaoComponentFile::~DaoComponentFile()\n" );
 }
 
 void DaoComponentFile::RegisterObject(Context* context)
@@ -81,8 +80,6 @@ bool DaoComponentFile::PushModule()
 
 	vmspace = vm->GetVmSpace();
 
-	printf( "DaoComponentFile::PushModule(): %p %p %p %s\n", player, vm, vmspace, pathName.CString() );
-
 	nspace = daoscript->LoadScript( vmspace, pathName.CString() );
 
 	reloaded = prevNS != NULL && nspace != prevNS;
@@ -90,18 +87,13 @@ bool DaoComponentFile::PushModule()
 
 	//klass = DaoValue_CastClass( DaoNamespace_FindData( nspace, "RoboManComponent" ) );
 
-	printf( "DaoComponentFile::PushModule(): %p\n", nspace );
-
 	if( nspace == NULL ) return 0;
 
 #ifdef HAS_DAO_CRAFT_MODULE
 	DaoType *type_DaoComponent = DaoVmSpace_GetType( vmspace, dao_Craft_DaoComponent_Core );
-	int i;
-	for(i=0; i<nspace->constants->size; ++i){
+	for(int i=0; i<nspace->constants->size; ++i){
 		DaoClass *K = DaoValue_CastClass( nspace->constants->items.pConst[i]->value );
-		if( K != NULL ) printf( "%s\n", K->className->chars );
 		if( K != NULL && K->nameSpace != nspace ) continue;
-		if( K != NULL ) printf( "%s\n", K->className->chars );
 		if( K != NULL && DaoType_ChildOf( K->objType, type_DaoComponent ) ){
 			klass = K;
 			break;
@@ -114,7 +106,6 @@ bool DaoComponentFile::PushModule()
 
 DaoComponent* DaoComponentFile::CreateDaoComponent()
 {
-	printf( "DaoComponentFile::CreateDaoComponent()\n" );
 #ifdef HAS_DAO_CRAFT_MODULE
 	if( klass == NULL ) return new DaoComponent(context_);
 
@@ -145,8 +136,6 @@ DaoComponent* DaoComponentFile::CreateDaoComponent()
 	}
 	DaoVmSpace_ReleaseProcess( vmspace, process );
 
-	printf( "DaoComponentFile::CreateDaoComponent() %s %p %i\n", klass->className->chars, object, object->refCount );
-	printf( "Constructor: %s %s\n", routine->routName->chars, routine->nameSpace->name->chars );
 
 	DaoCdata *cdata = DaoValue_CastCdata( (DaoValue*) object, type_DaoComponent );
 	if( cdata == NULL || cdata->data == NULL ){
@@ -155,8 +144,6 @@ DaoComponent* DaoComponentFile::CreateDaoComponent()
 	}
 
 	DaoComponent *component = (DaoComponent*) cdata->data;
-
-	printf( "DaoComponentFile::CreateDaoComponent() %p\n", component );
 
 	component->SetObject( object );
 	components.Push( component );
@@ -188,7 +175,6 @@ bool DaoComponentFile::BeginLoad(Deserializer& source)
 
 bool DaoComponentFile::EndLoad()
 {
-	printf( "DaoComponentFile::EndLoad()\n" );
 	if( ! reloaded ) return true;
 
 	Vector<DaoComponent*> coms = components;

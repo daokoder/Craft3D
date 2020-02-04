@@ -57,7 +57,6 @@ DaoScript::DaoScript(Context* context) :
 
 DaoScript::~DaoScript()
 {
-	printf( "DaoScript::~DaoScript()\n" );
 }
 
 bool DaoScript::Initialize( DaoVmSpace *vmSpace )
@@ -86,7 +85,6 @@ DaoVM* DaoScript::InstantiateVM( void *player )
 
 void DaoScript::ShutdownVM( void *player )
 {
-	printf( "DaoScript::ShutdownVM()\n" );
     vms_.Erase(player);
 }
 

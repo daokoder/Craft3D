@@ -141,8 +141,8 @@ TBFontGlyphCache::TBFontGlyphCache()
     //
     // Craft:
     // More maps are required for properly rendering a large amount of Chinese texts
-    // on retina screens. Assuming 64x64 pixels per glyph, 16 default size maps may
-    // support 1K distinctive glyphs for simultaneous display.
+    // on retina screens. Assuming 16x16 to 64x64 pixels per glyph, 16 default size
+	// maps may support 1K to 16K distinctive glyphs for simultaneous display.
     m_frag_manager.SetNumMapsLimit(16);
     m_frag_manager.SetDefaultMapSize(TB_GLYPH_CACHE_WIDTH, TB_GLYPH_CACHE_HEIGHT);
 

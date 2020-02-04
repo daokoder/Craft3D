@@ -80,7 +80,6 @@ DaoVM::DaoVM(Context* context) :
 
 DaoVM::~DaoVM()
 {
-	printf( "DaoVM::~DaoVM()\n" );
 	if( vmSpace != NULL ){
 		//RefCounted::RemoveRefCountedDeletedFunction( OnRefCountedDeleted, vmSpace );
 		if( deleteVMS ) DaoVmSpace_TryDelete( vmSpace );
@@ -96,8 +95,6 @@ DaoVmSpace* DaoVM::InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player )
 {
 	vmSpace = vmspace;
 
-	printf( "DaoVM::InitVmSpace() %p\n", vmspace );
-
 	if( vmSpace == NULL ){
 		deleteVMS = true;
 		vmSpace = DaoVmSpace_New();
@@ -105,17 +102,13 @@ DaoVmSpace* DaoVM::InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player )
 
 	//RefCounted::AddRefCountedDeletedFunction( OnRefCountedDeleted, vmSpace );
 
-	printf( "DaoVM::InitVmSpace() %p\n", vmSpace );
-
 	Vector<String> resourcePaths = GetSubsystem<ResourceCache>()->GetResourceDirs();
 	for (unsigned i = resourcePaths.Size(); i > 0; --i){
-		printf( "DaoVmSpace_AddPath() %p: %s\n", vmSpace, resourcePaths[i-1].CString() );
 		DaoVmSpace_AddPath( vmSpace, resourcePaths[i-1].CString() );
 	}
 
 #ifdef HAS_DAO_CRAFT_MODULE
 	DaoNamespace *moduleNS = DaoVmSpace_GetNamespace( vmSpace, "CraftModule" );
-	printf( "DaoScript::Initialize(): %p %p\n", vmSpace, moduleNS );
 	DaoCraftEngine_OnLoad( vmSpace, moduleNS );
 
 	DaoNamespace *daoNS = DaoVmSpace_GetNamespace( vmSpace, "dao" );
@@ -128,8 +121,6 @@ DaoVmSpace* DaoVM::InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player )
 	DaoNamespace_AddConstValue( daoNS, "CraftPlayer", (DaoValue*) playerNS );
 
 	DaoNamespace_AddParent( daoNS, moduleNS );
-
-	printf( "DaoScript::Initialize(): %p %p\n", craftNS, playerNS );
 #endif
 
 	DaoVmSpace_SetSpaceData( vmSpace, (void*) DaoCraft_ContextKey, GetContext() );
@@ -191,8 +182,6 @@ bool DaoVM::ExecuteMain()
 {
 	bool maindao = GetSubsystem<ResourceCache>()->Exists("Scripts/main.dao");
 	bool maindac = GetSubsystem<ResourceCache>()->Exists("Scripts/main.dac");
-
-	printf( "ExecuteMain(): %i %i\n", maindao, maindac );
 
 	if( ! (maindao || maindac) ) return true;
 
