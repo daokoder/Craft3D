@@ -152,6 +152,17 @@ bool UIEditField::SetPlaceholderText(const String& text)
     return w->SetPlaceholderText(text.CString());
 }
 
+String UIEditField::GetPlaceholderText() const
+{
+    if (!widget_) return String();
+
+    TBEditField* w = (TBEditField*) widget_;
+    TBStr text;
+
+    w->GetPlaceholderText(text);
+    return String(text.CStr());
+}
+
 void UIEditField::AppendText(const String& text)
 {
     if (!widget_)

@@ -51,6 +51,7 @@ public:
     virtual ~UIEditField();
 
 	bool SetPlaceholderText(const String& text); // Craft;
+	String GetPlaceholderText() const;
 
     void AppendText(const String& text);
 
