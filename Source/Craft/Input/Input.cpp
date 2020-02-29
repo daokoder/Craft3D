@@ -2438,7 +2438,11 @@ void Input::HandleScreenMode(StringHash eventType, VariantMap& eventData)
     int winWidth, winHeight;
     int gfxWidth = graphics_->GetWidth();
     int gfxHeight = graphics_->GetHeight();
-    SDL_GetWindowSize(window, &winWidth, &winHeight);
+    winWidth = graphics_->GetLogicalWidth();
+    winHeight = graphics_->GetLogicalHeight();
+    // The following is not working properly after restoring the screen mode
+    // from fullscreen to window:
+    //SDL_GetWindowSize(window, &winWidth, &winHeight);
     if (winWidth > 0 && winHeight > 0 && gfxWidth > 0 && gfxHeight > 0)
     {
         inputScale_.x_ = (float)gfxWidth / (float)winWidth;
