@@ -84,7 +84,6 @@ void Node::RegisterObject(Context* context)
     CRAFT_ACCESSOR_ATTRIBUTE("Name", GetName, SetName, String, String::EMPTY, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Tags", GetTags, SetTags, StringVector, Variant::emptyStringVector, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Position", GetPosition, SetPosition, Vector3, Vector3::ZERO, AM_FILE);
-    CRAFT_ACCESSOR_ATTRIBUTE("Rotation", GetRotation, SetRotation, Quaternion, Quaternion::IDENTITY, AM_FILE);
     CRAFT_ACCESSOR_ATTRIBUTE("Rotation", GetPartialRotation, SetPartialRotation, Quaternion, Quaternion::IDENTITY, AM_FILE);
     CRAFT_ACCESSOR_ATTRIBUTE("Orientation", GetOrientation, SetOrientation, Quaternion, Quaternion::IDENTITY, AM_FILE);
     CRAFT_ACCESSOR_ATTRIBUTE("Scale", GetScale, SetScale, Vector3, Vector3::ONE, AM_DEFAULT);
