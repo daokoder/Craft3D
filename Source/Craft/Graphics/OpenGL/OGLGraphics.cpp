@@ -540,6 +540,7 @@ void Graphics::Resize( unsigned width, unsigned height )
 {
 	if( window_ ){
 		SDL_SetWindowSize( window_, width, height );
+		SDL_GetWindowSize( window_, &logicalWidth_, &logicalHeight_ );
 		SDL_GL_GetDrawableSize( window_, &width_, &height_ );
 	}
 }
