@@ -375,6 +375,9 @@ if (CRAFT_LUAJIT)
     set (JIT JIT)
     set (CRAFT_LUA 1)
 endif ()
+if (NOT CRAFT_PROFILING)
+    set (BT_NO_PROFILE 1)
+endif ()
 
 # Union all the sysroot variables into one so it can be referred to generically later
 set (SYSROOT ${CMAKE_SYSROOT} ${MINGW_SYSROOT} ${IOS_SYSROOT} ${TVOS_SYSROOT} CACHE INTERNAL "Path to system root of the cross-compiling target")  # SYSROOT is empty for native build

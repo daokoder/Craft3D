@@ -25,6 +25,7 @@
 #include "../Core/Context.h"
 #include "../Core/Profiler.h"
 #include "../Graphics/Texture2D.h"
+#include "../Graphics/Graphics.h"
 #include "../IO/Log.h"
 #include "../Resource/ResourceCache.h"
 #include "../UI/Font.h"
@@ -119,7 +120,8 @@ void Text::ApplyAttributes()
 
 void Text::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)
 {
-    FontFace* face = font_ ? font_->GetFace(fontSize_) : nullptr;
+    auto* graphics = GetSubsystem<Graphics>();
+    FontFace* face = font_ ? font_->GetFace(fontSize_*graphics->GetPixelDensity()) : nullptr;
     if (!face)
     {
         hovering_ = false;
@@ -491,7 +493,8 @@ void Text::UpdateText(bool onResize)
 
     if (font_)
     {
-        FontFace* face = font_->GetFace(fontSize_);
+        auto* graphics = GetSubsystem<Graphics>();
+        FontFace* face = font_->GetFace(fontSize_*graphics->GetPixelDensity());
         if (!face)
             return;
 
@@ -679,7 +682,8 @@ void Text::UpdateText(bool onResize)
 void Text::UpdateCharLocations()
 {
     // Remember the font face to see if it's still valid when it's time to render
-    FontFace* face = font_ ? font_->GetFace(fontSize_) : nullptr;
+    auto* graphics = GetSubsystem<Graphics>();
+    FontFace* face = font_ ? font_->GetFace(fontSize_*graphics->GetPixelDensity()) : nullptr;
     if (!face)
         return;
     fontFace_ = face;

@@ -69,7 +69,7 @@ void btSetCustomLeaveProfileZoneFunc(btLeaveProfileZoneFunc* leaveFunc);
 
 //To disable built-in profiling, please comment out next line
 // Urho3D: built-in profiling disabled, since Urho3D has its own hierarchic profiler
-#define BT_NO_PROFILE 1
+//#define BT_NO_PROFILE 1
 #ifndef BT_NO_PROFILE
 //btQuickprofGetCurrentThreadIndex will return -1 if thread index cannot be determined, 
 //otherwise returns thread index in range [0..maxThreads]

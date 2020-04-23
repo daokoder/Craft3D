@@ -47,6 +47,7 @@
 #include <Bullet/BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 #include <Bullet/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
 #include <Bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
+#include <Bullet/LinearMath/btQuickprof.h>
 
 extern ContactAddedCallback gContactAddedCallback;
 
@@ -1079,6 +1080,51 @@ void PhysicsWorld::SendCollisionEvents()
 
     previousCollisions_ = currentCollisions_;
 }
+
+#ifndef BT_NO_PROFILE
+void PhysicsWorld::StartPhysicsProfiling()
+{
+    CProfileManager::Start_Profile( "Craft Engine" );
+}
+
+void PhysicsWorld::ResetPhysicsProfiling( bool dumping )
+{
+    CProfileManager::Reset();
+
+    if( dumping ){
+        CProfileIterator* profileIterator = 0;
+        profileIterator = CProfileManager::Get_Iterator();
+
+        CProfileManager::dumpRecursive(profileIterator,2);
+        CProfileManager::Release_Iterator(profileIterator);
+    }
+}
+
+void PhysicsWorld::StopPhysicsProfiling( bool dumping )
+{
+    CProfileManager::Stop_Profile();
+
+    if( dumping ){
+        CProfileIterator* profileIterator = 0;
+        profileIterator = CProfileManager::Get_Iterator();
+
+        CProfileManager::dumpRecursive(profileIterator,2);
+        CProfileManager::Release_Iterator(profileIterator);
+    }
+}
+#else
+void PhysicsWorld::StartPhysicsProfiling()
+{
+}
+
+void PhysicsWorld::ResetPhysicsProfiling( bool dumping )
+{
+}
+
+void PhysicsWorld::StopPhysicsProfiling( bool dumping )
+{
+}
+#endif
 
 void RegisterPhysicsLibrary(Context* context)
 {

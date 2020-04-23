@@ -283,6 +283,11 @@ public:
     /// Return whether is currently inside the Bullet substep loop.
     bool IsSimulating() const { return simulating_; }
 
+    /// Craft Engine:
+    static void StartPhysicsProfiling();
+    static void ResetPhysicsProfiling( bool dumping = false );
+    static void StopPhysicsProfiling( bool dumping = false );
+
     /// Overrides of the internal configuration.
     static struct PhysicsWorldConfig config;
 

@@ -27,12 +27,13 @@
 namespace Craft {
 
 class Viewport;
-class UIView;
 class StaticModel;
 class Material;
 
 namespace UIKit
 {
+
+class UIView;
 
 // UI Component which can be attached to a scene node with a StaticModel
 class CRAFT_API UIComponent : public Component
