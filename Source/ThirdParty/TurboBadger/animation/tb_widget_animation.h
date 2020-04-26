@@ -69,6 +69,7 @@ public:
         rectangle and a delta. The reference rectangle will be taken from
         the target widget on the first OnAnimationUpdate. */
     TBWidgetAnimationRect(TBWidget *widget, const TBRect &delta_rect, MODE mode);
+    void SetMode(MODE mode) { m_mode = mode; }
     virtual void OnAnimationStart();
     virtual void OnAnimationUpdate(float progress);
     virtual void OnAnimationStop(bool aborted);

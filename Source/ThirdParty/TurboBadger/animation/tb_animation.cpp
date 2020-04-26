@@ -119,7 +119,7 @@ void TBAnimationManager::Update()
         {
             animating_objects.Remove(obj);
             obj->InvokeOnAnimationStop(false);
-            delete obj;
+            if (obj->GetDeleteOnFinish()) delete obj;
         }
     }
 }

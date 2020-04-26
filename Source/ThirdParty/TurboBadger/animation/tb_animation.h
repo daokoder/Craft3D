@@ -76,6 +76,7 @@ public:
     double animation_start_time;
     double animation_duration;
     bool adjust_start_time;
+	bool delete_on_finish;
 public:
     // For safe typecasting
     TBOBJECT_SUBCLASS(TBAnimationObject, TBTypedObject);
@@ -84,6 +85,9 @@ public:
 
     /** Return true if the object is currently animating. */
     bool IsAnimating() const { return linklist ? true : false; }
+
+	void SetDeleteOnFinish( bool value ) { delete_on_finish = value; }
+	bool GetDeleteOnFinish() const { return delete_on_finish; }
 
     /** Called on animation start */
     virtual void OnAnimationStart() = 0;
