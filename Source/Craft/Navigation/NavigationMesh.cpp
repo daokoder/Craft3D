@@ -1219,15 +1219,23 @@ void NavigationMesh::GetTileGeometry(NavBuildData* build, Vector<NavigationGeome
                 case SHAPE_BOX:
                     {
                         unsigned destVertexStart = build->vertices_.Size();
+						Vector3 V1 = transform * Vector3(-0.5f, 0.5f, -0.5f);
+						Vector3 V2 = transform * Vector3(0.5f, 0.5f, -0.5f);
+						Vector3 V3 = transform * Vector3(0.5f, -0.5f, -0.5f);
+						Vector3 V4 = transform * Vector3(-0.5f, -0.5f, -0.5f);
+						Vector3 V5 = transform * Vector3(-0.5f, 0.5f, 0.5f);
+						Vector3 V6 = transform * Vector3(0.5f, 0.5f, 0.5f);
+						Vector3 V7 = transform * Vector3(0.5f, -0.5f, 0.5f);
+						Vector3 V8 = transform * Vector3(-0.5f, -0.5f, 0.5f);
 
-                        build->vertices_.Push(transform * Vector3(-0.5f, -0.5f, 0.5f));
-                        build->vertices_.Push(transform * Vector3(0.5f, -0.5f, 0.5f));
-                        build->vertices_.Push(transform * Vector3(0.5f, -0.5f, -0.5f));
-                        build->vertices_.Push(transform * Vector3(-0.5f, -0.5f, -0.5f));
-                        build->vertices_.Push(transform * Vector3(-0.5f, 0.5f, 0.5f));
-                        build->vertices_.Push(transform * Vector3(0.5f, 0.5f, 0.5f));
-                        build->vertices_.Push(transform * Vector3(0.5f, 0.5f, -0.5f));
-                        build->vertices_.Push(transform * Vector3(-0.5f, 0.5f, -0.5f));
+						build->vertices_.Push( Vector3(V1.x_, V1.z_, V1.y_) );
+						build->vertices_.Push( Vector3(V2.x_, V2.z_, V2.y_) );
+						build->vertices_.Push( Vector3(V3.x_, V3.z_, V3.y_) );
+						build->vertices_.Push( Vector3(V4.x_, V4.z_, V4.y_) );
+						build->vertices_.Push( Vector3(V5.x_, V5.z_, V5.y_) );
+						build->vertices_.Push( Vector3(V6.x_, V6.z_, V6.y_) );
+						build->vertices_.Push( Vector3(V7.x_, V7.z_, V7.y_) );
+						build->vertices_.Push( Vector3(V8.x_, V8.z_, V8.y_) );
 
                         const unsigned indices[] = {
                             0, 2, 1,
