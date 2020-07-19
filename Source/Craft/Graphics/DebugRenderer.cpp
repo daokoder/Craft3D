@@ -337,8 +337,8 @@ void DebugRenderer::AddCylinder(const Vector3& position, float radius, float hei
 {
     Sphere sphere(position, radius);
     Vector3 heightVec(0, 0, height); // Craft;
-    Vector3 offsetXVec(radius, 0, 0);
-    Vector3 offsetYVec(0, radius, 0); // Craft;
+    //Vector3 offsetXVec(radius, 0, 0);
+    //Vector3 offsetYVec(0, radius, 0); // Craft;
     for (auto i = 0; i < 360; i += 45)
     {
         Vector3 p1 = sphere.GetPoint(i, 90);
@@ -346,6 +346,7 @@ void DebugRenderer::AddCylinder(const Vector3& position, float radius, float hei
         AddLine(p1, p2, color, depthTest);
         AddLine(p1 + heightVec, p2 + heightVec, color, depthTest);
 		AddLine(p1, p1 + heightVec, color, depthTest); // Craft;
+		AddLine(p2, p2 + heightVec, color, depthTest); // Craft;
     }
 	// Craft:
     //AddLine(position + offsetXVec, position + heightVec + offsetXVec, color, depthTest);

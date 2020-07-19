@@ -44,6 +44,7 @@
 #include "../Navigation/OffMeshConnection.h"
 #ifdef CRAFT_PHYSICS
 #include "../Physics/CollisionShape.h"
+#include "../Physics/RigidBody.h"
 #endif
 #include "../Scene/Scene.h"
 
@@ -1080,10 +1081,11 @@ void NavigationMesh::CollectGeometries(Vector<NavigationGeometryInfo>& geometryL
         if (!shape->IsEnabledEffective())
             continue;
 
+		RigidBody *body = shape->GetComponent<RigidBody>();
         ShapeType type = shape->GetShapeType();
 		bool navigable = shape->IsNavigable();
 		navigable |= type == SHAPE_BOX || type == SHAPE_TRIANGLEMESH || type == SHAPE_CONVEXHULL;
-        if (navigable && shape->GetCollisionShape())
+        if (navigable && shape->GetCollisionShape() && body && body->GetMass() == 0.0f)
         {
             Matrix3x4 shapeTransform(shape->GetPosition(), shape->GetRotation(), shape->GetSize());
 
