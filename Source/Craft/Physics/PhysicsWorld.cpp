@@ -795,7 +795,7 @@ void PhysicsWorld::HandleSceneSubsystemUpdate(StringHash eventType, VariantMap& 
         return;
 
     using namespace SceneSubsystemUpdate;
-    Update(eventData[P_TIMESTEP].GetFloat());
+    Update(eventData[P_TIMESTEP].GetFloat() * timeScale_);
 }
 
 void PhysicsWorld::PreStep(float timeStep)

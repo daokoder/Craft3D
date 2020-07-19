@@ -169,6 +169,8 @@ public:
     void SetFps(int fps);
     /// Set gravity.
     void SetGravity(const Vector3& gravity);
+    /// Set the simulation time scale.
+    void SetTimeScale(float timeScale) { timeScale_ = timeScale; }
     /// Set maximum number of physics substeps per frame. 0 (default) is unlimited. Positive values cap the amount. Use a negative value to enable an adaptive timestep. This may cause inconsistent physics behavior.
     void SetMaxSubSteps(int num);
     /// Set number of constraint solver iterations.
@@ -213,6 +215,9 @@ public:
 
     /// Return gravity.
     Vector3 GetGravity() const;
+
+    /// Get the simulation time scale.
+    float GetTimeScale() const { return timeScale_; }
 
     /// Return maximum number of physics substeps per frame.
     int GetMaxSubSteps() const { return maxSubSteps_; }
@@ -343,6 +348,8 @@ private:
     VectorBuffer contacts_;
     /// Simulation substeps per second.
     unsigned fps_{DEFAULT_FPS};
+    /// Simulation time scale.
+    float timeScale_{1.0};
     /// Maximum number of simulation substeps per frame. 0 (default) unlimited, or negative values for adaptive timestep.
     int maxSubSteps_{};
     /// Time accumulator for non-interpolated mode.
