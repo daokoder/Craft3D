@@ -532,7 +532,7 @@ String String::Trimmed(bool spaceTabOnly) const
     while (trimEnd > trimStart)
     {
         char c = buffer_[trimEnd - 1];
-        if ((spaceTabOnly && c != ' ' && c != 9 || !isspace(c)))
+        if ((spaceTabOnly && c != ' ' && c != 9) || !isspace(c))
             break;
         --trimEnd;
     }

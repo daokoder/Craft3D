@@ -172,8 +172,11 @@ void RigidBody::setWorldTransform(const btTransform& worldTrans)
         // If the rigid body is parented to another rigid body, can not set the transform immediately.
         // In that case store it to PhysicsWorld for delayed assignment
         Node* parent = node_->GetParent();
-        if (parent != GetScene() && parent)
+        while (parent != GetScene() && parent){
             parentRigidBody = parent->GetComponent<RigidBody>();
+            if( parentRigidBody ) break;  // Skip parent nodes without rigid bodies,
+            parent = parent->GetParent(); // in case they are not created for optimization;
+        }
 
         if (!parentRigidBody)
             ApplyWorldTransform(newWorldPosition, newWorldRotation);
