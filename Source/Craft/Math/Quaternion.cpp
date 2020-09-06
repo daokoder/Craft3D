@@ -178,30 +178,30 @@ Vector3 Quaternion::EulerAngles() const
 {
     // Derivation from http://www.geometrictools.com/Documentation/EulerAngles.pdf
     // Order of rotations: Z first, then X, then Y
-    float check = 2.0f * (-y_ * z_ + w_ * x_);
+    float check = 2.0f * (-x_ * z_ + w_ * y_);
 
     if (check < -0.995f)
     {
         return Vector3(
-            -90.0f,
             0.0f,
-            -atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_)) * M_RADTODEG
+            -90.0f,
+            -atan2f(2.0f * (y_ * z_ - w_ * x_), 1.0f - 2.0f * (x_ * x_ + z_ * z_)) * M_RADTODEG
         );
     }
     else if (check > 0.995f)
     {
         return Vector3(
-            90.0f,
             0.0f,
-            atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_)) * M_RADTODEG
+            90.0f,
+            atan2f(2.0f * (y_ * z_ - w_ * x_), 1.0f - 2.0f * (x_ * x_ + z_ * z_)) * M_RADTODEG
         );
     }
     else
     {
         return Vector3(
+            atan2f(2.0f * (y_ * z_ + w_ * x_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)) * M_RADTODEG,
             asinf(check) * M_RADTODEG,
-            atan2f(2.0f * (x_ * z_ + w_ * y_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)) * M_RADTODEG,
-            atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (x_ * x_ + z_ * z_)) * M_RADTODEG
+            atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (y_ * y_ + z_ * z_)) * M_RADTODEG
         );
     }
 }
