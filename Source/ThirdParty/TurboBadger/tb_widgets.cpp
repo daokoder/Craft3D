@@ -212,7 +212,7 @@ TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_
 
 TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const TBStr &text) // Craft;
 {
-    if (m_id == id && (text == "" || text.Compare( GetText().CStr() ) == 0))
+    if (m_id == id && (text.Compare( "" ) == 0 || text.Compare( GetText().CStr() ) == 0))
         return this;
     for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
     {
@@ -1346,11 +1346,12 @@ float TBWidget::CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin
     float opacity = m_opacity;
     if (skin_element)
         opacity *= skin_element->opacity;
-    if (state & WIDGET_STATE_DISABLED)
+    if (state & WIDGET_STATE_DISABLED){
         if (m_disabledOpacity < 0.0f)
             opacity *= g_tb_skin->GetDefaultDisabledOpacity();
         else
             opacity *= m_disabledOpacity;
+    }
     return opacity;
 }
 

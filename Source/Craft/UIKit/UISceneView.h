@@ -31,8 +31,6 @@
 
 #include <TurboBadger/tb_widgets.h>
 
-using namespace tb;
-
 namespace Craft {
 
 namespace UIKit
