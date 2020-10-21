@@ -48,7 +48,7 @@ void Quaternion::FromAngleAxis(float angle, const Vector3& axis)
 
 void Quaternion::FromEulerAngles(float x, float y, float z)
 {
-    // See the wikipedia page for conversion between quaternions and Euler angles;
+    // Order of rotations: Z first, then X, then Y (mimics typical FPS camera with gimbal lock at top/bottom)
     x *= M_DEGTORAD_2;
     y *= M_DEGTORAD_2;
     z *= M_DEGTORAD_2;
@@ -60,8 +60,8 @@ void Quaternion::FromEulerAngles(float x, float y, float z)
     float cosZ = cosf(z);
 
     w_ = cosY * cosX * cosZ + sinY * sinX * sinZ;
-    x_ = cosY * sinX * cosZ - sinY * cosX * sinZ;
-    y_ = sinY * cosX * cosZ + cosY * sinX * sinZ;
+    x_ = cosY * sinX * cosZ + sinY * cosX * sinZ;
+    y_ = sinY * cosX * cosZ - cosY * sinX * sinZ;
     z_ = cosY * cosX * sinZ - sinY * sinX * cosZ;
 }
 
@@ -176,31 +176,32 @@ bool Quaternion::FromLookRotation(const Vector3& direction, const Vector3& up)
 
 Vector3 Quaternion::EulerAngles() const
 {
-    // See the wikipedia page for conversion between quaternions and Euler angles;
-    float check = 2.0f * (-x_ * z_ + w_ * y_);
+    // Derivation from http://www.geometrictools.com/Documentation/EulerAngles.pdf
+    // Order of rotations: Z first, then X, then Y
+    float check = 2.0f * (-y_ * z_ + w_ * x_);
 
     if (check < -0.995f)
     {
         return Vector3(
-            0.0f,
             -90.0f,
-            -atan2f(2.0f * (y_ * z_ - w_ * x_), 1.0f - 2.0f * (x_ * x_ + z_ * z_)) * M_RADTODEG
+            0.0f,
+            -atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_)) * M_RADTODEG
         );
     }
     else if (check > 0.995f)
     {
         return Vector3(
-            0.0f,
             90.0f,
-            atan2f(2.0f * (y_ * z_ - w_ * x_), 1.0f - 2.0f * (x_ * x_ + z_ * z_)) * M_RADTODEG
+            0.0f,
+            atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_)) * M_RADTODEG
         );
     }
     else
     {
         return Vector3(
-            atan2f(2.0f * (y_ * z_ + w_ * x_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)) * M_RADTODEG,
             asinf(check) * M_RADTODEG,
-            atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (y_ * y_ + z_ * z_)) * M_RADTODEG
+            atan2f(2.0f * (x_ * z_ + w_ * y_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)) * M_RADTODEG,
+            atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (x_ * x_ + z_ * z_)) * M_RADTODEG
         );
     }
 }
