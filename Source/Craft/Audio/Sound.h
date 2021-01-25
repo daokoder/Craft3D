@@ -62,6 +62,7 @@ public:
     void SetLooped(bool enable);
     /// Define loop.
     void SetLoop(unsigned repeatOffset, unsigned endOffset);
+    void SetLoop(float repeatOffset, float endOffset);
 
     /// Return a new instance of a decoder sound stream. Used by compressed sounds.
     SharedPtr<SoundStream> GetDecoderStream() const;

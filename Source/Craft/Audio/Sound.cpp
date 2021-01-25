@@ -268,6 +268,11 @@ void Sound::SetLooped(bool enable)
     }
 }
 
+void Sound::SetLoop(float repeatOffset, float endOffset)
+{
+    SetLoop(dataSize_*Clamp(repeatOffset, 0.0f, 1.0f), dataSize_*Clamp(endOffset, 0.0f, 1.0f));
+}
+
 void Sound::SetLoop(unsigned repeatOffset, unsigned endOffset)
 {
     if (!compressed_)

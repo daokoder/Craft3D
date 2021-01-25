@@ -141,6 +141,18 @@ void UIEditField::ScrollTo(int x, int y)
 
 }
 
+void UIEditField::ScrollBy(int dx, int dy)
+{
+    if (!widget_)
+        return;
+
+    // safe cast?
+    TBEditField* w = (TBEditField*) widget_;
+
+    w->ScrollBy(dx, dy);
+
+}
+
 bool UIEditField::SetPlaceholderText(const String& text)
 {
     if (!widget_)

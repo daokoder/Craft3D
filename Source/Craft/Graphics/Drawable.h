@@ -350,7 +350,7 @@ protected:
     /// Octree octant.
     Octant* octant_;
     /// Current zone.
-    Zone* zone_;
+    WeakPtr<Zone> zone_;
     /// View mask.
     unsigned viewMask_;
     /// Light mask.

@@ -71,6 +71,7 @@ public:
     void Reformat(bool update_fragments = false);
 
     void ScrollTo(int x, int y);
+    void ScrollBy(int dx, int dy);
 
     void SetWrapping(bool wrap);
     bool GetWrapping();
