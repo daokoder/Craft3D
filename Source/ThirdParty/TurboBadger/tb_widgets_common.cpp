@@ -9,6 +9,7 @@
 #include "tb_system.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <math.h>
 
 namespace tb {
 
@@ -553,6 +554,8 @@ void TBScrollBar::UpdateHandle()
     if (m_max - m_min > 0 && m_visible > 0)
     {
         double visible_proportion = m_visible / (m_visible + m_max - m_min);
+        // Avoid bar length decreasing too quickly for large scroll areas:
+        visible_proportion = sqrt(visible_proportion) * cbrt(visible_proportion);
         visible_pixels = (int)(visible_proportion * available_pixels);
 
         // Limit the size of the indicator to the slider thickness so that it doesn't

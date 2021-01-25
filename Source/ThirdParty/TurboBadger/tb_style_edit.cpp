@@ -910,7 +910,7 @@ int32 TBBlock::CalculateLineHeight(TBFontFace *font) const
 {
     // ATOMIC BEGIN
     // Atomic adds a bit of buffer here for better line separation, this could be exposed as a setting
-    return font->GetHeight() + 4;
+    return font->GetHeight() + 2;
     // ATOMIC END
 }
 

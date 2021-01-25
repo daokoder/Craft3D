@@ -226,6 +226,10 @@ enum SIZE_DEP {
 };
 MAKE_ENUM_FLAG_COMBO(SIZE_DEP);
 
+// Small maximum size might be exceeded by extra large widgets,
+// which may cause scrolling problem for scroller.
+#define TB_WIDGET_SIZE_MAX  100000
+
 /** PreferredSize contains size preferences for a TBWidget.
     This is calculated during layout for each widget from
     the current skin, widget preferences and LayoutParams. */
@@ -234,7 +238,7 @@ class PreferredSize
 {
 public:
     PreferredSize() : min_w(0), min_h(0)
-      , max_w(10000), max_h(10000)
+      , max_w(TB_WIDGET_SIZE_MAX), max_h(TB_WIDGET_SIZE_MAX)
       , pref_w(0), pref_h(0)
       , size_dependency(SIZE_DEP_NONE) {}
     PreferredSize(int w, int h) : min_w(w), min_h(h)
@@ -274,7 +278,7 @@ public:
 class SizeConstraints
 {
 public:
-    static const int NO_RESTRICTION = 10000;
+    static const int NO_RESTRICTION = TB_WIDGET_SIZE_MAX;
 
     /** The available width and height. May be NO_RESTRICTION which is a large value. */
     int available_w, available_h;
