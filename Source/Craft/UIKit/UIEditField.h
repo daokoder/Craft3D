@@ -63,10 +63,12 @@ public:
     void SetEditType(UI_EDIT_TYPE type);
 
     void SetReadOnly(bool readonly);
+    void SetSelection(bool selection);
     void SetStyling(bool styling);
     void SetMultiline(bool multiline);
 
 	bool GetReadOnly() const; // Craft;
+	bool GetSelection() const; // Craft;
 
     void Reformat(bool update_fragments = false);
 

@@ -131,6 +131,11 @@ void TBEditField::SetReadOnly(bool readonly)
     TBWidget::Invalidate();
 }
 
+void TBEditField::SetSelection(bool selection)
+{
+    m_style_edit.SetSelection(selection);
+}
+
 void TBEditField::SetWrapping(bool wrapping)
 {
     if (wrapping == GetWrapping())
@@ -316,7 +321,7 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
         }
         return true;
     }
-    return false;
+    return TBWidget::OnEvent( ev );
 }
 
 void TBEditField::OnPaint(const PaintProps &paint_props)

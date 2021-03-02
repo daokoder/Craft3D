@@ -74,6 +74,27 @@ bool UIEditField::GetReadOnly() const
     return w->GetReadOnly();
 }
 
+void UIEditField::SetSelection(bool selection)
+{
+    if (!widget_)
+        return;
+
+    TBEditField* w = (TBEditField*) widget_;
+
+    w->SetSelection(selection);
+
+}
+
+bool UIEditField::GetSelection() const
+{
+    if (!widget_)
+        return false;
+
+    TBEditField* w = (TBEditField*) widget_;
+
+    return w->GetSelection();
+}
+
 void UIEditField::SetStyling(bool styling)
 {
     if (!widget_)
@@ -258,7 +279,7 @@ void UIEditField::OnFocusChanged(bool focused)
     {
         if (focused)
         {
-            if (!w->GetMultiline())
+            if (w->GetSelection() && !w->GetMultiline())
                 styleEdit->selection.SelectAll();
             firstFocusFlag_ = true;
 
@@ -301,7 +322,7 @@ bool UIEditField::OnEvent(const tb::TBWidgetEvent &ev)
             TBEditField* w = (TBEditField*) widget_;
 
             TBStyleEdit* styleEdit = w->GetStyleEdit();
-            if (styleEdit != NULL && !w->GetMultiline())
+            if (styleEdit != NULL && w->GetSelection() && !w->GetMultiline())
             {
                 styleEdit->selection.SelectAll();
             }

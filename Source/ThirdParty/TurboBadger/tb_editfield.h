@@ -97,6 +97,9 @@ public:
     void SetReadOnly(bool readonly);
     bool GetReadOnly() const { return m_style_edit.packed.read_only; }
 
+    void SetSelection(bool selection);
+    bool GetSelection() const { return m_style_edit.packed.selection_on; }
+
     /** Set to true if the text should wrap if multi line is enabled (See SetMultiline). */
     void SetWrapping(bool wrapping);
     bool GetWrapping() const { return m_style_edit.packed.wrapping; }
