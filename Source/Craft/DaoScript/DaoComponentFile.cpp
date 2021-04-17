@@ -63,6 +63,10 @@ bool DaoComponentFile::PushModule()
 {
     //if (context_->GetEditorContext()) return false; // TODO;
 
+	Craft::DaoScript* daoscript = context_->GetSubsystem<Craft::DaoScript>();
+
+	if( !daoscript->IsComponentEnabled() ) return false;
+
     const String& path = GetName();
     String pathName, fileName, ext;
     SplitPath(path, pathName, fileName, ext);
@@ -74,7 +78,6 @@ bool DaoComponentFile::PushModule()
 	}
 
 	DaoPlayer *player = context_->GetSubsystem<DaoPlayer>();
-	Craft::DaoScript* daoscript = context_->GetSubsystem<Craft::DaoScript>();
 	DaoNamespace *prevNS = nspace;
     DaoVM* vm = daoscript->GetVM( player );
 

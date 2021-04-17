@@ -52,6 +52,7 @@ DaoScript::DaoScript(Context* context) :
 {
     RegisterDaoScriptLibrary(context_);
     scriptContext_ = context;
+	enableComponent = true;
 	moduleNS = NULL;
 }
 
@@ -90,10 +91,8 @@ void DaoScript::ShutdownVM( void *player )
 
 void RegisterDaoScriptLibrary(Context* context)
 {
-#ifdef ENABLE_DAO_COMPONENT
 	DaoComponentFile::RegisterObject(context);
 	DaoComponent::RegisterObject(context);
-#endif
 }
 
 }

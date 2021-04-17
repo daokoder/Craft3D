@@ -109,15 +109,16 @@ DaoVmSpace* DaoVM::InitVmSpace( DaoVmSpace *vmspace, DaoPlayer *player )
 
 #ifdef HAS_DAO_CRAFT_MODULE
 	DaoNamespace *moduleNS = DaoVmSpace_GetNamespace( vmSpace, "CraftModule" );
-	DaoCraftEngine_OnLoad( vmSpace, moduleNS );
-
 	DaoNamespace *daoNS = DaoVmSpace_GetNamespace( vmSpace, "dao" );
 	DaoNamespace *craftNS = DaoVmSpace_GetNamespace( vmSpace, "Craft" );
 	DaoNamespace *playerNS = DaoVmSpace_GetNamespace( vmSpace, "CraftPlayer" );
 
-	DaoNamespace_AddConstValue( playerNS, "Craft", (DaoValue*) craftNS );
-
+	// Make sure namespace Craft is accessible in the UIKit namespace for wrapping UIKit:
 	DaoNamespace_AddConstValue( daoNS, "Craft", (DaoValue*) craftNS );
+
+	DaoCraftEngine_OnLoad( vmSpace, moduleNS );
+
+	DaoNamespace_AddConstValue( playerNS, "Craft", (DaoValue*) craftNS );
 	DaoNamespace_AddConstValue( daoNS, "CraftPlayer", (DaoValue*) playerNS );
 
 	DaoNamespace_AddParent( daoNS, moduleNS );

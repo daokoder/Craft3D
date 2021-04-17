@@ -28068,6 +28068,9 @@ static void dao_Craft_View_GetScene( DaoProcess *_proc, DaoValue *_p[], int _n )
 static void dao_Craft_View_GetOctree( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_View_GetCamera( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_View_GetRenderTarget( DaoProcess *_proc, DaoValue *_p[], int _n );
+static void dao_Craft_View_GetDrawDebug( DaoProcess *_proc, DaoValue *_p[], int _n );
+static void dao_Craft_View_GetViewRect( DaoProcess *_proc, DaoValue *_p[], int _n );
+static void dao_Craft_View_GetViewSize( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_View_SetGlobalShaderParameters( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_View_SetCameraShaderParameters( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_View_SetGBufferShaderParameters( DaoProcess *_proc, DaoValue *_p[], int _n );
@@ -28084,6 +28087,9 @@ static DaoFunctionEntry dao_Craft_View_Meths[] =
   { dao_Craft_View_GetOctree, "GetOctree( self: Craft::View )=>Craft::Octree" },
   { dao_Craft_View_GetCamera, "GetCamera( self: Craft::View )=>Craft::Camera" },
   { dao_Craft_View_GetRenderTarget, "GetRenderTarget( self: Craft::View )=>Craft::RenderSurface" },
+  { dao_Craft_View_GetDrawDebug, "GetDrawDebug( self: Craft::View )=>bool" },
+  { dao_Craft_View_GetViewRect, "GetViewRect( self: Craft::View )=>Craft::IntRect" },
+  { dao_Craft_View_GetViewSize, "GetViewSize( self: Craft::View )=>Craft::IntVector2" },
   { dao_Craft_View_SetGlobalShaderParameters, "SetGlobalShaderParameters( self: Craft::View )" },
   { dao_Craft_View_SetCameraShaderParameters, "SetCameraShaderParameters( self: Craft::View, camera: Craft::Camera )" },
   { dao_Craft_View_SetGBufferShaderParameters, "SetGBufferShaderParameters( self: Craft::View, texSize: Craft::IntVector2, viewRect: Craft::IntRect )" },
@@ -28220,6 +28226,30 @@ static void dao_Craft_View_GetRenderTarget( DaoProcess *_proc, DaoValue *_p[], i
 
   Craft::RenderSurface* _GetRenderTarget = self->GetRenderTarget(  );
   DaoProcess_WrapCdataTC( _proc, (void*) _GetRenderTarget, dao_Craft_RenderSurface_Core );
+}
+/* DaoCraftEngineMod.cpp */
+static void dao_Craft_View_GetDrawDebug( DaoProcess *_proc, DaoValue *_p[], int _n )
+{
+  Craft::View* self = (Craft::View*) DaoValue_TryCastCdataTC( _p[0], dao_Craft_View_Core );
+
+  bool _GetDrawDebug = self->GetDrawDebug(  );
+  DaoProcess_PutBoolean( _proc, (dao_boolean) _GetDrawDebug );
+}
+/* DaoCraftEngineMod.cpp */
+static void dao_Craft_View_GetViewRect( DaoProcess *_proc, DaoValue *_p[], int _n )
+{
+  Craft::View* self = (Craft::View*) DaoValue_TryCastCdataTC( _p[0], dao_Craft_View_Core );
+
+  const Craft::IntRect& _GetViewRect = self->GetViewRect(  );
+  DaoProcess_CopyCdataTC( _proc, (void*)&_GetViewRect, dao_Craft_IntRect_Core );
+}
+/* DaoCraftEngineMod.cpp */
+static void dao_Craft_View_GetViewSize( DaoProcess *_proc, DaoValue *_p[], int _n )
+{
+  Craft::View* self = (Craft::View*) DaoValue_TryCastCdataTC( _p[0], dao_Craft_View_Core );
+
+  const Craft::IntVector2& _GetViewSize = self->GetViewSize(  );
+  DaoProcess_CopyCdataTC( _proc, (void*)&_GetViewSize, dao_Craft_IntVector2_Core );
 }
 /* DaoCraftEngineMod.cpp */
 static void dao_Craft_View_SetGlobalShaderParameters( DaoProcess *_proc, DaoValue *_p[], int _n )
@@ -42946,13 +42976,13 @@ static DaoNumberEntry dao_Craft_DaoPlayer_Nums[] =
 };
 
 
-static void dao_Craft_DaoPlayer_DaoPlayer_dao_2( DaoProcess *_proc, DaoValue *_p[], int _n );
+extern void dao_Craft_DaoPlayer_DaoPlayer_dao_2( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_DaoPlayer_LoadScene( DaoProcess *_proc, DaoValue *_p[], int _n );
 static void dao_Craft_DaoPlayer_GetCurrentScene( DaoProcess *_proc, DaoValue *_p[], int _n );
 
 static DaoFunctionEntry dao_Craft_DaoPlayer_Meths[] = 
 {
-  { dao_Craft_DaoPlayer_DaoPlayer_dao_2, "DaoPlayer( context: Craft::Context )=>Craft::DaoPlayer" },
+  { dao_Craft_DaoPlayer_DaoPlayer_dao_2, "DaoPlayer(  )=>Craft::DaoPlayer" },
   { dao_Craft_DaoPlayer_LoadScene, "LoadScene( self: Craft::DaoPlayer, filename: string, camera: Craft::Camera|none )=>Craft::Scene" },
   { dao_Craft_DaoPlayer_GetCurrentScene, "GetCurrentScene( self: Craft::DaoPlayer )=>Craft::Scene" },
   { NULL, NULL }
@@ -43007,15 +43037,6 @@ static DaoTypeCore Craft_DaoPlayer_Core =
   Dao_Craft_DaoPlayer_HandleGC
 };
 DaoTypeCore *dao_Craft_DaoPlayer_Core = & Craft_DaoPlayer_Core;
-/* DaoCraftEngineMod.cpp */
-static void dao_Craft_DaoPlayer_DaoPlayer_dao_2( DaoProcess *_proc, DaoValue *_p[], int _n )
-{
-  Craft::Context* context = (Craft::Context*) DaoValue_TryCastCdataTC( _p[0], dao_Craft_Context_Core );
-
-  DaoCxx_Craft_DaoPlayer *_self = new DaoCxx_Craft_DaoPlayer( context );
-  _self->DaoInitWrapper( DaoProcess_GetVmSpace(_proc) );
-  DaoProcess_PutValue( _proc, (DaoValue*) _self->dao_cdata );
-}
 /* DaoCraftEngineMod.cpp */
 static void dao_Craft_DaoPlayer_LoadScene( DaoProcess *_proc, DaoValue *_p[], int _n )
 {

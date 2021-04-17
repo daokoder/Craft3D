@@ -43,6 +43,9 @@ public:
 
 	bool Initialize( DaoVmSpace *vmSpace );
 
+	bool IsComponentEnabled() const { return enableComponent; }
+	void SetComponentEnabled( bool enable ) { enableComponent = enable; }
+
 	DaoVmSpace*   GetMainVmSpace() const { return mainVmSpace; }
 	DaoNamespace* GetModuleNamespace() const { return moduleNS; }
 
@@ -68,6 +71,7 @@ protected:
     HashMap<void*, SharedPtr<DaoVM> > vms_;
 	DaoVmSpace   *mainVmSpace;
 	DaoNamespace *moduleNS;
+	bool enableComponent;
 
 };
 

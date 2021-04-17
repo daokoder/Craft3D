@@ -91,7 +91,7 @@
 
 
 
-#define dao_Craft_DaoPlayer_DaoPlayer_dao_hint_userwrapper( context_dao_hint_implicit_DaoCraft__GetContext ) Craft::DaoPlayer::Player(Craft::Context*)
+#define dao_Craft_DaoPlayer_DaoPlayer_dao_hint_userwrapper( context_dao_hint_implicit_DaoCraft__GetContext ) Craft::DaoPlayer::DaoPlayer(Craft::Context*)
 #undef dao_Craft_DaoPlayer_dao_hint_userwrapper
 
 #define dao_Craft_DaoPlayer_LoadScene( filename, camera_dao_hint_nullable ) Craft::DaoPlayer::LoadScene(const Craft::String& , Craft::Camera* )
@@ -3514,7 +3514,7 @@ enum StencilOp
     OP_DECR
 };
 
-enum MaterialQuality : unsigned
+enum MaterialQuality
 {
     QUALITY_LOW = 0,
     QUALITY_MEDIUM = 1,
@@ -4615,6 +4615,10 @@ public:
     //const FrameInfo& GetFrameInfo() const;
 
     RenderSurface* GetRenderTarget() const;
+
+    bool GetDrawDebug() const;
+    const IntRect& GetViewRect() const;
+    const IntVector2& GetViewSize() const;
 
     void SetGlobalShaderParameters();
     void SetCameraShaderParameters( Camera* camera );
@@ -7392,7 +7396,7 @@ public:
 ////////////////////////
 
 
-enum MouseButton : unsigned
+enum MouseButton
 {
     MOUSEB_NONE,
     MOUSEB_LEFT = SDL_BUTTON_LMASK,
@@ -7403,7 +7407,7 @@ enum MouseButton : unsigned
     MOUSEB_ANY = M_MAX_UNSIGNED
 };
 
-enum Qualifier : unsigned
+enum Qualifier
 {
     QUAL_NONE = 0,
     QUAL_SHIFT = 1,
@@ -7413,7 +7417,7 @@ enum Qualifier : unsigned
 };
 
 
-enum Key : unsigned
+enum Key
 {
     KEY_UNKNOWN = SDLK_UNKNOWN,
     KEY_A = SDLK_a,
@@ -7656,7 +7660,7 @@ enum Key : unsigned
     KEY_WWW = SDLK_WWW,
 };
 
-enum Scancode : unsigned
+enum Scancode
 {
     SCANCODE_UNKNOWN = SDL_SCANCODE_UNKNOWN,
     SCANCODE_CTRL = SDL_SCANCODE_LCTRL,
@@ -7905,7 +7909,7 @@ enum Scancode : unsigned
     SCANCODE_APP2 = SDL_SCANCODE_APP2,
 };
 
-enum HatPosition : unsigned
+enum HatPosition
 {
     HAT_CENTER = SDL_HAT_CENTERED,
     HAT_UP = SDL_HAT_UP,
@@ -7914,7 +7918,7 @@ enum HatPosition : unsigned
     HAT_LEFT = SDL_HAT_LEFT,
 };
 
-enum ControllerButton : unsigned
+enum ControllerButton
 {
     CONTROLLER_BUTTON_A = SDL_CONTROLLER_BUTTON_A,
     CONTROLLER_BUTTON_B = SDL_CONTROLLER_BUTTON_B,
@@ -7933,7 +7937,7 @@ enum ControllerButton : unsigned
     CONTROLLER_BUTTON_DPAD_RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
 };
 
-enum ControllerAxis : unsigned
+enum ControllerAxis
 {
     CONTROLLER_AXIS_LEFTX = SDL_CONTROLLER_AXIS_LEFTX,
     CONTROLLER_AXIS_LEFTY = SDL_CONTROLLER_AXIS_LEFTY,

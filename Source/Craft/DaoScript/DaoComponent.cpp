@@ -77,8 +77,7 @@ public:
 
         String componentRef;
 
-#if 0
-        if (source != XMLElement::EMPTY)
+        if (source.NotNull())
         {
             XMLElement attrElem = source.GetChild("attribute");
 
@@ -93,7 +92,6 @@ public:
                 attrElem = attrElem.GetNext("attribute");
             }
         }
-#endif // TODO;
 
         SharedPtr<Object> ptr;
 
