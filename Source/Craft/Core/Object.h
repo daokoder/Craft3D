@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "../Resource/XMLElement.h"
 #include "../Container/LinkedList.h"
 #include "../Core/StringHashRegister.h"
 #include "../Core/Variant.h"
@@ -211,6 +212,7 @@ public:
 
     /// Create an object. Implemented in templated subclasses.
     virtual SharedPtr<Object> CreateObject() = 0;
+    virtual SharedPtr<Object> CreateObject(const XMLElement& source) { return CreateObject(); }
 
     /// Return execution context.
     Context* GetContext() const { return context_; }
