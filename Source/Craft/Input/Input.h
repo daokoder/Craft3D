@@ -147,7 +147,7 @@ public:
     /// Set whether ALT-ENTER fullscreen toggle is enabled.
     void SetToggleFullscreen(bool enable);
     /// Set whether the operating system mouse cursor is visible. When not visible (default), is kept centered to prevent leaving the window. Mouse visibility event can be suppressed-- this also recalls any unsuppressed SetMouseVisible which can be returned by ResetMouseVisible().
-    void SetMouseVisible(bool enable, bool suppressEvent = false);
+    virtual void SetMouseVisible(bool enable, bool suppressEvent = false);
     /// Reset last mouse visibility that was not suppressed in SetMouseVisible.
     void ResetMouseVisible();
     /// Set whether the mouse is currently being grabbed by an operation.

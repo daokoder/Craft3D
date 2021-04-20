@@ -371,14 +371,26 @@ void UIView::UpdateUIBatches()
 
 void UIView::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)
 {
+    IntRect scissor = currentScissor;
+    int x = 0;
+    int y = 0;
+
+    widget_->ConvertToRoot(x, y);
+    tb::g_renderer->Translate(x, y); // Craft3D
     tb::g_renderer->BeginPaint(currentScissor.Width(), currentScissor.Height());
 
-    renderer_->currentScissor_ = currentScissor;
+    scissor.left_ += x;
+    scissor.right_ += x;
+    scissor.top_ += y;
+    scissor.bottom_ += y;
+
+    renderer_->currentScissor_ = scissor;
     renderer_->batches_ = &batches;
     renderer_->vertexData_ = &vertexData;
     widget_->InvokePaint(tb::TBWidget::PaintProps());
 
     tb::g_renderer->EndPaint();
+    tb::g_renderer->Translate(-x, -y);
 }
 
 void UIView::SubmitBatchVertexData(Texture* texture, const PODVector<float>& vertexData)

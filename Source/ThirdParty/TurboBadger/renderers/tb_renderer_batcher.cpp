@@ -96,7 +96,7 @@ void TBRendererBatcher::BeginPaint(int render_target_w, int render_target_h)
     dbg_frame_triangle_count = 0;
 #endif // TB_RUNTIME_DEBUG_INFO
 
-    m_screen_rect.Set(0, 0, render_target_w, render_target_h);
+    m_screen_rect.Set(m_translation_x, m_translation_y, render_target_w, render_target_h);
     m_clip_rect = m_screen_rect;
 }
 
