@@ -30,6 +30,8 @@
 namespace Craft
 {
 
+class Renderer;
+
 static const float DEFAULT_NEARCLIP = 0.1f;
 static const float DEFAULT_FARCLIP = 1000.0f;
 static const float DEFAULT_CAMERA_FOV = 45.0f;
@@ -197,7 +199,7 @@ public:
     /// Return a world rotation for facing a camera on certain axes based on the existing world rotation.
     Quaternion GetFaceCameraRotation(const Vector3& position, const Quaternion& rotation, FaceCameraMode mode, float minAngle = 0.0f);
     /// Get effective world transform for matrix and frustum calculations including reflection but excluding node scaling.
-    Matrix3x4 GetEffectiveWorldTransform() const;
+    Matrix3x4 GetEffectiveWorldTransform(Renderer *render = NULL) const;
     /// Return if projection parameters are valid for rendering and raycasting.
     bool IsProjectionValid() const;
 

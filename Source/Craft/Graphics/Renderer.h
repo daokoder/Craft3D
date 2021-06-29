@@ -428,6 +428,20 @@ public:
     /// Return a view or its source view if it uses one. Used internally for render statistics.
     static View* GetActualView(View* view);
 
+    /// Craft3D:
+    /// Set world offset for rendering only.
+    void SetWorldOffset(const Vector3& offset) { offsetTransform_.SetTranslation(-offset); }
+    /// Return world offset for rendering only.
+    Vector3 GetWorldOffset() const { return -offsetTransform_.Translation(); }
+    /// Return adjusted world transform.
+    Matrix3x4 AdjustWorldTransform( const Matrix3x4& matrix ) const {
+        return offsetTransform_ * matrix;
+    }
+    /// Return adjusted world transform.
+    Matrix4 AdjustWorldTransform( const Matrix4& matrix ) const {
+        return offsetTransform_ * matrix;
+    }
+
 private:
     /// Initialize when screen mode initially set.
     void Initialize();
@@ -600,6 +614,9 @@ private:
     bool initialized_{};
     /// Flag for views needing reset.
     bool resetViews_{};
+
+    /// For model and camera world position adjustment in shaders.
+    Matrix3x4 offsetTransform_; //Craft3D;
 };
 
 }

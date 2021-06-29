@@ -25,6 +25,7 @@
 #include "../Core/Context.h"
 #include "../Graphics/Camera.h"
 #include "../Graphics/DebugRenderer.h"
+#include "../Graphics/Renderer.h"
 #include "../Graphics/Drawable.h"
 #include "../Scene/Node.h"
 
@@ -571,9 +572,10 @@ Quaternion Camera::GetFaceCameraRotation(const Vector3& position, const Quaterni
     }
 }
 
-Matrix3x4 Camera::GetEffectiveWorldTransform() const
+Matrix3x4 Camera::GetEffectiveWorldTransform(Renderer *render) const
 {
     Matrix3x4 worldTransform = node_ ? Matrix3x4(node_->GetWorldPosition(), node_->GetWorldRotation(), 1.0f) : Matrix3x4::IDENTITY;
+    if (render) worldTransform = render->AdjustWorldTransform(worldTransform); // Craft3D
     return useReflection_ ? reflectionMatrix_ * worldTransform : worldTransform;
 }
 

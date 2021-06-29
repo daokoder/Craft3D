@@ -705,12 +705,12 @@ void View::SetCameraShaderParameters(Camera* camera)
     if (!camera)
         return;
 
-    Matrix3x4 cameraEffectiveTransform = camera->GetEffectiveWorldTransform();
+    Matrix3x4 cameraTransform = camera->GetEffectiveWorldTransform(renderer_); // Craft3D
 
-    graphics_->SetShaderParameter(VSP_CAMERAPOS, cameraEffectiveTransform.Translation());
-    graphics_->SetShaderParameter(VSP_VIEWINV, cameraEffectiveTransform);
-    graphics_->SetShaderParameter(VSP_VIEW, camera->GetView());
-    graphics_->SetShaderParameter(PSP_CAMERAPOS, cameraEffectiveTransform.Translation());
+    graphics_->SetShaderParameter(VSP_CAMERAPOS, cameraTransform.Translation());
+    graphics_->SetShaderParameter(VSP_VIEWINV, cameraTransform);
+    graphics_->SetShaderParameter(VSP_VIEW, cameraTransform.Inverse()); // Craft3D
+    graphics_->SetShaderParameter(PSP_CAMERAPOS, cameraTransform.Translation());
 
     float nearClip = camera->GetNearClip();
     float farClip = camera->GetFarClip();
@@ -752,7 +752,8 @@ void View::SetCameraShaderParameters(Camera* camera)
     projection.m23_ += projection.m33_ * constantBias;
 #endif
 
-    graphics_->SetShaderParameter(VSP_VIEWPROJ, projection * camera->GetView());
+    Matrix3x4 camTransform = camera->GetEffectiveWorldTransform(renderer_); // Craft3D
+    graphics_->SetShaderParameter(VSP_VIEWPROJ, projection * camTransform.Inverse()); // Craft3D
 
     // If in a scene pass and the command defines shader parameters, set them now
     if (passCommand_)
@@ -2159,7 +2160,10 @@ void View::DrawFullscreenQuad(bool setIdentityProjection)
         graphics_->SetShaderParameter(VSP_VIEWPROJ, projection);
     }
     else
-        graphics_->SetShaderParameter(VSP_MODEL, Light::GetFullscreenQuadTransform(camera_));
+    {
+        Matrix3x4 model = Light::GetFullscreenQuadTransform(camera_); // Craft3D
+        graphics_->SetShaderParameter(VSP_MODEL, renderer_->AdjustWorldTransform(model));
+    }
 
     graphics_->SetCullMode(CULL_NONE);
     graphics_->ClearTransformSources();

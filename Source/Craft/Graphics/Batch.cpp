@@ -84,8 +84,7 @@ void CalculateShadowMatrix(Matrix4& dest, LightBatchQueue* queue, unsigned split
 {
     Camera* shadowCamera = queue->shadowSplits_[split].shadowCamera_;
     const IntRect& viewport = queue->shadowSplits_[split].shadowViewport_;
-
-    const Matrix3x4& shadowView(shadowCamera->GetView());
+	Matrix3x4 shadowView = shadowCamera->GetEffectiveWorldTransform(renderer).Inverse(); // Craft3D
     Matrix4 shadowProj(shadowCamera->GetGPUProjection());
     Matrix4 texAdjust(Matrix4::IDENTITY);
 
@@ -247,6 +246,10 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
             graphics->SetShaderParameter(VSP_SKINMATRICES, reinterpret_cast<const float*>(worldTransform_),
                 12 * numWorldTransforms_);
         }
+        else if (camera) // Craft3D
+        {
+            graphics->SetShaderParameter(VSP_MODEL, renderer->AdjustWorldTransform(*worldTransform_));
+        }
         else
             graphics->SetShaderParameter(VSP_MODEL, *worldTransform_);
 
@@ -278,7 +281,10 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
         Matrix3x4 adjust(Matrix3x4::IDENTITY);
         adjust.SetScale(Vector3(1.0f / boxSize.x_, 1.0f / boxSize.y_, 1.0f / boxSize.z_));
         adjust.SetTranslation(Vector3(0.5f, 0.5f, 0.5f));
-        Matrix3x4 zoneTransform = adjust * zone_->GetInverseWorldTransform();
+        Matrix3x4 zoneTransform;
+        if (zone_->GetNode()) zoneTransform = zone_->GetNode()->GetWorldTransform();
+        if (camera) zoneTransform = renderer->AdjustWorldTransform(zoneTransform);
+        zoneTransform = adjust * zoneTransform.Inverse();
         graphics->SetShaderParameter(VSP_ZONE, zoneTransform);
 
         graphics->SetShaderParameter(PSP_AMBIENTCOLOR, zone_->GetAmbientColor());
@@ -305,6 +311,8 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
         graphics->SetShaderParameter(PSP_FOGPARAMS, fogParams);
     }
 
+    Vector3 worldOffset = renderer->GetWorldOffset();
+
     // Set light-related shader parameters
     if (lightQueue_)
     {
@@ -313,11 +321,11 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
             Node* lightNode = light->GetNode();
             float atten = 1.0f / Max(light->GetRange(), M_EPSILON);
             Vector3 lightDir(lightNode->GetWorldRotation() * Vector3::DOWN);
-            Vector4 lightPos(lightNode->GetWorldPosition(), atten);
+            Vector4 lightPos(lightNode->GetWorldPosition() - worldOffset, atten); //Craft3D
 
             graphics->SetShaderParameter(VSP_LIGHTDIR, lightDir);
             graphics->SetShaderParameter(VSP_LIGHTPOS, lightPos);
-			graphics->SetShaderParameter(VSP_LIGHTRAD, light->GetRadius());
+            graphics->SetShaderParameter(VSP_LIGHTRAD, light->GetRadius());
 
             if (graphics->HasShaderParameter(VSP_LIGHTMATRICES))
             {
@@ -578,7 +586,7 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
                 vertexLights[i * 3 + 1] = Vector4(-(vertexLightNode->GetWorldDirection()), cutoff);
 
                 // Position
-                vertexLights[i * 3 + 2] = Vector4(vertexLightNode->GetWorldPosition(), invCutoff);
+                vertexLights[i * 3 + 2] = Vector4(vertexLightNode->GetWorldPosition() - worldOffset, invCutoff);
 				vertexLightRads[i] = vertexLight->GetRadius();
             }
 
@@ -696,7 +704,15 @@ void BatchGroup::Draw(View* view, Camera* camera, bool allowDepthWrite) const
             for (unsigned i = 0; i < instances_.Size(); ++i)
             {
                 if (graphics->NeedParameterUpdate(SP_OBJECT, instances_[i].worldTransform_))
-                    graphics->SetShaderParameter(VSP_MODEL, *instances_[i].worldTransform_);
+                {
+                    if (camera){ // Craft3D;
+                        graphics->SetShaderParameter(VSP_MODEL, renderer->AdjustWorldTransform(*instances_[i].worldTransform_));
+                    }
+                    else
+                    {
+                        graphics->SetShaderParameter(VSP_MODEL, *instances_[i].worldTransform_);
+                    }
+                }
 
                 graphics->Draw(geometry_->GetPrimitiveType(), geometry_->GetIndexStart(), geometry_->GetIndexCount(),
                     geometry_->GetVertexStart(), geometry_->GetVertexCount());
