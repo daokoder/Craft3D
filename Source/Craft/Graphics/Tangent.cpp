@@ -93,7 +93,8 @@ void GenerateTangents(void* vertexData, unsigned vertexSize, const void* indexDa
         float t1 = w2.y_ - w1.y_;
         float t2 = w3.y_ - w1.y_;
 
-        float r = 1.0f / (s1 * t2 - s2 * t1);
+        float d = s1 * t2 - s2 * t1;
+        float r = 1.0f / (d + 2E-6*(Abs(d) < 1E-6));
         Vector3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
         Vector3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
 
