@@ -161,6 +161,8 @@ void RigidBody::getWorldTransform(btTransform& worldTrans) const
 
 void RigidBody::setWorldTransform(const btTransform& worldTrans)
 {
+    if (!body_->isActive()) return;
+
     Quaternion newWorldRotation = ToQuaternion(worldTrans.getRotation());
     Vector3 newWorldPosition = ToVector3(worldTrans.getOrigin()) - newWorldRotation * centerOfMass_;
     RigidBody* parentRigidBody = nullptr;
