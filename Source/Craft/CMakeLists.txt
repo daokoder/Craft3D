@@ -105,6 +105,13 @@ if (CRAFT_HASH_DEBUG)
     add_definitions (-DCRAFT_HASH_DEBUG)
 endif ()
 
+if (CRAFT_SSL)
+    add_definitions (-DCRAFT_SSL)
+    if (CRAFT_SSL_DYNAMIC)
+        add_definitions (-DCRAFT_SSL_DYNAMIC)
+    endif ()
+endif ()
+
 # Define source files
 foreach (DIR IK Navigation Network Physics Craft2D WebP)
     string (TOUPPER CRAFT_${DIR} OPT)
@@ -370,7 +377,9 @@ endif ()
 if (IOS OR TVOS)
     set (EXCLUDE_FROM_ALL EXCLUDE_FROM_ALL)
 endif ()
+
 setup_library (${CRAFT_LIB_TYPE} ${EXCLUDE_FROM_ALL})
+
 if (NOT ANDROID AND NOT WEB)
     file (READ .soversion SOVERSION)
     string (STRIP ${SOVERSION} SOVERSION)

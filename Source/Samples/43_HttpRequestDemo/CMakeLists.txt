@@ -27,6 +27,10 @@ endif ()
 # Define target name
 set (TARGET_NAME 43_HttpRequestDemo)
 
+if (CRAFT_SSL)
+    add_definitions (-DCRAFT_SSL)
+endif ()
+
 # Define source files
 define_source_files (EXTRA_H_FILES ${COMMON_SAMPLE_H_FILES})
 
