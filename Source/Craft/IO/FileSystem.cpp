@@ -1268,8 +1268,11 @@ String GetSanitizedPath(const String& path)
 
     bool absolute = IsAbsolutePath(path);
     sanitized = String::Joined(parts, "/");
+
+#ifndef WIN32
     if (absolute)
         sanitized = "/" + sanitized;
+#endif
 
 #else
 
