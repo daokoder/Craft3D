@@ -30,6 +30,7 @@
 #include "../Scene/Component.h"
 
 #include <Bullet/LinearMath/btIDebugDraw.h>
+#include <Bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 
 class btCollisionConfiguration;
 class btCollisionShape;
@@ -124,6 +125,27 @@ static const float DEFAULT_MAX_NETWORK_ANGULAR_VELOCITY = 100.0f;
 /// Cache of collision geometry data.
 using CollisionGeometryDataCache = HashMap<Pair<Model*, unsigned>, SharedPtr<CollisionGeometryData> >;
 
+
+
+ATTRIBUTE_ALIGNED16(class) DiscreteDynamicsWorld : public btDiscreteDynamicsWorld
+{
+public:
+	BT_DECLARE_ALIGNED_ALLOCATOR();
+
+	DiscreteDynamicsWorld(btDispatcher* dispatcher,btBroadphaseInterface* pairCache,btConstraintSolver* constraintSolver,btCollisionConfiguration* collisionConfig);
+
+	void setGravitySphere( const Sphere& sphere ) { gravitySphere_ = sphere; }
+	Sphere getGravitySphere() const { return gravitySphere_; }
+
+	void applyGravity();
+
+protected:
+
+	Sphere  gravitySphere_;
+};
+
+
+
 /// Physics simulation world component. Should be added only to the root scene node.
 class CRAFT_API PhysicsWorld : public Component, public btIDebugDraw
 {
@@ -169,6 +191,8 @@ public:
     void SetFps(int fps);
     /// Set gravity.
     void SetGravity(const Vector3& gravity);
+    /// Set gravity sphere.
+    void SetGravitySphere(const Sphere& sphere);
     /// Set the simulation time scale.
     void SetTimeScale(float timeScale) { timeScale_ = timeScale; }
     /// Set maximum number of physics substeps per frame. 0 (default) is unlimited. Positive values cap the amount. Use a negative value to enable an adaptive timestep. This may cause inconsistent physics behavior.
@@ -215,6 +239,8 @@ public:
 
     /// Return gravity.
     Vector3 GetGravity() const;
+    /// Return gravity sphere.
+    Sphere GetGravitySphere() const;
 
     /// Get the simulation time scale.
     float GetTimeScale() const { return timeScale_; }
@@ -265,7 +291,7 @@ public:
     void SetDebugDepthTest(bool enable);
 
     /// Return the Bullet physics world.
-    btDiscreteDynamicsWorld* GetWorld() { return world_.Get(); }
+    DiscreteDynamicsWorld* GetWorld() { return world_.Get(); }
 
     /// Clean up the geometry cache.
     void CleanupGeometryCache();
@@ -319,7 +345,7 @@ private:
     /// Bullet constraint solver.
     UniquePtr<btConstraintSolver> solver_;
     /// Bullet physics world.
-    UniquePtr<btDiscreteDynamicsWorld> world_;
+    UniquePtr<DiscreteDynamicsWorld> world_;
     /// Extra weak pointer to scene to allow for cleanup in case the world is destroyed before other components.
     WeakPtr<Scene> scene_;
     /// Rigid bodies in the world.

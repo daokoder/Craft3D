@@ -145,6 +145,64 @@ struct PhysicsQueryCallback : public btCollisionWorld::ContactResultCallback
     unsigned collisionMask_;
 };
 
+
+
+DiscreteDynamicsWorld::DiscreteDynamicsWorld(btDispatcher* dispatcher,btBroadphaseInterface* pairCache,btConstraintSolver* constraintSolver,btCollisionConfiguration* collisionConfig)
+	: btDiscreteDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfig )
+{
+}
+
+void DiscreteDynamicsWorld::applyGravity()
+{
+	btScalar R = gravitySphere_.radius_;
+
+	if (R < 1E-6) {
+		btDiscreteDynamicsWorld::applyGravity();
+		return;
+	}
+
+	btVector3 zero( 0.0, 0.0, 0.0 );
+	for (int i=0; i<m_nonStaticRigidBodies.size(); i++) {
+		btRigidBody* body = m_nonStaticRigidBodies[i];
+
+		if (body->isActive()) {
+			if (body->isStaticOrKinematicObject()) continue;
+
+			btScalar M = body->getInvMass();
+
+			if (M == btScalar(0.0)) {
+				body->applyCentralForce( zero );
+				continue;
+			}
+
+			btVector3 position = body->getCenterOfMassPosition();
+			btScalar D = position.length();
+
+			if (D < 1E-9) {
+				body->applyCentralForce( zero );
+				continue;
+			}
+
+			btVector3 gravity = body->getGravity();
+			btScalar G = gravity.length();
+
+			if (D < R) {
+				btScalar F = D/R;
+				G *= F*F*F;
+			} else {
+				btScalar F = R/D;
+				G *= F*F;
+			}
+
+			gravity = position * (-G/D);
+			gravity *= btScalar(1.0) / M;
+			body->applyCentralForce( gravity );
+		}
+	}
+}
+
+
+
 PhysicsWorld::PhysicsWorld(Context* context) :
     Component(context),
     fps_(DEFAULT_FPS),
@@ -162,7 +220,7 @@ PhysicsWorld::PhysicsWorld(Context* context) :
 
     broadphase_ = new btDbvtBroadphase();
     solver_ = new btSequentialImpulseConstraintSolver();
-    world_ = new btDiscreteDynamicsWorld(collisionDispatcher_.Get(), broadphase_.Get(), solver_.Get(), collisionConfiguration_);
+    world_ = new DiscreteDynamicsWorld(collisionDispatcher_.Get(), broadphase_.Get(), solver_.Get(), collisionConfiguration_);
 
     world_->setGravity(ToBtVector3(DEFAULT_GRAVITY));
     world_->getDispatchInfo().m_useContinuous = true;
@@ -204,6 +262,7 @@ void PhysicsWorld::RegisterObject(Context* context)
     context->RegisterFactory<PhysicsWorld>(SUBSYSTEM_CATEGORY);
 
     CRAFT_MIXED_ACCESSOR_ATTRIBUTE("Gravity", GetGravity, SetGravity, Vector3, DEFAULT_GRAVITY, AM_DEFAULT);
+    //CRAFT_MIXED_ACCESSOR_ATTRIBUTE("GravitySphere", GetGravitySphere, SetGravitySphere, Sphere, Sphere(), AM_DEFAULT);
     CRAFT_ATTRIBUTE("Physics FPS", int, fps_, DEFAULT_FPS, AM_DEFAULT);
     CRAFT_ATTRIBUTE("Max Substeps", int, maxSubSteps_, 0, AM_DEFAULT);
     CRAFT_ACCESSOR_ATTRIBUTE("Solver Iterations", GetNumIterations, SetNumIterations, int, 10, AM_DEFAULT);
@@ -321,6 +380,13 @@ void PhysicsWorld::SetFps(int fps)
 void PhysicsWorld::SetGravity(const Vector3& gravity)
 {
     world_->setGravity(ToBtVector3(gravity));
+
+    MarkNetworkUpdate();
+}
+
+void PhysicsWorld::SetGravitySphere(const Sphere& sphere)
+{
+    world_->setGravitySphere(sphere);
 
     MarkNetworkUpdate();
 }
@@ -704,6 +770,11 @@ void PhysicsWorld::GetCollidingBodies(PODVector<RigidBody*>& result, const Rigid
 Vector3 PhysicsWorld::GetGravity() const
 {
     return ToVector3(world_->getGravity());
+}
+
+Sphere PhysicsWorld::GetGravitySphere() const
+{
+    return world_->getGravitySphere();
 }
 
 int PhysicsWorld::GetNumIterations() const
