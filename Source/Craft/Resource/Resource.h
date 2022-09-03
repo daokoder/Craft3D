@@ -71,6 +71,8 @@ public:
     /// Save resource to file.
     virtual bool SaveFile(const String& fileName) const;
 
+    /// Set path.
+    void SetFilePath(const String& path) { path_ = path; }
     /// Set name.
     void SetName(const String& name);
     /// Set memory use in bytes, possibly approximate.
@@ -79,6 +81,9 @@ public:
     void ResetUseTimer();
     /// Set the asynchronous loading state. Called by ResourceCache. Resources in the middle of asynchronous loading are not normally returned to user.
     void SetAsyncLoadState(AsyncLoadState newState);
+
+    /// Return path.
+    const String& GetFilePath() const { return path_; }
 
     /// Return name.
     const String& GetName() const { return name_; }
@@ -96,6 +101,8 @@ public:
     AsyncLoadState GetAsyncLoadState() const { return asyncLoadState_; }
 
 private:
+    /// Path.
+    String path_;
     /// Name.
     String name_;
     /// Name hash.

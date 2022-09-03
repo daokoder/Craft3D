@@ -109,8 +109,10 @@ bool ResourceCache::AddResourceDir(const String& pathName, unsigned priority)
     // Convert path to absolute
     String fixedPath = SanitateResourceDirName(pathName);
 
+	priority = Min( priority, resourceDirs_.Size() );
+
     // Check that the same path does not already exist
-    for (unsigned i = 0; i < resourceDirs_.Size(); ++i)
+    for (unsigned i = 0; i < priority; ++i)
     {
         if (!resourceDirs_[i].Compare(fixedPath, false))
             return true;
@@ -609,10 +611,14 @@ Resource* ResourceCache::GetResource(StringHash type, const String& name, bool s
         return nullptr;   // Error is already logged
 
     CRAFT_LOGDEBUG("Loading resource " + sanitatedName);
+	resource->SetFilePath(file->GetFullPath());
     resource->SetName(sanitatedName);
+
+	AddResourceDir( GetPath( file->GetFullPath() ), 0 );
 
     if (!resource->Load(*(file.Get())))
     {
+		RemoveResourceDir( GetPath( file->GetFullPath() ) );
         // Error should already been logged by corresponding resource descendant class
         if (sendEventOnFailure)
         {
@@ -625,6 +631,8 @@ Resource* ResourceCache::GetResource(StringHash type, const String& name, bool s
 
         if (!returnFailedResources_)
             return nullptr;
+	}else{
+		RemoveResourceDir( GetPath( file->GetFullPath() ) );
     }
 
     // Store to cache
