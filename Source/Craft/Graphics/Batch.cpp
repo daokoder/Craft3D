@@ -167,8 +167,10 @@ void Batch::CalculateSortKey()
         shaderID |= 0x8000;
 
     auto lightQueueID = (unsigned)((*((unsigned*)&lightQueue_) / sizeof(LightBatchQueue)) & 0xffffu);
-    auto materialID = (unsigned)((*((unsigned*)&material_) / sizeof(Material)) & 0xffffu);
+    auto materialID = (unsigned)((*((unsigned*)&material_) / sizeof(Material)) & 0x1fffu);
     auto geometryID = (unsigned)((*((unsigned*)&geometry_) / sizeof(Geometry)) & 0xffffu);
+
+	if( sphereSize_ ) materialID |= ((sphereZone_+1) & 0x7)<<13;
 
     sortKey_ = (((unsigned long long)shaderID) << 48u) | (((unsigned long long)lightQueueID) << 32u) |
                (((unsigned long long)materialID) << 16u) | geometryID;
@@ -651,6 +653,8 @@ void Batch::Prepare(View* view, Camera* camera, bool setModelTransform, bool all
 	}else{
 		graphics->SetShaderParameter(PSP_HASOVERLAY, false);
 	}
+	graphics->SetShaderParameter(VSP_SPHERESIZE, int(sphereSize_)); // Craftica;
+	graphics->SetShaderParameter(VSP_SPHEREZONE, int(sphereZone_));
 }
 
 void Batch::Draw(View* view, Camera* camera, bool allowDepthWrite) const
@@ -662,7 +666,7 @@ void Batch::Draw(View* view, Camera* camera, bool allowDepthWrite) const
     }
 }
 
-void BatchGroup::SetInstancingData(void* lockedData, unsigned stride, unsigned& freeIndex)
+void BatchGroup::SetInstancingData(Renderer* rnd, void* lockedData, unsigned stride, unsigned& freeIndex)
 {
     // Do not use up buffer space if not going to draw as instanced
     if (geometryType_ != GEOM_INSTANCED)
@@ -674,8 +678,9 @@ void BatchGroup::SetInstancingData(void* lockedData, unsigned stride, unsigned& 
     for (unsigned i = 0; i < instances_.Size(); ++i)
     {
         const InstanceData& instance = instances_[i];
+		Matrix3x4 worldTransform = rnd->AdjustWorldTransform( *instance.worldTransform_ );
 
-        memcpy(buffer, instance.worldTransform_, sizeof(Matrix3x4));
+        memcpy(buffer, & worldTransform, sizeof(Matrix3x4));
         if (instance.instancingData_)
             memcpy(buffer + sizeof(Matrix3x4), instance.instancingData_, stride - sizeof(Matrix3x4));
 
@@ -742,7 +747,7 @@ void BatchGroup::Draw(View* view, Camera* camera, bool allowDepthWrite) const
 unsigned BatchGroupKey::ToHash() const
 {
     return (unsigned)((size_t)zone_ / sizeof(Zone) + (size_t)lightQueue_ / sizeof(LightBatchQueue) + (size_t)pass_ / sizeof(Pass) +
-                      (size_t)material_ / sizeof(Material) + (size_t)geometry_ / sizeof(Geometry)) + renderOrder_;
+                      (size_t)material_ / sizeof(Material) + (size_t)geometry_ / sizeof(Geometry)) + renderOrder_ + sphereZone_;
 }
 
 void BatchQueue::Clear(int maxSortedInstances)
@@ -867,10 +872,10 @@ void BatchQueue::SortFrontToBack2Pass(PODVector<Batch*>& batches)
 #endif
 }
 
-void BatchQueue::SetInstancingData(void* lockedData, unsigned stride, unsigned& freeIndex)
+void BatchQueue::SetInstancingData(Renderer* rnd, void* lockedData, unsigned stride, unsigned& freeIndex)
 {
     for (HashMap<BatchGroupKey, BatchGroup>::Iterator i = batchGroups_.Begin(); i != batchGroups_.End(); ++i)
-        i->second_.SetInstancingData(lockedData, stride, freeIndex);
+        i->second_.SetInstancingData(rnd, lockedData, stride, freeIndex);
 }
 
 void BatchQueue::Draw(View* view, Camera* camera, bool markToStencil, bool usingLightOptimization, bool allowDepthWrite) const

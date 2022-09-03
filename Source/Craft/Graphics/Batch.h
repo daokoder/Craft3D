@@ -44,6 +44,7 @@ class Texture2D;
 class VertexBuffer;
 class View;
 class Zone;
+class Renderer;
 struct LightBatchQueue;
 
 /// Queued 3D geometry draw call.
@@ -55,6 +56,8 @@ struct Batch
     /// Construct from a drawable's source batch.
     explicit Batch(const SourceBatch& rhs) :
         distance_(rhs.distance_),
+        sphereSize_(rhs.sphereSize_),
+        sphereZone_(rhs.sphereZone_),
         renderOrder_(rhs.material_ ? rhs.material_->GetRenderOrder() : DEFAULT_RENDER_ORDER),
         isBase_(false),
         geometry_(rhs.geometry_),
@@ -79,6 +82,10 @@ struct Batch
     unsigned long long sortKey_{};
     /// Distance from camera.
     float distance_{};
+    /// Spherical world size (a quarter of equator length).
+    unsigned sphereSize_{}; // Craftica;
+    /// Zone ID for spherical world.
+    unsigned char sphereZone_{};
     /// 8-bit render order modifier from material.
     unsigned char renderOrder_{};
     /// 8-bit light mask for stencil marking in deferred rendering.
@@ -167,7 +174,7 @@ struct BatchGroup : public Batch
     }
 
     /// Pre-set the instance data. Buffer must be big enough to hold all data.
-    void SetInstancingData(void* lockedData, unsigned stride, unsigned& freeIndex);
+    void SetInstancingData(Renderer* rnd, void* lockedData, unsigned stride, unsigned& freeIndex);
     /// Prepare and draw.
     void Draw(View* view, Camera* camera, bool allowDepthWrite) const;
 
@@ -190,7 +197,8 @@ struct BatchGroupKey
         pass_(batch.pass_),
         material_(batch.material_),
         geometry_(batch.geometry_),
-        renderOrder_(batch.renderOrder_)
+        renderOrder_(batch.renderOrder_),
+		sphereZone_(batch.sphereSize_ ? batch.sphereZone_+1 : 0)
     {
     }
 
@@ -206,19 +214,22 @@ struct BatchGroupKey
     Geometry* geometry_;
     /// 8-bit render order modifier from material.
     unsigned char renderOrder_;
+	unsigned char sphereZone_;
 
     /// Test for equality with another batch group key.
     bool operator ==(const BatchGroupKey& rhs) const
     {
-        return zone_ == rhs.zone_ && lightQueue_ == rhs.lightQueue_ && pass_ == rhs.pass_ && material_ == rhs.material_ &&
-               geometry_ == rhs.geometry_ && renderOrder_ == rhs.renderOrder_;
+        return zone_ == rhs.zone_ && lightQueue_ == rhs.lightQueue_ && pass_ == rhs.pass_
+			&& material_ == rhs.material_ && geometry_ == rhs.geometry_
+			&& renderOrder_ == rhs.renderOrder_ && sphereZone_ == rhs.sphereZone_;
     }
 
     /// Test for inequality with another batch group key.
     bool operator !=(const BatchGroupKey& rhs) const
     {
-        return zone_ != rhs.zone_ || lightQueue_ != rhs.lightQueue_ || pass_ != rhs.pass_ || material_ != rhs.material_ ||
-               geometry_ != rhs.geometry_ || renderOrder_ != rhs.renderOrder_;
+        return zone_ != rhs.zone_ || lightQueue_ != rhs.lightQueue_ || pass_ != rhs.pass_
+			|| material_ != rhs.material_ || geometry_ != rhs.geometry_
+			|| renderOrder_ != rhs.renderOrder_ || sphereZone_ != rhs.sphereZone_;
     }
 
     /// Return hash value.
@@ -238,7 +249,7 @@ public:
     /// Sort batches front to back while also maintaining state sorting.
     void SortFrontToBack2Pass(PODVector<Batch*>& batches);
     /// Pre-set instance data of all groups. The vertex buffer must be big enough to hold all data.
-    void SetInstancingData(void* lockedData, unsigned stride, unsigned& freeIndex);
+    void SetInstancingData(Renderer* rnd, void* lockedData, unsigned stride, unsigned& freeIndex);
     /// Draw.
     void Draw(View* view, Camera* camera, bool markToStencil, bool usingLightOptimization, bool allowDepthWrite) const;
     /// Return the combined amount of instances.

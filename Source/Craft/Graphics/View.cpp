@@ -3029,14 +3029,14 @@ void View::PrepareInstancingBuffer()
 
     const unsigned stride = instancingBuffer->GetVertexSize();
     for (HashMap<unsigned, BatchQueue>::Iterator i = batchQueues_.Begin(); i != batchQueues_.End(); ++i)
-        i->second_.SetInstancingData(dest, stride, freeIndex);
+        i->second_.SetInstancingData(renderer_, dest, stride, freeIndex);
 
     for (Vector<LightBatchQueue>::Iterator i = lightQueues_.Begin(); i != lightQueues_.End(); ++i)
     {
         for (unsigned j = 0; j < i->shadowSplits_.Size(); ++j)
-            i->shadowSplits_[j].shadowBatches_.SetInstancingData(dest, stride, freeIndex);
-        i->litBaseBatches_.SetInstancingData(dest, stride, freeIndex);
-        i->litBatches_.SetInstancingData(dest, stride, freeIndex);
+            i->shadowSplits_[j].shadowBatches_.SetInstancingData(renderer_, dest, stride, freeIndex);
+        i->litBaseBatches_.SetInstancingData(renderer_, dest, stride, freeIndex);
+        i->litBatches_.SetInstancingData(renderer_, dest, stride, freeIndex);
     }
 
     instancingBuffer->Unlock();
