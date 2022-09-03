@@ -953,7 +953,7 @@ void Terrain::CreateGeometry()
             {
                 for (int x = 0; x < numVertices_.x_; ++x)
                 {
-                    float newHeight = (float)src[imgRow * (numVertices_.y_ - 1 - y) + x] * spacing_.y_;
+                    float newHeight = (float)src[imgRow * (numVertices_.y_ - 1 - y) + x] * spacing_.z_;
 
                     if (updateAll)
                         *dest = newHeight;
@@ -980,7 +980,7 @@ void Terrain::CreateGeometry()
                 for (int x = 0; x < numVertices_.x_; ++x)
                 {
                     float newHeight = ((float)src[imgRow * (numVertices_.y_ - 1 - y) + imgComps * x] +
-                                       (float)src[imgRow * (numVertices_.y_ - 1 - y) + imgComps * x + 1] / 256.0f) * spacing_.y_;
+                                       (float)src[imgRow * (numVertices_.y_ - 1 - y) + imgComps * x + 1] / 256.0f) * spacing_.z_;
 
                     if (updateAll)
                         *dest = newHeight;
@@ -1182,11 +1182,11 @@ void Terrain::CreateIndexData()
                 for (int x = xStart; x < xEnd; x += skip)
                 {
                     indices.Push((unsigned short)((y + skip) * row + x));
-                    indices.Push((unsigned short)(y * row + x + skip));
                     indices.Push((unsigned short)(y * row + x));
-                    indices.Push((unsigned short)((y + skip) * row + x));
-                    indices.Push((unsigned short)((y + skip) * row + x + skip));
                     indices.Push((unsigned short)(y * row + x + skip));
+                    indices.Push((unsigned short)((y + skip) * row + x));
+                    indices.Push((unsigned short)(y * row + x + skip));
+                    indices.Push((unsigned short)((y + skip) * row + x + skip));
                 }
             }
 
@@ -1199,17 +1199,17 @@ void Terrain::CreateIndexData()
                     if (x > 0 || (j & STITCH_WEST) == 0)
                     {
                         indices.Push((unsigned short)((y + skip) * row + x));
-                        indices.Push((unsigned short)(y * row + x + skip));
                         indices.Push((unsigned short)(y * row + x));
+                        indices.Push((unsigned short)(y * row + x + skip));
                     }
                     indices.Push((unsigned short)((y + skip) * row + x));
-                    indices.Push((unsigned short)((y + skip) * row + x + 2 * skip));
                     indices.Push((unsigned short)(y * row + x + skip));
+                    indices.Push((unsigned short)((y + skip) * row + x + 2 * skip));
                     if (x < patchSize_ - skip * 2 || (j & STITCH_EAST) == 0)
                     {
                         indices.Push((unsigned short)((y + skip) * row + x + 2 * skip));
-                        indices.Push((unsigned short)(y * row + x + 2 * skip));
                         indices.Push((unsigned short)(y * row + x + skip));
+                        indices.Push((unsigned short)(y * row + x + 2 * skip));
                     }
                 }
             }
@@ -1223,17 +1223,17 @@ void Terrain::CreateIndexData()
                     if (x > 0 || (j & STITCH_WEST) == 0)
                     {
                         indices.Push((unsigned short)((y + skip) * row + x));
-                        indices.Push((unsigned short)((y + skip) * row + x + skip));
                         indices.Push((unsigned short)(y * row + x));
+                        indices.Push((unsigned short)((y + skip) * row + x + skip));
                     }
                     indices.Push((unsigned short)(y * row + x));
-                    indices.Push((unsigned short)((y + skip) * row + x + skip));
                     indices.Push((unsigned short)(y * row + x + 2 * skip));
+                    indices.Push((unsigned short)((y + skip) * row + x + skip));
                     if (x < patchSize_ - skip * 2 || (j & STITCH_EAST) == 0)
                     {
                         indices.Push((unsigned short)((y + skip) * row + x + skip));
-                        indices.Push((unsigned short)((y + skip) * row + x + 2 * skip));
                         indices.Push((unsigned short)(y * row + x + 2 * skip));
+                        indices.Push((unsigned short)((y + skip) * row + x + 2 * skip));
                     }
                 }
             }
@@ -1247,17 +1247,17 @@ void Terrain::CreateIndexData()
                     if (y > 0 || (j & STITCH_SOUTH) == 0)
                     {
                         indices.Push((unsigned short)(y * row + x));
-                        indices.Push((unsigned short)((y + skip) * row + x + skip));
                         indices.Push((unsigned short)(y * row + x + skip));
+                        indices.Push((unsigned short)((y + skip) * row + x + skip));
                     }
                     indices.Push((unsigned short)((y + 2 * skip) * row + x));
-                    indices.Push((unsigned short)((y + skip) * row + x + skip));
                     indices.Push((unsigned short)(y * row + x));
+                    indices.Push((unsigned short)((y + skip) * row + x + skip));
                     if (y < patchSize_ - skip * 2 || (j & STITCH_NORTH) == 0)
                     {
                         indices.Push((unsigned short)((y + 2 * skip) * row + x));
-                        indices.Push((unsigned short)((y + 2 * skip) * row + x + skip));
                         indices.Push((unsigned short)((y + skip) * row + x + skip));
+                        indices.Push((unsigned short)((y + 2 * skip) * row + x + skip));
                     }
                 }
             }
@@ -1271,17 +1271,17 @@ void Terrain::CreateIndexData()
                     if (y > 0 || (j & STITCH_SOUTH) == 0)
                     {
                         indices.Push((unsigned short)(y * row + x));
-                        indices.Push((unsigned short)((y + skip) * row + x));
                         indices.Push((unsigned short)(y * row + x + skip));
+                        indices.Push((unsigned short)((y + skip) * row + x));
                     }
                     indices.Push((unsigned short)((y + skip) * row + x));
-                    indices.Push((unsigned short)((y + 2 * skip) * row + x + skip));
                     indices.Push((unsigned short)(y * row + x + skip));
+                    indices.Push((unsigned short)((y + 2 * skip) * row + x + skip));
                     if (y < patchSize_ - skip * 2 || (j & STITCH_NORTH) == 0)
                     {
                         indices.Push((unsigned short)((y + skip) * row + x));
-                        indices.Push((unsigned short)((y + 2 * skip) * row + x));
                         indices.Push((unsigned short)((y + 2 * skip) * row + x + skip));
+                        indices.Push((unsigned short)((y + 2 * skip) * row + x));
                     }
                 }
             }
@@ -1342,24 +1342,24 @@ float Terrain::GetLodHeight(int x, int y, unsigned lodLevel) const
 Vector3 Terrain::GetRawNormal(int x, int y) const
 {
     float baseHeight = GetRawHeight(x, y);
-    float nSlope = GetRawHeight(x, y - 1) - baseHeight;
-    float neSlope = GetRawHeight(x + 1, y - 1) - baseHeight;
+    float sSlope = GetRawHeight(x, y - 1) - baseHeight;
+    float seSlope = GetRawHeight(x + 1, y - 1) - baseHeight;
     float eSlope = GetRawHeight(x + 1, y) - baseHeight;
-    float seSlope = GetRawHeight(x + 1, y + 1) - baseHeight;
-    float sSlope = GetRawHeight(x, y + 1) - baseHeight;
-    float swSlope = GetRawHeight(x - 1, y + 1) - baseHeight;
+    float neSlope = GetRawHeight(x + 1, y + 1) - baseHeight;
+    float nSlope = GetRawHeight(x, y + 1) - baseHeight;
+    float nwSlope = GetRawHeight(x - 1, y + 1) - baseHeight;
     float wSlope = GetRawHeight(x - 1, y) - baseHeight;
-    float nwSlope = GetRawHeight(x - 1, y - 1) - baseHeight;
+    float swSlope = GetRawHeight(x - 1, y - 1) - baseHeight;
     float up = 0.5f * (spacing_.x_ + spacing_.y_);
 
-    return (Vector3(0.0f, up, nSlope) +
-            Vector3(-neSlope, up, neSlope) +
-            Vector3(-eSlope, up, 0.0f) +
-            Vector3(-seSlope, up, -seSlope) +
-            Vector3(0.0f, up, -sSlope) +
-            Vector3(swSlope, up, -swSlope) +
-            Vector3(wSlope, up, 0.0f) +
-            Vector3(nwSlope, up, nwSlope)).Normalized();
+    return (Vector3(0.0f, -nSlope, up) +
+            Vector3(-neSlope, -neSlope, up) +
+            Vector3(-eSlope, 0.0f, up) +
+            Vector3(-seSlope, seSlope, up) +
+            Vector3(0.0f, sSlope, up) +
+            Vector3(swSlope, swSlope, up) +
+            Vector3(wSlope, 0.0f, up) +
+            Vector3(nwSlope, -nwSlope, up)).Normalized();
 }
 
 void Terrain::CalculateLodErrors(TerrainPatch* patch)

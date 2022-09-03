@@ -333,7 +333,7 @@ HeightfieldData::HeightfieldData(Terrain* terrain, unsigned lodLevel) :
             {
                 skip *= 2;
                 lodSpacing.x_ *= 2.0f;
-                lodSpacing.z_ *= 2.0f;
+                lodSpacing.y_ *= 2.0f;
                 int rX = lodSize.x_ & 1u;
                 int rY = lodSize.y_ & 1u;
                 lodSize.x_ >>= 1;
@@ -975,8 +975,7 @@ void CollisionShape::OnMarkedDirty(Node* node)
         case SHAPE_TERRAIN:
             {
                 auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
-                shape_->setLocalScaling(ToBtVector3(Vector3(heightfield->spacing_.x_, 1.0f, heightfield->spacing_.z_) *
-                                                    newWorldScale * size_));
+                shape_->setLocalScaling(ToBtVector3(Vector3(heightfield->spacing_.x_, heightfield->spacing_.y_, 1.0f) * newWorldScale * size_));  // Craft3D
             }
             break;
 
