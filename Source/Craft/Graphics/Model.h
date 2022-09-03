@@ -1,4 +1,5 @@
 //
+// Copyright (c) 2020-2022 the Craft3D project.
 // Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -40,14 +41,14 @@ class VertexBuffer;
 /// Vertex buffer morph data.
 struct VertexBufferMorph
 {
-    /// Vertex elements.
-    VertexMaskFlags elementMask_;
-    /// Number of vertices.
-    unsigned vertexCount_;
-    /// Morphed vertices data size as bytes.
-    unsigned dataSize_;
-    /// Morphed vertices. Stored packed as <index, data> pairs.
-    SharedArrayPtr<unsigned char> morphData_;
+	/// Vertex elements.
+	VertexMaskFlags elementMask_;
+	/// Number of vertices.
+	unsigned vertexCount_;
+	/// Morphed vertices data size as bytes.
+	unsigned dataSize_;
+	/// Morphed vertices. Stored packed as <index, data> pairs.
+	SharedArrayPtr<unsigned char> morphData_;
 };
 
 // ATOMIC BEGIN
@@ -59,193 +60,222 @@ static const unsigned MODEL_VERSION = 1;
 /// Definition of a model's vertex morph.
 struct ModelMorph
 {
-    /// Morph name.
-    String name_;
-    /// Morph name hash.
-    StringHash nameHash_;
-    /// Current morph weight.
-    float weight_;
-    /// Morph data per vertex buffer.
-    HashMap<unsigned, VertexBufferMorph> buffers_;
+	/// Morph name.
+	String name_;
+	/// Morph name hash.
+	StringHash nameHash_;
+	/// Current morph weight.
+	float weight_;
+	/// Morph data per vertex buffer.
+	HashMap<unsigned, VertexBufferMorph> buffers_;
 };
 
 /// Description of vertex buffer data for asynchronous loading.
 struct VertexBufferDesc
 {
-    /// Vertex count.
-    unsigned vertexCount_;
-    /// Vertex declaration.
-    PODVector<VertexElement> vertexElements_;
-    /// Vertex data size.
-    unsigned dataSize_;
-    /// Vertex data.
-    SharedArrayPtr<unsigned char> data_;
+	/// Vertex count.
+	unsigned vertexCount_;
+	/// Vertex declaration.
+	PODVector<VertexElement> vertexElements_;
+	/// Vertex data size.
+	unsigned dataSize_;
+	/// Vertex data.
+	SharedArrayPtr<unsigned char> data_;
 };
 
 /// Description of index buffer data for asynchronous loading.
 struct IndexBufferDesc
 {
-    /// Index count.
-    unsigned indexCount_;
-    /// Index size.
-    unsigned indexSize_;
-    /// Index data size.
-    unsigned dataSize_;
-    /// Index data.
-    SharedArrayPtr<unsigned char> data_;
+	/// Index count.
+	unsigned indexCount_;
+	/// Index size.
+	unsigned indexSize_;
+	/// Index data size.
+	unsigned dataSize_;
+	/// Index data.
+	SharedArrayPtr<unsigned char> data_;
 };
 
 /// Description of a geometry for asynchronous loading.
 struct GeometryDesc
 {
-    /// Primitive type.
-    PrimitiveType type_;
-    /// Vertex buffer ref.
-    unsigned vbRef_;
-    /// Index buffer ref.
-    unsigned ibRef_;
-    /// Index start.
-    unsigned indexStart_;
-    /// Index count.
-    unsigned indexCount_;
+	/// Primitive type.
+	PrimitiveType type_;
+	/// Vertex buffer ref.
+	unsigned vbRef_;
+	/// Index buffer ref.
+	unsigned ibRef_;
+	/// Index start.
+	unsigned indexStart_;
+	/// Index count.
+	unsigned indexCount_;
 };
 
 /// 3D model resource.
 class CRAFT_API Model : public ResourceWithMetadata
 {
-    CRAFT_OBJECT(Model, ResourceWithMetadata);
+	CRAFT_OBJECT(Model, ResourceWithMetadata);
 
 public:
-    /// Construct.
-    explicit Model(Context* context);
-    /// Destruct.
-    ~Model() override;
-    /// Register object factory.
-    static void RegisterObject(Context* context);
+	/// Construct.
+	explicit Model(Context* context, bool forceHeadless = false);
+	/// Destruct.
+	~Model() override;
+	/// Register object factory.
+	static void RegisterObject(Context* context);
 
-    /// Load resource from stream. May be called from a worker thread. Return true if successful.
-    bool BeginLoad(Deserializer& source) override;
-    /// Finish resource loading. Always called from the main thread. Return true if successful.
-    bool EndLoad() override;
-    /// Save resource. Return true if successful.
-    bool Save(Serializer& dest) const override;
+	/// Load resource from stream. May be called from a worker thread. Return true if successful.
+	bool BeginLoad(Deserializer& source) override;
+	/// Finish resource loading. Always called from the main thread. Return true if successful.
+	bool EndLoad() override;
+	/// Save resource. Return true if successful.
+	bool Save(Serializer& dest) const override;
 
-    /// Set local-space bounding box.
-    void SetBoundingBox(const BoundingBox& box);
-    /// Set vertex buffers and their morph ranges.
-    bool SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& morphRangeStarts,
-        const PODVector<unsigned>& morphRangeCounts);
-    /// Set index buffers.
-    bool SetIndexBuffers(const Vector<SharedPtr<IndexBuffer> >& buffers);
-    /// Set number of geometries.
-    void SetNumGeometries(unsigned num);
-    /// Set number of LOD levels in a geometry.
-    bool SetNumGeometryLodLevels(unsigned index, unsigned num);
-    /// Set geometry.
-    bool SetGeometry(unsigned index, unsigned lodLevel, Geometry* geometry);
-    /// Set geometry center.
-    bool SetGeometryCenter(unsigned index, const Vector3& center);
-    /// Set skeleton.
-    void SetSkeleton(const Skeleton& skeleton);
-    /// Set bone mappings when model has more bones than the skinning shader can handle.
-    void SetGeometryBoneMappings(const Vector<PODVector<unsigned> >& geometryBoneMappings);
-    /// Set vertex morphs.
-    void SetMorphs(const Vector<ModelMorph>& morphs);
-    /// Clone the model. The geometry data is deep-copied and can be modified in the clone without affecting the original.
-    SharedPtr<Model> Clone(const String& cloneName = String::EMPTY) const;
+	void SetHeadless(bool headless);
 
-    /// Return bounding box.
-    const BoundingBox& GetBoundingBox() const { return boundingBox_; }
+	/// Set local-space bounding box.
+	void SetBoundingBox(const BoundingBox& box);
+	/// Set vertex buffers and their morph ranges.
+	bool SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& morphRangeStarts,
+		const PODVector<unsigned>& morphRangeCounts);
+	/// Set index buffers.
+	bool SetIndexBuffers(const Vector<SharedPtr<IndexBuffer> >& buffers);
+	/// Set number of geometries.
+	void SetNumGeometries(unsigned num);
+	/// Set number of LOD levels in a geometry.
+	bool SetNumGeometryLodLevels(unsigned index, unsigned num);
+	/// Set geometry.
+	bool SetGeometry(unsigned index, unsigned lodLevel, Geometry* geometry);
+	/// Set geometry center.
+	bool SetGeometryCenter(unsigned index, const Vector3& center);
+	/// Set skeleton.
+	void SetSkeleton(const Skeleton& skeleton);
+	/// Set bone mappings when model has more bones than the skinning shader can handle.
+	void SetGeometryBoneMappings(const Vector<PODVector<unsigned> >& geometryBoneMappings);
+	/// Set vertex morphs.
+	void SetMorphs(const Vector<ModelMorph>& morphs);
+	/// Clone the model. The geometry data is deep-copied and can be modified in the clone without affecting the original.
+	SharedPtr<Model> Clone(const String& cloneName = String::EMPTY) const;
 
-    /// Return skeleton.
-    Skeleton& GetSkeleton() { return skeleton_; }
+	/// Return bounding box.
+	const BoundingBox& GetBoundingBox() const { return boundingBox_; }
 
-    /// Return vertex buffers.
-    const Vector<SharedPtr<VertexBuffer> >& GetVertexBuffers() const { return vertexBuffers_; }
+	/// Return skeleton.
+	Skeleton& GetSkeleton() { return skeleton_; }
 
-    /// Return index buffers.
-    const Vector<SharedPtr<IndexBuffer> >& GetIndexBuffers() const { return indexBuffers_; }
+	/// Return vertex buffers.
+	const Vector<SharedPtr<VertexBuffer> >& GetVertexBuffers() const { return vertexBuffers_; }
 
-    /// Return number of geometries.
-    unsigned GetNumGeometries() const { return geometries_.Size(); }
+	/// Return index buffers.
+	const Vector<SharedPtr<IndexBuffer> >& GetIndexBuffers() const { return indexBuffers_; }
 
-    /// Return number of LOD levels in geometry.
-    unsigned GetNumGeometryLodLevels(unsigned index) const;
+	/// Return number of geometries.
+	unsigned GetNumGeometries() const { return geometries_.Size(); }
 
-    /// Return geometry pointers.
-    const Vector<Vector<SharedPtr<Geometry> > >& GetGeometries() const { return geometries_; }
+	/// Return number of LOD levels in geometry.
+	unsigned GetNumGeometryLodLevels(unsigned index) const;
 
-    /// Return geometry center points.
-    const PODVector<Vector3>& GetGeometryCenters() const { return geometryCenters_; }
+	/// Return geometry pointers.
+	const Vector<Vector<SharedPtr<Geometry> > >& GetGeometries() const { return geometries_; }
 
-    /// Return geometry by index and LOD level. The LOD level is clamped if out of range.
-    Geometry* GetGeometry(unsigned index, unsigned lodLevel) const;
+	/// Return geometry center points.
+	const PODVector<Vector3>& GetGeometryCenters() const { return geometryCenters_; }
 
-    /// Return geometry center by index.
-    const Vector3& GetGeometryCenter(unsigned index) const
-    {
-        return index < geometryCenters_.Size() ? geometryCenters_[index] : Vector3::ZERO;
-    }
+	/// Return geometry by index and LOD level. The LOD level is clamped if out of range.
+	Geometry* GetGeometry(unsigned index, unsigned lodLevel) const;
 
-    /// Return geometery bone mappings.
-    const Vector<PODVector<unsigned> >& GetGeometryBoneMappings() const { return geometryBoneMappings_; }
+	/// Return geometry center by index.
+	const Vector3& GetGeometryCenter(unsigned index) const
+	{
+		return index < geometryCenters_.Size() ? geometryCenters_[index] : Vector3::ZERO;
+	}
 
-    /// Return vertex morphs.
-    const Vector<ModelMorph>& GetMorphs() const { return morphs_; }
+	/// Return geometery bone mappings.
+	const Vector<PODVector<unsigned> >& GetGeometryBoneMappings() const { return geometryBoneMappings_; }
 
-    /// Return number of vertex morphs.
-    unsigned GetNumMorphs() const { return morphs_.Size(); }
+	/// Return vertex morphs.
+	const Vector<ModelMorph>& GetMorphs() const { return morphs_; }
 
-    /// Return vertex morph by index.
-    const ModelMorph* GetMorph(unsigned index) const;
-    /// Return vertex morph by name.
-    const ModelMorph* GetMorph(const String& name) const;
-    /// Return vertex morph by name hash.
-    const ModelMorph* GetMorph(StringHash nameHash) const;
-    /// Return vertex buffer morph range start.
-    unsigned GetMorphRangeStart(unsigned bufferIndex) const;
-    /// Return vertex buffer morph range vertex count.
-    unsigned GetMorphRangeCount(unsigned bufferIndex) const;
+	/// Return number of vertex morphs.
+	unsigned GetNumMorphs() const { return morphs_.Size(); }
 
-    // ATOMIC BEGIN
+	/// Return vertex morph by index.
+	const ModelMorph* GetMorph(unsigned index) const;
+	/// Return vertex morph by name.
+	const ModelMorph* GetMorph(const String& name) const;
+	/// Return vertex morph by name hash.
+	const ModelMorph* GetMorph(StringHash nameHash) const;
+	/// Return vertex buffer morph range start.
+	unsigned GetMorphRangeStart(unsigned bufferIndex) const;
+	/// Return vertex buffer morph range vertex count.
+	unsigned GetMorphRangeCount(unsigned bufferIndex) const;
 
-    bool SetGeometryName(unsigned index, const String& name);
-    const String& GetGeometryName(unsigned index) const;
-    const Vector<String>& GetGeometryNames() const { return geometryNames_; }
+	// ATOMIC BEGIN
 
-    // ATOMIC END
+	bool SetGeometryName(unsigned index, const String& name);
+	const String& GetGeometryName(unsigned index) const;
+	const Vector<String>& GetGeometryNames() const { return geometryNames_; }
+
+	// ATOMIC END
+
+	void RotateAxisUp( char axis ); // Deprecated; To be removed after AssetImporter is updated;
+	void PermuteYZX() { RotateAxisUp( 'X' ); }
+	void PermuteZXY() { RotateAxisUp( 'Y' ); }
+
+
+	void Transform( const Matrix3x4 & matrix );
+
+	void RotateByX( float angle = 90.0 ) {
+		Quaternion rotation( angle, 0.0, 0.0 );
+		Matrix3x4 matrix( rotation.RotationMatrix() );
+		Transform( matrix );
+	}
+
+	void RotateByY( float angle = 90.0 ) {
+		Quaternion rotation( 0.0, angle, 0.0 );
+		Matrix3x4 matrix( rotation.RotationMatrix() );
+		Transform( matrix );
+	}
+
+	void RotateByZ( float angle = 90.0 ) {
+		Quaternion rotation( 0.0, 0.0, angle );
+		Matrix3x4 matrix( rotation.RotationMatrix() );
+		Transform( matrix );
+	}
 
 private:
-    /// Bounding box.
-    BoundingBox boundingBox_;
-    /// Skeleton.
-    Skeleton skeleton_;
-    /// Vertex buffers.
-    Vector<SharedPtr<VertexBuffer> > vertexBuffers_;
-    /// Index buffers.
-    Vector<SharedPtr<IndexBuffer> > indexBuffers_;
-    /// Geometries.
-    Vector<Vector<SharedPtr<Geometry> > > geometries_;
-    /// Geometry bone mappings.
-    Vector<PODVector<unsigned> > geometryBoneMappings_;
-    /// Geometry centers.
-    PODVector<Vector3> geometryCenters_;
-    /// Vertex morphs.
-    Vector<ModelMorph> morphs_;
-    /// Vertex buffer morph range start.
-    PODVector<unsigned> morphRangeStarts_;
-    /// Vertex buffer morph range vertex count.
-    PODVector<unsigned> morphRangeCounts_;
-    /// Vertex buffer data for asynchronous loading.
-    Vector<VertexBufferDesc> loadVBData_;
-    /// Index buffer data for asynchronous loading.
-    Vector<IndexBufferDesc> loadIBData_;
-    /// Geometry definitions for asynchronous loading.
-    Vector<PODVector<GeometryDesc> > loadGeometries_;
+	/// Bounding box.
+	BoundingBox boundingBox_;
+	/// Skeleton.
+	Skeleton skeleton_;
+	/// Vertex buffers.
+	Vector<SharedPtr<VertexBuffer> > vertexBuffers_;
+	/// Index buffers.
+	Vector<SharedPtr<IndexBuffer> > indexBuffers_;
+	/// Geometries.
+	Vector<Vector<SharedPtr<Geometry> > > geometries_;
+	/// Geometry bone mappings.
+	Vector<PODVector<unsigned> > geometryBoneMappings_;
+	/// Geometry centers.
+	PODVector<Vector3> geometryCenters_;
+	/// Vertex morphs.
+	Vector<ModelMorph> morphs_;
+	/// Vertex buffer morph range start.
+	PODVector<unsigned> morphRangeStarts_;
+	/// Vertex buffer morph range vertex count.
+	PODVector<unsigned> morphRangeCounts_;
+	/// Vertex buffer data for asynchronous loading.
+	Vector<VertexBufferDesc> loadVBData_;
+	/// Index buffer data for asynchronous loading.
+	Vector<IndexBufferDesc> loadIBData_;
+	/// Geometry definitions for asynchronous loading.
+	Vector<PODVector<GeometryDesc> > loadGeometries_;
 
-    // ATOMIC BEGIN
-    Vector<String> geometryNames_;
-    // ATOMIC END
+	// ATOMIC BEGIN
+	Vector<String> geometryNames_;
+	// ATOMIC END
+
+	bool headless_;
 };
 
 }

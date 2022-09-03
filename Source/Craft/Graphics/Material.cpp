@@ -313,7 +313,14 @@ bool Material::BeginLoadXML(Deserializer& source)
                         cache->BackgroundLoadResource<TextureCube>(name, true, this);
                 }
                 else
-                    cache->BackgroundLoadResource<Texture2D>(name, true, this);
+				{
+					if( !cache->Exists( name ) )
+					{
+						CRAFT_LOGERROR("Could not find texture file " + name);
+						name = "Textures/MissingTexture.png";
+					}
+					cache->BackgroundLoadResource<Texture2D>(name, true, this);
+				}
                 textureElem = textureElem.GetNext("texture");
             }
         }
@@ -374,7 +381,14 @@ bool Material::BeginLoadJSON(Deserializer& source)
                         cache->BackgroundLoadResource<TextureCube>(name, true, this);
                 }
                 else
-                    cache->BackgroundLoadResource<Texture2D>(name, true, this);
+				{
+					if( !cache->Exists( name ) )
+					{
+						CRAFT_LOGERROR("Could not find texture file " + name);
+						name = "Textures/MissingTexture.png";
+					}
+					cache->BackgroundLoadResource<Texture2D>(name, true, this);
+				}
             }
         }
 
@@ -462,7 +476,11 @@ bool Material::Load(const XMLElement& source)
                     SetTexture(unit, cache->GetResource<TextureCube>(name));
             }
             else
-                SetTexture(unit, cache->GetResource<Texture2D>(name));
+			{
+				Texture2D *tex = cache->GetResource<Texture2D>(name);
+				if( !tex ) tex = cache->GetResource<Texture2D>("Textures/MissingTexture.png");
+				SetTexture(unit, tex);
+			}
         }
         textureElem = textureElem.GetNext("texture");
     }
@@ -619,7 +637,11 @@ bool Material::Load(const JSONValue& source)
                     SetTexture(unit, cache->GetResource<TextureCube>(textureName));
             }
             else
-                SetTexture(unit, cache->GetResource<Texture2D>(textureName));
+			{
+				Texture2D *tex = cache->GetResource<Texture2D>(textureName);
+				if( !tex ) tex = cache->GetResource<Texture2D>("Textures/MissingTexture.png");
+				SetTexture(unit, tex);
+			}
         }
     }
 

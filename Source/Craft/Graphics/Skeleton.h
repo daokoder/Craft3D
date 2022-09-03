@@ -1,4 +1,5 @@
 //
+// Copyright (c) 2020-2022 the Craft3D project.
 // Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,9 +31,9 @@ namespace Craft
 
 enum BoneCollisionShape : unsigned char
 {
-    BONECOLLISION_NONE = 0x0,
-    BONECOLLISION_SPHERE = 0x1,
-    BONECOLLISION_BOX = 0x2,
+	BONECOLLISION_NONE = 0x0,
+	BONECOLLISION_SPHERE = 0x1,
+	BONECOLLISION_BOX = 0x2,
 };
 CRAFT_FLAGSET(BoneCollisionShape, BoneCollisionShapeFlags);
 
@@ -43,101 +44,126 @@ class Serializer;
 /// %Bone in a skeleton.
 struct Bone
 {
-    /// Construct with defaults.
-    Bone() :
-        parentIndex_(0),
-        initialPosition_(Vector3::ZERO),
-        initialRotation_(Quaternion::IDENTITY),
-        initialScale_(Vector3::ONE),
-        animated_(true),
-        radius_(0.0f)
-    {
-    }
+	/// Construct with defaults.
+	Bone() :
+		parentIndex_(0),
+		initialPosition_(Vector3::ZERO),
+		initialRotation_(Quaternion::IDENTITY),
+		initialScale_(Vector3::ONE),
+		animated_(true),
+		radius_(0.0f)
+	{
+	}
 
-    /// Bone name.
-    String name_;
-    /// Bone name hash.
-    StringHash nameHash_;
-    /// Parent bone index.
-    unsigned parentIndex_;
-    /// Reset position.
-    Vector3 initialPosition_;
-    /// Reset rotation.
-    Quaternion initialRotation_;
-    /// Reset scale.
-    Vector3 initialScale_;
-    /// Offset matrix.
-    Matrix3x4 offsetMatrix_;
-    /// Animation enable flag.
-    bool animated_;
-    /// Supported collision types.
-    BoneCollisionShapeFlags collisionMask_ = BONECOLLISION_NONE;
-    /// Radius.
-    float radius_;
-    /// Local-space bounding box.
-    BoundingBox boundingBox_;
-    /// Scene node.
-    WeakPtr<Node> node_;
+	/// Bone name.
+	String name_;
+	/// Bone name hash.
+	StringHash nameHash_;
+	/// Parent bone index.
+	unsigned parentIndex_;
+	/// Reset position.
+	Vector3 initialPosition_;
+	/// Reset rotation.
+	Quaternion initialRotation_;
+	/// Reset scale.
+	Vector3 initialScale_;
+	/// Offset matrix.
+	Matrix3x4 offsetMatrix_;
+	/// Animation enable flag.
+	bool animated_;
+	/// Supported collision types.
+	BoneCollisionShapeFlags collisionMask_ = BONECOLLISION_NONE;
+	/// Radius.
+	float radius_;
+	/// Local-space bounding box.
+	BoundingBox boundingBox_;
+	/// Scene node.
+	WeakPtr<Node> node_;
 };
 
 /// Hierarchical collection of bones.
 class CRAFT_API Skeleton
 {
 public:
-    /// Construct an empty skeleton.
-    Skeleton();
-    /// Destruct.
-    ~Skeleton();
+	/// Construct an empty skeleton.
+	Skeleton();
+	/// Destruct.
+	~Skeleton();
 
-    /// Read from a stream. Return true if successful.
-    bool Load(Deserializer& source);
-    /// Write to a stream. Return true if successful.
-    bool Save(Serializer& dest) const;
-    /// Define from another skeleton.
-    void Define(const Skeleton& src);
-    /// Set root bone's index.
-    void SetRootBoneIndex(unsigned index);
-    /// Clear bones.
-    void ClearBones();
-    /// Reset all animating bones to initial positions.
-    void Reset();
+	/// Read from a stream. Return true if successful.
+	bool Load(Deserializer& source);
+	/// Write to a stream. Return true if successful.
+	bool Save(Serializer& dest) const;
+	/// Define from another skeleton.
+	void Define(const Skeleton& src);
+	/// Set root bone's index.
+	void SetRootBoneIndex(unsigned index);
+	/// Clear bones.
+	void ClearBones();
+	/// Reset all animating bones to initial positions.
+	void Reset();
 
-    /// Return all bones.
-    const Vector<Bone>& GetBones() const { return bones_; }
+	/// Return all bones.
+	const Vector<Bone>& GetBones() const { return bones_; }
 
-    /// Return modifiable bones.
-    Vector<Bone>& GetModifiableBones() { return bones_; }
+	/// Return modifiable bones.
+	Vector<Bone>& GetModifiableBones() { return bones_; }
 
-    /// Return number of bones.
-    unsigned GetNumBones() const { return bones_.Size(); }
+	/// Return number of bones.
+	unsigned GetNumBones() const { return bones_.Size(); }
 
-    /// Return root bone.
-    Bone* GetRootBone();
-    /// Return index of the bone by name. Return M_MAX_UNSIGNED if not found.
-    unsigned GetBoneIndex(const String& boneName) const;
-    /// Return index of the bone by name hash. Return M_MAX_UNSIGNED if not found.
-    unsigned GetBoneIndex(const StringHash& boneNameHash) const;
-    /// Return index of the bone by the bone pointer. Return M_MAX_UNSIGNED if not found.
-    unsigned GetBoneIndex(const Bone* bone) const;
-    /// Return parent of the given bone. Return null for root bones.
-    Bone* GetBoneParent(const Bone* bone);
-    /// Return bone by index.
-    Bone* GetBone(unsigned index);
-    /// Return bone by name.
-    Bone* GetBone(const String& name);
-    /// Return bone by name.
-    Bone* GetBone(const char* name);
-    /// Return bone by name hash.
-    Bone* GetBone(const StringHash& boneNameHash);
+	/// Return root bone.
+	Bone* GetRootBone();
+	/// Return index of the bone by name. Return M_MAX_UNSIGNED if not found.
+	unsigned GetBoneIndex(const String& boneName) const;
+	/// Return index of the bone by name hash. Return M_MAX_UNSIGNED if not found.
+	unsigned GetBoneIndex(const StringHash& boneNameHash) const;
+	/// Return index of the bone by the bone pointer. Return M_MAX_UNSIGNED if not found.
+	unsigned GetBoneIndex(const Bone* bone) const;
+	/// Return parent of the given bone. Return null for root bones.
+	Bone* GetBoneParent(const Bone* bone);
+	/// Return bone by index.
+	Bone* GetBone(unsigned index);
+	/// Return bone by name.
+	Bone* GetBone(const String& name);
+	/// Return bone by name.
+	Bone* GetBone(const char* name);
+	/// Return bone by name hash.
+	Bone* GetBone(const StringHash& boneNameHash);
 
-    /// Reset all animating bones to initial positions without marking the nodes dirty. Requires the node dirtying to be performed later.
-    void ResetSilent();
+	/// Reset all animating bones to initial positions without marking the nodes dirty. Requires the node dirtying to be performed later.
+	void ResetSilent();
+
+	void RotateAxisUp( char axis );  // Deprecated; To be removed after AssetImporter is updated;
+	void PermuteYZX() { RotateAxisUp( 'X' ); }
+	void PermuteZXY() { RotateAxisUp( 'Y' ); }
+
+
+	void Transform( const Matrix3x4 & matrix );
+
+	void RotateByX( float angle = 90.0 ) {
+		Quaternion rotation( angle, 0.0, 0.0 );
+		Matrix3x4 matrix( rotation.RotationMatrix() );
+		Transform( matrix );
+	}
+
+	void RotateByY( float angle = 90.0 ) {
+		Quaternion rotation( 0.0, angle, 0.0 );
+		Matrix3x4 matrix( rotation.RotationMatrix() );
+		Transform( matrix );
+	}
+
+	void RotateByZ( float angle = 90.0 ) {
+		Quaternion rotation( 0.0, 0.0, angle );
+		Matrix3x4 matrix( rotation.RotationMatrix() );
+		Transform( matrix );
+	}
 
 private:
-    /// Bones.
-    Vector<Bone> bones_;
-    /// Root bone index.
-    unsigned rootBoneIndex_;
+	/// Bones.
+	Vector<Bone> bones_;
+	/// Root bone index.
+	unsigned rootBoneIndex_;
 };
 
 }

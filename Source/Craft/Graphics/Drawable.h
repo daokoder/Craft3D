@@ -91,13 +91,15 @@ struct CRAFT_API SourceBatch
 
     /// Distance from camera.
     float distance_{};
+    /// Spherical world size (a quarter of equator length).
+    unsigned sphereSize_{}; // Craftica;
+    /// Zone ID for spherical world.
+    unsigned char sphereZone_{};
     /// Geometry.
     Geometry* geometry_{};
     /// Material.
     SharedPtr<Material> material_;
 	SharedPtr<Texture2D> overlay_; //Craft;
-	short overlaySplitU_{}; //Craft;
-	short overlaySplitV_{}; //Craft;
     /// World transform(s). For a skinned model, these are the bone transforms.
     const Matrix3x4* worldTransform_{&Matrix3x4::IDENTITY};
     /// Number of world transforms.

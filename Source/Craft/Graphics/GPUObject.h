@@ -57,6 +57,8 @@ public:
     /// Clear the data lost flag.
     void ClearDataLost();
 
+	void SetGraphics( Graphics *graphics );
+
     /// Return the graphics subsystem associated with this GPU object.
     Graphics* GetGraphics() const;
     /// Return the object pointer. Applicable only on Direct3D.

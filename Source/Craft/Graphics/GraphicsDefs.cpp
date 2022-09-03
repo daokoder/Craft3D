@@ -50,6 +50,8 @@ extern CRAFT_API const StringHash VSP_LIGHTPOS("LightPos");
 extern CRAFT_API const StringHash VSP_LIGHTRAD("LightRad"); // Craft;
 extern CRAFT_API const StringHash VSP_HASOVERLAY("HasOverlay"); // Craft;
 extern CRAFT_API const StringHash VSP_NORMALOFFSETSCALE("NormalOffsetScale");
+extern CRAFT_API const StringHash VSP_SPHERESIZE("SphereSize");
+extern CRAFT_API const StringHash VSP_SPHEREZONE("SphereZone");
 extern CRAFT_API const StringHash VSP_MODEL("Model");
 extern CRAFT_API const StringHash VSP_VIEW("View");
 extern CRAFT_API const StringHash VSP_VIEWINV("ViewInv");

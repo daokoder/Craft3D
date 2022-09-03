@@ -388,6 +388,8 @@ extern CRAFT_API const StringHash VSP_LIGHTPOS;
 extern CRAFT_API const StringHash VSP_LIGHTRAD; // Craft;
 extern CRAFT_API const StringHash VSP_HASOVERLAY; // Craft;
 extern CRAFT_API const StringHash VSP_NORMALOFFSETSCALE;
+extern CRAFT_API const StringHash VSP_SPHERESIZE;
+extern CRAFT_API const StringHash VSP_SPHEREZONE;
 extern CRAFT_API const StringHash VSP_MODEL;
 extern CRAFT_API const StringHash VSP_VIEW;
 extern CRAFT_API const StringHash VSP_VIEWINV;
