@@ -325,6 +325,9 @@ class CRAFT_API UIWidget : public Object, public tb::TBWidgetDelegate
     void SetHeight(int height) { IntRect r(GetRect()); r.bottom_ = r.top_ + height; SetRect(r); }
     int GetHeight() { return GetRect().Height(); }
 
+    void SetPadding(unsigned value);
+    unsigned GetPadding() const;
+
     // Layout Params
     void SetLayoutWidth(int width);
     int GetLayoutWidth();

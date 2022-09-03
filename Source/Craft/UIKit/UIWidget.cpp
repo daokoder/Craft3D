@@ -504,6 +504,22 @@ void UIWidget::Die()
 
 }
 
+void UIWidget::SetPadding(unsigned value)
+{
+    if (!widget_)
+        return;
+
+    widget_->SetPadding(value);
+}
+
+unsigned UIWidget::GetPadding() const
+{
+    if (!widget_)
+        return 0;
+
+    return widget_->GetPadding();
+}
+
 void UIWidget::SetLayoutParams(UILayoutParams* params)
 {
     if (!widget_)
