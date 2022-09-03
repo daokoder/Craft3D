@@ -70,6 +70,22 @@ void GPUObject::ClearDataLost()
     dataLost_ = false;
 }
 
+void GPUObject::SetGraphics( Graphics *graphics )
+{
+	if( graphics == graphics_ ) return;
+	if( graphics_ ){
+		graphics_->RemoveGPUObject( this );
+		Release();
+	}
+
+	graphics_ = graphics;
+
+	if( graphics_ ){
+		graphics_->AddGPUObject( this );
+		OnDeviceReset();
+	}
+}
+
 Graphics* GPUObject::GetGraphics() const
 {
     return graphics_;
