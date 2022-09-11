@@ -58,7 +58,7 @@
 #define HAVE_ALLOCA_H 1
 #define HAVE_CTYPE_H 1
 /* #undef HAVE_FLOAT_H */
-#define HAVE_ICONV_H 1
+//#define HAVE_ICONV_H 1
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIMITS_H 1
 /* #undef HAVE_MALLOC_H */
@@ -163,7 +163,7 @@
 /* #undef HAVE_CLOCK_GETTIME */
 /* #undef HAVE_GETPAGESIZE */
 #define HAVE_MPROTECT 1
-#define HAVE_ICONV 1
+//#define HAVE_ICONV 1
 #define HAVE_PTHREAD_SETNAME_NP 1
 /* #undef HAVE_PTHREAD_SET_NAME_NP */
 /* #undef HAVE_SEM_TIMEDWAIT */
