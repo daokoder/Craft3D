@@ -163,7 +163,7 @@ public:
     /// Destruct.
     ~String()
     {
-        if (capacity_)
+        if (capacity_ && buffer_ != &endZero)
             delete[] buffer_;
     }
 

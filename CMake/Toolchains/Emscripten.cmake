@@ -85,7 +85,7 @@ if (NOT IN_TRY_COMPILE)
         endif ()
     endif ()
 endif ()
-set (CMAKE_SYSROOT ${EMSCRIPTEN_SYSROOT})
+#set (CMAKE_SYSROOT ${EMSCRIPTEN_SYSROOT})
 # Only search libraries and headers in sysroot
 set (CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)

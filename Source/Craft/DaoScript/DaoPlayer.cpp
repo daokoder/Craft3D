@@ -65,7 +65,7 @@ Scene* DaoPlayer::LoadScene(const String& filename, Camera *camera)
         return 0;
     }
 
-    Scene* scene = new Scene(context_);
+    SharedPtr<Scene> scene(new Scene(context_));
 
     VariantMap eventData;
 
@@ -78,7 +78,6 @@ Scene* DaoPlayer::LoadScene(const String& filename, Camera *camera)
         eventData[DaoPlayerSceneLoadEnd::P_SCENE] = scene;
         eventData[DaoPlayerSceneLoadEnd::P_SUCCESS] = false;
         scene->SendEvent(E_PLAYERSCENELOADEND, eventData);
-        scene->ReleaseRef();
         return 0;
     }
 
@@ -86,7 +85,7 @@ Scene* DaoPlayer::LoadScene(const String& filename, Camera *camera)
     eventData[DaoPlayerSceneLoadEnd::P_SUCCESS] = true;
     scene->SendEvent(E_PLAYERSCENELOADEND, eventData);
 
-    loadedScenes_.Push(SharedPtr<Scene>(scene));
+    loadedScenes_.Push(scene);
 
     if (currentScene_.Null())
     {

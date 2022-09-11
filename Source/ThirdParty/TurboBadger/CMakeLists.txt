@@ -12,6 +12,7 @@ if(APPLE)
   add_definitions(-DMACOSX)
 endif(APPLE)
 
+#add_definitions(-DNDEBUG)
 add_definitions(-DTB_FONT_RENDERER_FREETYPE)
 #add_definitions(-DTB_FONT_RENDERER_STB)
 

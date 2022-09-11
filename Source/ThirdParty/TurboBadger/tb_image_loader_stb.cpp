@@ -8,8 +8,6 @@
 
 #ifdef TB_IMAGE_LOADER_STB
 
-namespace tb {
-
 // Configure stb image and remove some features we don't use to reduce binary size.
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
@@ -29,6 +27,8 @@ namespace tb {
 #include "thirdparty/stb_image.h"
 
 #pragma GCC diagnostic pop
+
+namespace tb {
 
 class STBI_Loader : public TBImageLoader
 {

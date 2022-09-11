@@ -15,7 +15,9 @@
     the various settings in g_tb_debug. A settings window can be
     shown by calling ShowDebugInfoSettingsWindow. */
 #ifndef NDEBUG
+#ifndef __EMSCRIPTEN__
 #define TB_RUNTIME_DEBUG_INFO
+#endif
 #endif
 
 #ifndef NDEBUG

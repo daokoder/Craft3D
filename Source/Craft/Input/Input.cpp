@@ -149,15 +149,15 @@ EmscriptenInput::EmscriptenInput(Input* inputInst) :
     auto* vInputInst = (void*)inputInst;
 
     // Handle pointer lock
-    emscripten_set_pointerlockchange_callback(NULL, vInputInst, false, EmscriptenInput::HandlePointerLockChange);
+    emscripten_set_pointerlockchange_callback("#canvas", vInputInst, false, EmscriptenInput::HandlePointerLockChange);
 
     // Handle mouse events to prevent mouse jumps
-    emscripten_set_mousedown_callback(NULL, vInputInst, true, EmscriptenInput::HandleMouseJump);
-    emscripten_set_mousemove_callback(NULL, vInputInst, true, EmscriptenInput::HandleMouseJump);
+    emscripten_set_mousedown_callback("#canvas", vInputInst, true, EmscriptenInput::HandleMouseJump);
+    emscripten_set_mousemove_callback("#canvas", vInputInst, true, EmscriptenInput::HandleMouseJump);
 
     // Handle focus changes
-    emscripten_set_focusout_callback(NULL, vInputInst, false, EmscriptenInput::HandleFocusChange);
-    emscripten_set_focus_callback(NULL, vInputInst, false, EmscriptenInput::HandleFocusChange);
+    emscripten_set_focusout_callback("#canvas", vInputInst, false, EmscriptenInput::HandleFocusChange);
+    emscripten_set_focus_callback("#canvas", vInputInst, false, EmscriptenInput::HandleFocusChange);
 
     // Handle SDL events
     SDL_AddEventWatch(EmscriptenInput::HandleSDLEvents, vInputInst);
@@ -167,7 +167,7 @@ void EmscriptenInput::RequestPointerLock(MouseMode mode, bool suppressEvent)
 {
     requestedMouseMode_ = mode;
     suppressMouseModeEvent_ = suppressEvent;
-    emscripten_request_pointerlock(NULL, true);
+    emscripten_request_pointerlock("#canvas", true);
 }
 
 void EmscriptenInput::ExitPointerLock(bool suppressEvent)
